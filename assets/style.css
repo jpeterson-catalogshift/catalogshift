@@ -93,10 +93,19 @@ nav.light {
   justify-content: space-between;
 }
 
-/* Logo SVG: height controlled here, width scales automatically */
+/* Logo link: explicit flex and cursor so it's clearly interactive */
+.nav-logo {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Logo SVG: pointer-events none so clicks pass through to parent <a> tag
+   Without this, SVG absorbs the click and the link doesn't fire */
 .nav-logo svg {
   height: 34px;
   width: auto;
+  pointer-events: none;
 }
 
 /* Logo dark state: light text for use on dark nav background */
@@ -277,7 +286,7 @@ nav.light .nav-links a.active { color: var(--blue-primary); }
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.5); /* Increased from 0.18 — was unreadable on dark hero */
   font-size: 0.65rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -286,7 +295,7 @@ nav.light .nav-links a.active { color: var(--blue-primary); }
 .scroll-line {
   width: 1px;
   height: 36px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2));
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.55)); /* Increased from 0.2 */
   animation: scrollAnim 2s ease infinite;
 }
 
@@ -463,10 +472,12 @@ nav.light .nav-links a.active { color: var(--blue-primary); }
 
 /* ── SECTION: Content Sections ── */
 /* Three background variants for alternating section rhythm */
+/* min-height on sec-white/sec-light ensures footer never shares viewport with nav
+   on very wide/short screens — contact page body is otherwise too short */
 
-.sec-light { background: var(--bg-light); padding: 6rem 2.5rem; }
-.sec-white { background: #fff;            padding: 6rem 2.5rem; }
-.sec-dark  { background: var(--bg-mid);   padding: 6rem 2.5rem; }
+.sec-light { background: var(--bg-light); padding: 6rem 2.5rem; min-height: 60vh; }
+.sec-white { background: #fff;            padding: 6rem 2.5rem; min-height: 60vh; }
+.sec-dark  { background: var(--bg-mid);   padding: 6rem 2.5rem; min-height: 60vh; }
 
 .container {
   max-width: 1080px;
@@ -1012,6 +1023,14 @@ footer {
 .d4 { animation-delay: 0.44s; }
 .d5 { animation-delay: 0.58s; }
 
+
+/* ── SECTION: Site Max Width ── */
+/* Caps the readable width on ultrawide monitors — content stays centered */
+/* Nav inner already has max-width 1080px — this caps body/section backgrounds */
+
+@media (min-width: 1600px) {
+  .container { max-width: 1200px; }
+}
 
 /* ── SECTION: Responsive Breakpoints ── */
 
