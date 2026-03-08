@@ -152,6 +152,7 @@ nav.light .nav-links a.active { color: var(--blue-primary); }
   background: var(--blue-primary);
   color: #fff !important;
   transition: background 0.2s, box-shadow 0.2s !important;
+  white-space: nowrap; /* Prevents "Let's Talk" from wrapping to two lines on mobile */
 }
 
 .nav-cta:hover {
