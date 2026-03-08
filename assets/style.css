@@ -124,7 +124,7 @@ nav.light {
 }
 
 /* Nav link colors — dark nav state */
-nav.dark .nav-links a       { color: var(--text-dim); }
+nav.dark .nav-links a       { color: #c8d0e8; } /* Increased from #8892A4 — needs contrast on dark hero */
 nav.dark .nav-links a:hover { color: #f0f2f8; }
 
 /* Nav link colors — light nav state */
