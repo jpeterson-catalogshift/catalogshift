@@ -1,0 +1,394 @@
+<!-- ============================================================
+     FILE: index.html
+     PURPOSE: Homepage — hero, stats bar, problem, services, difference, CTA
+     LAST UPDATED: 2026-03-08
+     CONTENT EDITS: Find CONTENT: markers throughout this file
+     CODE CHANGES: Branch dev, test in preview before merging to main
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CONTENT: page title and meta description -->
+  <title>CatalogShift — Enterprise Catalog & Integration Consulting</title>
+  <meta name="description" content="CatalogShift helps ecommerce brands and retailers get product data clean, connected, and live across every channel. 28 years of enterprise integration experience." />
+  <!-- END CONTENT -->
+
+  <!-- Google Fonts: Bricolage Grotesque (display) + Figtree (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Shared stylesheet -->
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       SECTION: NAVIGATION
+       Sticky nav fixed to top, 68px height (--nav-height)
+       Switches between .dark and .light class on scroll past hero
+       Logo SVG color classes swap between .logo-d and .logo-l
+       updateNav() JS function handles all class switching
+       ============================================================ -->
+  <nav class="dark" id="nav">
+    <div class="nav-inner">
+
+      <!-- Logo: links to homepage, color controlled by .logo-d / .logo-l classes -->
+      <a href="index.html" class="nav-logo" aria-label="CatalogShift home">
+        <svg width="200" height="50" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" id="nav-logo" class="logo-d" aria-hidden="true">
+          <text x="0" y="50" font-size="42" font-family="Arial,Helvetica,sans-serif">
+            <tspan class="ct" font-weight="500">Catalog</tspan><tspan class="st" font-weight="600">Shift</tspan>
+          </text>
+          <!-- Speed lines icon: three decreasing-width bars -->
+          <rect class="sl" x="245" y="20" width="50" height="6"/>
+          <rect class="sl" x="255" y="30" width="40" height="6"/>
+          <rect class="sl" x="265" y="40" width="30" height="6"/>
+        </svg>
+      </a>
+
+      <!-- Nav links: Work, About, Let's Talk CTA -->
+      <ul class="nav-links" role="list">
+        <li><a href="work.html">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <!-- Nav CTA: mailto link, always visible, styled as button -->
+        <!-- CONTENT: nav CTA email -->
+        <li><a href="mailto:hello@catalogshift.com" class="nav-cta">Let's Talk</a></li>
+        <!-- END CONTENT -->
+      </ul>
+
+    </div>
+  </nav>
+
+
+  <!-- ============================================================
+       SECTION: HERO
+       Full-viewport dark section with gradient mesh + grid overlay
+       Badge, headline, subhead, two CTAs, scroll hint
+       Entrance animations via .fade .d1-.d5 delay classes
+       ============================================================ -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+
+      <!-- Badge: small pill label above headline -->
+      <!-- CONTENT: hero badge -->
+      <div class="badge fade d1" role="text">
+        <span class="badge-dot" aria-hidden="true"></span>
+        Enterprise Catalog & Integration Consulting
+      </div>
+      <!-- END CONTENT -->
+
+      <!-- Headline: three lines, third line in gradient accent -->
+      <!-- CONTENT: hero headline -->
+      <h1 class="fade d2">
+        Your product data is messy.<br>
+        Your channels are out of sync.<br>
+        <span class="accent">I've seen this before.</span>
+      </h1>
+      <!-- END CONTENT -->
+
+      <!-- Subhead: one-paragraph intro -->
+      <!-- CONTENT: hero subhead -->
+      <p class="hero-sub fade d3">
+        I'm Jeremy Peterson. I've spent 28 years building the integrations, pipelines, and data architectures that keep enterprise product catalogs clean, connected, and commercial — across 200+ global channels.
+      </p>
+      <!-- END CONTENT -->
+
+      <!-- CTA buttons: primary mailto, secondary links to about -->
+      <!-- CONTENT: hero CTAs -->
+      <div class="hero-actions fade d4">
+        <a href="mailto:hello@catalogshift.com" class="btn-glow">
+          Let's Talk
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="about.html" class="btn-ghost">About the work</a>
+      </div>
+      <!-- END CONTENT -->
+
+    </div>
+
+    <!-- Scroll hint: fade animation, hidden on mobile via CSS @media -->
+    <div class="scroll-hint fade d5" aria-hidden="true">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: STATS BAR
+       Four-column row of credential markers below hero
+       Dark background, sits between hero and first content section
+       ============================================================ -->
+  <div class="stats" role="region" aria-label="Credentials">
+    <div class="stats-inner">
+
+      <!-- CONTENT: stats bar — four credential markers -->
+      <div class="stat">
+        <div class="stat-num">28<span>+</span></div>
+        <div class="stat-label">Years enterprise integration experience</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">200<span>+</span></div>
+        <div class="stat-label">Global marketplace &amp; retail channels</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span>Fortune</span> 50</div>
+        <div class="stat-label">Enterprise clients advised</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">AI<span>-Ready</span></div>
+        <div class="stat-label">Claude API &amp; LLM integration</div>
+      </div>
+      <!-- END CONTENT -->
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION: THE PROBLEM
+       Two-column: explanatory text left, symptom cards right
+       Sets up why CatalogShift exists before introducing services
+       ============================================================ -->
+  <section class="sec-light">
+    <div class="container">
+      <div class="problem-grid">
+
+        <!-- Left: label, headline, body, link -->
+        <div>
+          <!-- CONTENT: problem section — label, headline, body -->
+          <span class="sec-label">Why catalog problems compound</span>
+          <h2 class="sec-h2">Mismatched products. Duplicate listings. Suppressed listings.</h2>
+          <p class="sec-body">These aren't tool problems — they're process problems. The workflow that creates, updates, and syncs product data across channels wasn't designed for the scale or complexity it's now handling. And the symptoms keep compounding until someone with deep catalog experience steps in and traces the problem back to its source.</p>
+          <!-- END CONTENT -->
+
+          <!-- CONTENT: problem section CTA link -->
+          <a href="contact.html" class="link-arr">
+            Tell me what you're dealing with
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <!-- END CONTENT -->
+        </div>
+
+        <!-- Right: three symptom cards -->
+        <!-- CONTENT: symptom cards — titles and body text -->
+        <ul class="symptom-list" role="list">
+          <li class="symptom-item">
+            <div class="symptom-icon" aria-hidden="true">⚠️</div>
+            <div>
+              <div class="symptom-title">Mismatched products</div>
+              <div class="symptom-body">A product goes live on three channels with three different titles, attributes, or prices — and nobody catches it until a customer complains.</div>
+            </div>
+          </li>
+          <li class="symptom-item">
+            <div class="symptom-icon" aria-hidden="true">🔁</div>
+            <div>
+              <div class="symptom-title">Duplicate listings</div>
+              <div class="symptom-body">A UPC gets reused across variants and now you have duplicates you can't untangle — splitting reviews, diluting rank, and confusing buyers.</div>
+            </div>
+          </li>
+          <li class="symptom-item">
+            <div class="symptom-icon" aria-hidden="true">🚫</div>
+            <div>
+              <div class="symptom-title">Suppressed listings</div>
+              <div class="symptom-body">A listing gets suppressed for a content issue nobody catches for weeks. Revenue silently disappears while the product sits invisible on the shelf.</div>
+            </div>
+          </li>
+        </ul>
+        <!-- END CONTENT -->
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: SERVICES
+       3x2 card grid — six services
+       NOTE: AI/LLM card removed per governance context_v1.1.0 Section 2.4
+             Expertise level not yet sufficient for public consulting claims
+             Reinstate when depth increases — card 5 slot preserved by comment below
+       ============================================================ -->
+  <section class="sec-white">
+    <div class="container">
+
+      <!-- CONTENT: services section — label and headline -->
+      <span class="sec-label">What I do</span>
+      <h2 class="sec-h2">Get your products live, listed,<br>found, and purchasable.</h2>
+      <p class="sec-body">Whether it's a quick diagnostic or a full integration build, the goal is the same — products in the right shape, on the right channels, performing.</p>
+      <!-- END CONTENT -->
+
+      <div class="svc-grid">
+
+        <!-- CONTENT: service cards — icons, titles, and descriptions -->
+
+        <!-- Card 1: Account Health Check -->
+        <div class="svc-card">
+          <div class="svc-icon" aria-hidden="true">🩺</div>
+          <h3>Account Health Check</h3>
+          <p>A structured review of your marketplace accounts — surfacing suppressed listings, policy flags, content gaps, and performance issues before they compound.</p>
+        </div>
+
+        <!-- Card 2: Data Quality Review -->
+        <div class="svc-card">
+          <div class="svc-icon" aria-hidden="true">🔬</div>
+          <h3>Data Quality Review</h3>
+          <p>A diagnostic of your product data across channels — mismatched attributes, duplicate listings, encoding issues, missing content, UPC conflicts. Prioritized by impact.</p>
+        </div>
+
+        <!-- Card 3: Catalog Integration -->
+        <div class="svc-card">
+          <div class="svc-icon" aria-hidden="true">🔗</div>
+          <h3>Catalog Integration &amp; Channel Setup</h3>
+          <p>Getting your product data from wherever it lives to wherever it needs to go — Amazon, Walmart, eBay, Target, and beyond — with the right mapping for each channel.</p>
+        </div>
+
+        <!-- Card 4: Listing Optimization -->
+        <div class="svc-card">
+          <div class="svc-icon" aria-hidden="true">📈</div>
+          <h3>Listing Optimization</h3>
+          <p>Fixing the content, structure, and classification issues that cause products to underperform or disappear. Aligned to what each platform actually rewards.</p>
+        </div>
+
+        <!-- Card 5: Search & Findability -->
+        <div class="svc-card">
+          <div class="svc-icon" aria-hidden="true">🔍</div>
+          <h3>Search &amp; Findability</h3>
+          <p>Getting a product listed is not the same as getting it found. Consumer search behavior varies by channel — and AI-powered discovery on Amazon, Walmart, and Google is changing what surfaces and what doesn't. Understanding how buyers actually search, and structuring product content accordingly, is what separates a visible product from an invisible one.</p>
+        </div>
+
+        <!-- CONTENT: AI/LLM card | STATUS: REMOVED
+             Removed per governance context_v1.1.0 Section 2.4 — 2026-03-08
+             Expertise level not yet sufficient for public consulting claims
+             Reinstate when depth increases — insert new card 5 here -->
+
+        <!-- Card 6: GTM Strategy -->
+        <div class="svc-card">
+          <div class="svc-icon" aria-hidden="true">🗺️</div>
+          <h3>GTM Strategy</h3>
+          <p>Channel activation planning and launch sequencing for teams bringing new products or platforms to market across complex multi-channel environments.</p>
+        </div>
+
+        <!-- END CONTENT -->
+
+      </div>
+
+      <!-- CONTENT: services section link -->
+      <a href="contact.html" class="link-arr">
+        Let's talk about your situation
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <!-- END CONTENT -->
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: THE DIFFERENCE
+       Two-column: explanatory text left, checklist panel right
+       Differentiates CatalogShift from generic consulting offerings
+       ============================================================ -->
+  <section class="sec-light">
+    <div class="container">
+      <div class="diff-grid">
+
+        <!-- Left: label, headline, body -->
+        <!-- CONTENT: difference section — label, headline, body -->
+        <div class="diff-text">
+          <span class="sec-label">The difference</span>
+          <h2 class="sec-h2">Deep catalog experience, focused on your outcome.</h2>
+          <p class="sec-body" style="margin-bottom:0;">Getting products live, listed, findable, and purchasable sounds simple. In practice it means navigating channel requirements, data standards, integration dependencies, and content rules that vary by platform — and diagnosing the process gaps that cause things to break when volume or complexity increases.</p>
+        </div>
+        <!-- END CONTENT -->
+
+        <!-- Right: checklist panel — four key differentiators -->
+        <!-- CONTENT: difference checklist items -->
+        <div class="diff-panel">
+          <div class="diff-panel-item">
+            <div class="diff-check" aria-hidden="true">✓</div>
+            <div class="diff-item-text"><strong>Start with a health check or data review</strong> — know exactly where you stand before committing to a larger engagement.</div>
+          </div>
+          <div class="diff-panel-item">
+            <div class="diff-check" aria-hidden="true">✓</div>
+            <div class="diff-item-text"><strong>Trace problems to their source</strong> — not just fix the symptom, but identify the process gap causing it.</div>
+          </div>
+          <div class="diff-panel-item">
+            <div class="diff-check" aria-hidden="true">✓</div>
+            <div class="diff-item-text"><strong>200+ channels, one framework</strong> — integration architecture that scales across marketplaces without rebuilding from scratch each time.</div>
+          </div>
+          <div class="diff-panel-item">
+            <div class="diff-check" aria-hidden="true">✓</div>
+            <div class="diff-item-text"><strong>AI-ready pipeline architecture</strong> — LLM integration designed for real enterprise data, not synthetic demos.</div>
+          </div>
+        </div>
+        <!-- END CONTENT -->
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: CTA STRIP
+       Full-width dark CTA block, bottom of page
+       Radial glow behind text via ::before pseudo-element
+       ============================================================ -->
+  <section class="cta-strip">
+    <!-- CONTENT: CTA strip — headline, subhead, button -->
+    <h2>If your catalog is broken, let's fix it.</h2>
+    <p>Tell me what you're dealing with. I'll tell you if I can help.</p>
+    <a href="mailto:hello@catalogshift.com" class="btn-glow">
+      Email Jeremy
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <!-- END CONTENT -->
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: FOOTER
+       Copyright line and secondary nav links
+       ============================================================ -->
+  <footer>
+    <div class="foot-inner">
+      <!-- CONTENT: footer copyright and links -->
+      <span class="foot-copy">© 2025 CatalogShift · Jeremy Peterson · hello@catalogshift.com</span>
+      <nav class="foot-links" aria-label="Footer navigation">
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <!-- END CONTENT -->
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+       SECTION: JAVASCRIPT
+       updateNav() — runs on scroll, switches nav and logo classes
+       Threshold: hero height minus 80px for early trigger before full scroll
+       passive: true — performance optimization for scroll listener
+       ============================================================ -->
+  <script>
+    const nav  = document.getElementById('nav');
+    const logo = document.getElementById('nav-logo');
+
+    function updateNav() {
+      const hero      = document.getElementById('hero');
+      const threshold = hero.offsetHeight - 80; // 80px early trigger so transition feels smooth
+      const past      = window.scrollY > threshold;
+
+      nav.className          = past ? 'light' : 'dark';
+      logo.className.baseVal = past ? 'logo-l' : 'logo-d';
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true }); // passive: true = no scroll jank
+    updateNav(); // Run once on load to set correct initial state
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!-- ============================================================
+     FILE: work.html
+     PURPOSE: Work page — selected project cards, capabilities
+     LAST UPDATED: 2026-03-08
+     CONTENT EDITS: Find CONTENT: markers throughout this file
+     CODE CHANGES: Branch dev, test in preview before merging to main
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CONTENT: page title and meta description -->
+  <title>Work — CatalogShift</title>
+  <meta name="description" content="Selected projects and capabilities from Jeremy Peterson — catalog integration, channel architecture, enterprise advisory, and AI/LLM work." />
+  <!-- END CONTENT -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       SECTION: NAVIGATION
+       .active class on Work link
+       ============================================================ -->
+  <nav class="dark" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="CatalogShift home">
+        <svg width="200" height="50" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" id="nav-logo" class="logo-d" aria-hidden="true">
+          <text x="0" y="50" font-size="42" font-family="Arial,Helvetica,sans-serif">
+            <tspan class="ct" font-weight="500">Catalog</tspan><tspan class="st" font-weight="600">Shift</tspan>
+          </text>
+          <rect class="sl" x="245" y="20" width="50" height="6"/>
+          <rect class="sl" x="255" y="30" width="40" height="6"/>
+          <rect class="sl" x="265" y="40" width="30" height="6"/>
+        </svg>
+      </a>
+      <ul class="nav-links" role="list">
+        <!-- .active marks current page -->
+        <li><a href="work.html" class="active" aria-current="page">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <!-- CONTENT: nav CTA email -->
+        <li><a href="mailto:hello@catalogshift.com" class="nav-cta">Let's Talk</a></li>
+        <!-- END CONTENT -->
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- ============================================================
+       SECTION: PAGE HERO
+       ============================================================ -->
+  <section class="page-hero" id="hero">
+    <div class="hero-inner">
+      <!-- CONTENT: work page hero — label, headline, subhead -->
+      <span class="sec-label fade d1">Work</span>
+      <h1 class="page-h1 fade d2">Selected projects and capabilities.</h1>
+      <p class="page-sub fade d3">A sample of what I've built — without the client details that aren't mine to share.</p>
+      <!-- END CONTENT -->
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: WORK CARDS
+       2x2 card grid — four project examples
+       Client names and metrics withheld per governance doc Section 2.4
+       ============================================================ -->
+  <section class="sec-white">
+    <div class="container">
+
+      <!-- CONTENT: work cards — tags, titles, descriptions -->
+      <div class="work-grid">
+
+        <!-- Card 1: Catalog Integration -->
+        <div class="work-card">
+          <div class="work-tag">Catalog Integration</div>
+          <h3>Production data pipeline at 6M+ rows/month</h3>
+          <p>Built and owned a full production data pipeline for catalog data ingestion, quality monitoring, and offshore team workflow generation — running continuously on infrastructure I installed and configured myself.</p>
+        </div>
+
+        <!-- Card 2: Channel Architecture -->
+        <div class="work-card">
+          <div class="work-tag">Channel Architecture</div>
+          <h3>Integration frameworks across 200+ global channels</h3>
+          <p>Designed standardized API integration frameworks across 200+ marketplace and retail channels — reducing client activation cycle times significantly and cutting launch timelines by 30–50%.</p>
+        </div>
+
+        <!-- Card 3: Enterprise Advisory -->
+        <div class="work-card">
+          <div class="work-tag">Enterprise Advisory</div>
+          <h3>Fortune 50 multi-channel integration strategy</h3>
+          <p>Led integration architecture assessments and go-live readiness planning for global brands across SAP, Oracle, IBM Sterling, Salesforce Commerce Cloud, Magento, and Shopify Plus environments.</p>
+        </div>
+
+        <!-- Card 4: AI/LLM — work example, not a service claim -->
+        <div class="work-card">
+          <div class="work-tag">AI / LLM</div>
+          <h3>Claude API catalog error resolution POC</h3>
+          <p>Building a production-oriented proof of concept applying LLM-assisted interpretation to catalog data quality resolution — grounded in longitudinal analysis of real marketplace error data, not synthetic test sets.</p>
+        </div>
+
+      </div>
+      <!-- END CONTENT -->
+
+      <!-- Disclaimer: client confidentiality note -->
+      <!-- CONTENT: work page disclaimer and CTA -->
+      <p class="disclaimer">Client names and specific metrics are held in confidence. Happy to go deeper on methodology and approach in a direct conversation.</p>
+      <a href="mailto:hello@catalogshift.com" class="link-arr">
+        Let's talk
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <!-- END CONTENT -->
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: CTA STRIP
+       ============================================================ -->
+  <section class="cta-strip">
+    <!-- CONTENT: work page CTA — headline, subhead, button -->
+    <h2>Ready to talk through your project?</h2>
+    <p>No pitch required — a few sentences is enough to start.</p>
+    <a href="mailto:hello@catalogshift.com" class="btn-glow">
+      Email Jeremy
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <!-- END CONTENT -->
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: FOOTER
+       ============================================================ -->
+  <footer>
+    <div class="foot-inner">
+      <!-- CONTENT: footer copyright and links -->
+      <span class="foot-copy">© 2025 CatalogShift · Jeremy Peterson · hello@catalogshift.com</span>
+      <nav class="foot-links" aria-label="Footer navigation">
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <!-- END CONTENT -->
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+       SECTION: JAVASCRIPT
+       ============================================================ -->
+  <script>
+    const nav  = document.getElementById('nav');
+    const logo = document.getElementById('nav-logo');
+
+    function updateNav() {
+      const hero      = document.getElementById('hero');
+      const threshold = hero.offsetHeight - 80;
+      const past      = window.scrollY > threshold;
+
+      nav.className          = past ? 'light' : 'dark';
+      logo.className.baseVal = past ? 'logo-l' : 'logo-d';
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  </script>
+
+</body>
+</html>

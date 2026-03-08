@@ -1,0 +1,181 @@
+<!-- ============================================================
+     FILE: contact.html
+     PURPOSE: Contact page — contact details, what-to-include guidance
+     LAST UPDATED: 2026-03-08
+     CONTENT EDITS: Find CONTENT: markers throughout this file
+     CODE CHANGES: Branch dev, test in preview before merging to main
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CONTENT: page title and meta description -->
+  <title>Contact — CatalogShift</title>
+  <meta name="description" content="Tell Jeremy Peterson what you're dealing with. No pitch required — a few sentences about your catalog or integration problem is enough to start." />
+  <!-- END CONTENT -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       SECTION: NAVIGATION
+       No .active class — Contact is accessed via nav CTA, not a nav link
+       ============================================================ -->
+  <nav class="dark" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="CatalogShift home">
+        <svg width="200" height="50" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" id="nav-logo" class="logo-d" aria-hidden="true">
+          <text x="0" y="50" font-size="42" font-family="Arial,Helvetica,sans-serif">
+            <tspan class="ct" font-weight="500">Catalog</tspan><tspan class="st" font-weight="600">Shift</tspan>
+          </text>
+          <rect class="sl" x="245" y="20" width="50" height="6"/>
+          <rect class="sl" x="255" y="30" width="40" height="6"/>
+          <rect class="sl" x="265" y="40" width="30" height="6"/>
+        </svg>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="work.html">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <!-- CONTENT: nav CTA email -->
+        <li><a href="mailto:hello@catalogshift.com" class="nav-cta">Let's Talk</a></li>
+        <!-- END CONTENT -->
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- ============================================================
+       SECTION: PAGE HERO
+       ============================================================ -->
+  <section class="page-hero" id="hero">
+    <div class="hero-inner">
+      <!-- CONTENT: contact page hero — label, headline, subhead -->
+      <span class="sec-label fade d1">Contact</span>
+      <h1 class="page-h1 fade d2">Tell me what you're dealing with.</h1>
+      <p class="page-sub fade d3">No pitch required. A few sentences about your catalog or integration problem is enough to start.</p>
+      <!-- END CONTENT -->
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: CONTACT BODY
+       Two-column: contact details left, what-to-include box right
+       ============================================================ -->
+  <section class="sec-white">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Left column: contact details -->
+        <!-- CONTENT: contact details — email, LinkedIn, location, response note -->
+        <div>
+
+          <div class="contact-block">
+            <div class="contact-label">Email</div>
+            <div class="contact-value">
+              <a href="mailto:hello@catalogshift.com">hello@catalogshift.com</a>
+            </div>
+          </div>
+
+          <div class="contact-block">
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-value">
+              <a href="https://linkedin.com/in/jeremypetersononlinemarketing" target="_blank" rel="noopener">linkedin.com/in/jeremypetersononlinemarketing</a>
+            </div>
+          </div>
+
+          <div class="contact-block">
+            <div class="contact-label">Location</div>
+            <div class="contact-value contact-value-body">Graham, WA — available remotely</div>
+          </div>
+
+          <div class="response-note">
+            I aim to reply within 2 business days. No auto-responders — just me.
+          </div>
+
+        </div>
+        <!-- END CONTENT -->
+
+        <!-- Right column: what-to-include guidance box -->
+        <!-- CONTENT: what to include box — title, list items, note, CTA -->
+        <div>
+          <div class="include-box">
+
+            <div class="include-title">What to include</div>
+
+            <ul class="include-list" role="list">
+              <li class="include-item">
+                <div class="include-icon" aria-hidden="true">→</div>
+                What your catalog setup looks like today — where data lives, what channels you sell on
+              </li>
+              <li class="include-item">
+                <div class="include-icon" aria-hidden="true">→</div>
+                Where things are breaking down — data quality, sync delays, channel errors, integration gaps
+              </li>
+              <li class="include-item">
+                <div class="include-icon" aria-hidden="true">→</div>
+                What a good outcome looks like and your rough timeline
+              </li>
+            </ul>
+
+            <p class="include-note">No perfect brief needed. I'll ask follow-up questions.</p>
+
+            <a href="mailto:hello@catalogshift.com" class="btn-glow" style="margin-top:1.75rem;">
+              Send an email
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+
+          </div>
+        </div>
+        <!-- END CONTENT -->
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION: FOOTER
+       ============================================================ -->
+  <footer>
+    <div class="foot-inner">
+      <!-- CONTENT: footer copyright and links -->
+      <span class="foot-copy">© 2025 CatalogShift · Jeremy Peterson · hello@catalogshift.com</span>
+      <nav class="foot-links" aria-label="Footer navigation">
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <!-- END CONTENT -->
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+       SECTION: JAVASCRIPT
+       ============================================================ -->
+  <script>
+    const nav  = document.getElementById('nav');
+    const logo = document.getElementById('nav-logo');
+
+    function updateNav() {
+      const hero      = document.getElementById('hero');
+      const threshold = hero.offsetHeight - 80;
+      const past      = window.scrollY > threshold;
+
+      nav.className          = past ? 'light' : 'dark';
+      logo.className.baseVal = past ? 'logo-l' : 'logo-d';
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  </script>
+
+</body>
+</html>
