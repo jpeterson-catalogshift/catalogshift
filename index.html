@@ -16,6 +16,19 @@
   <meta name="description" content="CatalogShift helps ecommerce brands and retailers get product data clean, connected, and live across every channel. 28 years of enterprise integration experience." />
   <!-- END CONTENT -->
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/catalogshift-favicon32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/logo/catalogshiftfavicon-16.png">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="CatalogShift" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://catalogshift.com" />
+  <meta property="og:title" content="CatalogShift — Enterprise Catalog & Integration Consulting" />
+  <meta property="og:description" content="Enterprise catalog and integration consulting. 28 years of experience getting product data clean, connected, and commercial across 200+ global channels." />
+  <meta property="og:image" content="https://catalogshift.com/assets/logo/catalogshift_logo.png" />
+  <meta property="linkedin:owner" content="jeremypetersononlinemarketing" />
+
   <!-- Google Fonts: Bricolage Grotesque (display) + Figtree (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,7 +68,7 @@
         <li><a href="about.html">About</a></li>
         <!-- Nav CTA: mailto link, always visible, styled as button -->
         <!-- CONTENT: nav CTA email -->
-        <li><a href="mailto:hello@catalogshift.com" class="nav-cta">Let's Talk</a></li>
+        <li><a href="/cdn-cgi/l/email-protection#dcb4b9b0b0b39cbfbda8bdb0b3bbafb4b5baa8f2bfb3b1" class="nav-cta">Let's Talk</a></li>
         <!-- END CONTENT -->
       </ul>
 
@@ -99,7 +112,7 @@
       <!-- CTA buttons: primary mailto, secondary links to about -->
       <!-- CONTENT: hero CTAs -->
       <div class="hero-actions fade d4">
-        <a href="mailto:hello@catalogshift.com" class="btn-glow">
+        <a href="/cdn-cgi/l/email-protection#3159545d5d5e71525045505d5e5642595857451f525e5c" class="btn-glow">
           Let's Talk
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -341,7 +354,7 @@
     <!-- CONTENT: CTA strip — headline, subhead, button -->
     <h2>If your catalog is broken, let's fix it.</h2>
     <p>Tell me what you're dealing with. I'll tell you if I can help.</p>
-    <a href="mailto:hello@catalogshift.com" class="btn-glow">
+    <a href="/cdn-cgi/l/email-protection#4f272a2323200f2c2e3b2e2320283c2726293b612c2022" class="btn-glow">
       Email CatalogShift
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -356,7 +369,7 @@
   <footer>
     <div class="foot-inner">
       <!-- CONTENT: footer copyright -->
-      <span class="foot-copy">© 2025 CatalogShift · Jeremy Peterson · hello@catalogshift.com</span>
+      <span class="foot-copy">© 2026 CatalogShift · Jeremy Peterson · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6cec3cacac9e6c5c7d2c7cac9c1d5cecfc0d288c5c9cb">[email&#160;protected]</a></span>
       <!-- END CONTENT -->
     </div>
   </footer>
@@ -368,22 +381,11 @@
        Threshold: hero height minus 80px for early trigger before full scroll
        passive: true — performance optimization for scroll listener
        ============================================================ -->
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const nav  = document.getElementById('nav');
     const logo = document.getElementById('nav-logo');
 
     function updateNav() {
       const hero      = document.getElementById('hero');
       const threshold = hero.offsetHeight - 80; // 80px early trigger so transition feels smooth
-      const past      = window.scrollY > threshold;
-
-      nav.className          = past ? 'light' : 'dark';
-      logo.className.baseVal = past ? 'logo-l' : 'logo-d';
-    }
-
-    window.addEventListener('scroll', updateNav, { passive: true }); // passive: true = no scroll jank
-    updateNav(); // Run once on load to set correct initial state
-  </script>
-
-</body>
-</html>
+     
