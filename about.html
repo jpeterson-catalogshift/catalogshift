@@ -57,7 +57,7 @@
         <!-- .active marks current page -->
         <li><a href="about.html" class="active" aria-current="page">About</a></li>
         <!-- CONTENT: nav CTA email -->
-        <li><a href="/cdn-cgi/l/email-protection#bbd3ded7d7d4fbd8dacfdad7d4dcc8d3d2ddcf95d8d4d6" class="nav-cta">Let's Talk</a></li>
+        <li><a href="mailto:hello@catalogshift.com" class="nav-cta">Let's Talk</a></li>
         <!-- END CONTENT -->
       </ul>
     </div>
@@ -156,7 +156,7 @@
     <!-- CONTENT: about page CTA — headline, body, button -->
     <h2>Working through a catalog or integration problem?</h2>
     <p>I'm happy to have a conversation before any decisions get made.</p>
-    <a href="/cdn-cgi/l/email-protection#e38b868f8f8ca3808297828f8c84908b8a8597cd808c8e" class="btn-glow">
+    <a href="mailto:hello@catalogshift.com" class="btn-glow">
       Email CatalogShift
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -170,7 +170,7 @@
   <footer>
     <div class="foot-inner">
       <!-- CONTENT: footer copyright -->
-      <span class="foot-copy">© 2026 CatalogShift · Jeremy Peterson · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7b131e1717143b181a0f1a17141c0813121d0f55181416">[email&#160;protected]</a></span>
+      <span class="foot-copy">© 2026 CatalogShift · Jeremy Peterson · hello@catalogshift.com</span>
       <!-- END CONTENT -->
     </div>
   </footer>
@@ -180,10 +180,22 @@
        SECTION: JAVASCRIPT
        updateNav() — scroll listener for nav dark/light state
        ============================================================ -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     const nav  = document.getElementById('nav');
     const logo = document.getElementById('nav-logo');
 
     function updateNav() {
       const hero      = document.getElementById('hero');
-      const threshold = hero.offsetHe
+      const threshold = hero.offsetHeight - 80; // 80px early trigger
+      const past      = window.scrollY > threshold;
+
+      nav.className          = past ? 'light' : 'dark';
+      logo.className.baseVal = past ? 'logo-l' : 'logo-d';
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  </script>
+
+</body>
+</html>

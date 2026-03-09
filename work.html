@@ -57,7 +57,7 @@
         <li><a href="work.html" class="active" aria-current="page">Work</a></li>
         <li><a href="about.html">About</a></li>
         <!-- CONTENT: nav CTA email -->
-        <li><a href="/cdn-cgi/l/email-protection#6008050c0c0f20030114010c0f0713080906144e030f0d" class="nav-cta">Let's Talk</a></li>
+        <li><a href="mailto:hello@catalogshift.com" class="nav-cta">Let's Talk</a></li>
         <!-- END CONTENT -->
       </ul>
     </div>
@@ -123,7 +123,7 @@
       <!-- Disclaimer: client confidentiality note -->
       <!-- CONTENT: work page disclaimer and CTA -->
       <p class="disclaimer">Client names and specific metrics are held in confidence. Happy to go deeper on methodology and approach in a direct conversation.</p>
-      <a href="/cdn-cgi/l/email-protection#335b565f5f5c73505247525f5c54405b5a55471d505c5e" class="link-arr">
+      <a href="mailto:hello@catalogshift.com" class="link-arr">
         Let's talk
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -140,7 +140,7 @@
     <!-- CONTENT: work page CTA — headline, subhead, button -->
     <h2>Ready to talk through your project?</h2>
     <p>No pitch required — a few sentences is enough to start.</p>
-    <a href="/cdn-cgi/l/email-protection#b1d9d4dddddef1d2d0c5d0ddded6c2d9d8d7c59fd2dedc" class="btn-glow">
+    <a href="mailto:hello@catalogshift.com" class="btn-glow">
       Email CatalogShift
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -154,7 +154,7 @@
   <footer>
     <div class="foot-inner">
       <!-- CONTENT: footer copyright -->
-      <span class="foot-copy">© 2026 CatalogShift · Jeremy Peterson · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="761e131a1a1936151702171a1911051e1f10025815191b">[email&#160;protected]</a></span>
+      <span class="foot-copy">© 2026 CatalogShift · Jeremy Peterson · hello@catalogshift.com</span>
       <!-- END CONTENT -->
     </div>
   </footer>
@@ -163,9 +163,22 @@
   <!-- ============================================================
        SECTION: JAVASCRIPT
        ============================================================ -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     const nav  = document.getElementById('nav');
     const logo = document.getElementById('nav-logo');
 
     function updateNav() {
-      const hero      = doc
+      const hero      = document.getElementById('hero');
+      const threshold = hero.offsetHeight - 80;
+      const past      = window.scrollY > threshold;
+
+      nav.className          = past ? 'light' : 'dark';
+      logo.className.baseVal = past ? 'logo-l' : 'logo-d';
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  </script>
+
+</body>
+</html>
