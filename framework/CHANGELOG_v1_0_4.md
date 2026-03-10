@@ -2,16 +2,33 @@
 
 | | |
 |---|---|
-| **Filename** | CHANGELOG.md |
+| **Filename** | CHANGELOG_v1_0_4.md |
 | **Version** | see entries below |
 | **Status** | Active |
 | **Created** | 2026-03-08 |
-| **Last updated** | 2026-03-08 |
+| **Last updated** | 2026-03-10 |
 | **Updated by** | Jeremy Peterson |
 
 *Every merge to main requires a changelog entry.*
 *Format: [MAJOR.MINOR.PATCH] — YYYY-MM-DD*
-*Versioning rules defined in context_v1.0.0.md Section 6.*
+*Versioning rules defined in context_v1_0_0.md Section 6.*
+
+---
+
+## [Framework] — 2026-03-10 *(no site version bump — framework files only)*
+
+### Added
+- CLAUDE.md — Claude Code session initialization file added to project root
+- context files from 2026-03-10 zip: context_v1_2_3.md, content_draft_v1_0_5.md, CHANGELOG_v1_0_4.md, CatalogShift_Context_Documents_v1_0_0.md, CatalogShift_Website_Context_v1_0_0.md
+- framework branch added to governance doc Section 1.1 branch strategy table
+
+### Changed
+- All framework files standardized to underscore version naming convention (v1.0.0 → v1_0_0)
+- Governance doc bumped to v1.2.3 — copyright year fixed (2025 → 2026), framework branch added
+- Content draft bumped to v1_0_5 — Card 5 corrected to Search & Findability (AI/LLM moved to resolved decisions)
+
+### Removed
+- Unversioned originals removed: CHANGELOG.md, content_draft.md, context_v1.0.0.md, context_v1.1.0.md
 
 ---
 
