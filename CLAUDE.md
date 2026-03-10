@@ -32,7 +32,7 @@ with owner before proceeding.
 ## Active File Versions
 | File | Active version |
 |---|---|
-| Governance | `framework/context_v1_2_2.md` |
+| Governance | `framework/context_v1_2_3.md` |
 | Content draft | `framework/content_draft_v1_0_5.md` |
 | Changelog | `framework/CHANGELOG_v1_0_4.md` |
 | Site version | 1.0.4 |

@@ -3,12 +3,12 @@
 | | |
 |---|---|
 | **Filename** | context_v1.2.0.md |
-| **Document version** | 1.2.2 |
+| **Document version** | 1.2.3 |
 | **Status** | Active |
 | **Created** | 2026-03-08 |
 | **Last updated** | 2026-03-10 |
 | **Updated by** | Jeremy Peterson |
-| **Changes** | Fixed copyright year in Section 2.1 single-source values — 2025 → 2026 |
+| **Changes** | Added framework branch to Section 1.1 branch strategy table |
 
 *This document governs all changes to the CatalogShift website codebase and content.*
 *All contributors — human and AI — must read this document before making any changes.*
@@ -19,6 +19,7 @@
 
 | Version | Date | Updated by | Changes |
 |---|---|---|---|
+| 1.2.3 | 2026-03-10 | Jeremy Peterson | Added framework branch to Section 1.1 branch strategy table. |
 | 1.2.2 | 2026-03-10 | Jeremy Peterson | Fixed copyright year in Section 2.1 single-source values — 2025 → 2026. |
 | 1.2.1 | 2026-03-09 | Jeremy Peterson | Updated Section 4.1 with complete verified GitHub URLs (site pages, stylesheet, logo/favicon files, folder browser URLs). Added note re: root style.css removed. Fixed Notion page title. |
 | 1.2.0 | 2026-03-08 | Jeremy Peterson | Post-launch updates — site version bumped to 1.0.4, footer nav removed decision logged, CTA text updated, CSS post-launch fixes documented in decisions log. |
@@ -49,6 +50,7 @@ All changes follow a two-branch model:
 | `main` | Production — what is live on catalogshift.com | Amplify auto-deploys |
 | `content` | Content edits — copy, email, labels, CTAs | Merge to main after review |
 | `dev` | Code changes — structure, CSS, JS, new features | Merge to main after testing |
+| `framework` | Governance docs, CLAUDE.md, context files, content draft | Merge to main after review |
 
 **Rules:**
 - No direct edits to `main` — ever
