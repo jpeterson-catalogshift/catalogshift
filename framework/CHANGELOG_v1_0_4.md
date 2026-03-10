@@ -15,6 +15,24 @@
 
 ---
 
+## [1.0.4] — 2026-03-08
+
+### Fixed
+- Nav CTA button "Let's Talk" wrapping to two lines on mobile — added `white-space: nowrap` to `.nav-cta`
+- Nav link contrast on dark hero — color increased from `#8892A4` to `#c8d0e8`
+- Scroll hint visibility — opacity increased from `0.18` to `0.5`, line gradient from `0.2` to `0.55`
+- Nav z-index raised from `200` to `500`
+- Logo click — added `pointer-events="none"` inline on SVG in all 4 HTML files
+- Content sections given `min-height: 60vh` to prevent footer overlapping nav on ultrawide/short screens
+
+### Changed
+- CTA button text updated to "Email CatalogShift" across index.html, about.html, work.html
+- Footer nav links removed from all 4 pages — footer now shows copyright only, centered
+- Governance doc updated to v1.2.0
+- Content draft updated to v1.0.4
+
+---
+
 ## [1.0.0] — 2026-03-08
 
 ### Added

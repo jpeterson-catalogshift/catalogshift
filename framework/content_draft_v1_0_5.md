@@ -3,12 +3,12 @@
 | | |
 |---|---|
 | **Filename** | content_draft.md |
-| **Version** | 1.0.3 |
+| **Version** | 1.0.5 |
 | **Status** | Active |
 | **Created** | 2026-03-08 |
-| **Last updated** | 2026-03-08 |
+| **Last updated** | 2026-03-10 |
 | **Updated by** | Jeremy Peterson |
-| **Changes** | Added Search & Findability as card 5, GTM moved to card 6 |
+| **Changes** | Services Card 5 corrected to Search & Findability — AI/LLM Integration moved to resolved decisions |
 
 *This document is the single source of truth for all website copy.*
 *All content changes must follow the KEEP / CHANGE / WHY protocol defined in context_v1.0.0.md before editing.*
@@ -20,6 +20,8 @@
 
 | Version | Date | Updated by | Changes |
 |---|---|---|---|
+| 1.0.5 | 2026-03-10 | Jeremy Peterson | Services Card 5 corrected to Search & Findability (matches live site). AI/LLM Integration moved to resolved decisions — removed per governance Section 2.4. |
+| 1.0.4 | 2026-03-08 | Jeremy Peterson | Footer nav links removed. CTA button text updated to "Email CatalogShift" across index, about, work. Global elements table updated. |
 | 1.0.3 | 2026-03-08 | Jeremy Peterson | Added Search & Findability service card — fills card 5 slot, GTM moved to card 6 |
 | 1.0.2 | 2026-03-08 | Jeremy Peterson | Replaced stale editorial notes with resolved decisions table — all open items now closed |
 | 1.0.1 | 2026-03-08 | Jeremy Peterson | Fixed stale jpeterson@ email — replaced all instances with hello@catalogshift.com |
@@ -31,10 +33,11 @@
 
 ## GLOBAL ELEMENTS
 
-**Nav links:** Work · About · Contact
+**Nav links:** Work · About
 **Nav CTA button:** Let's Talk → mailto:hello@catalogshift.com
 
 **Footer copy:** © 2025 CatalogShift · Jeremy Peterson · hello@catalogshift.com
+**Footer nav:** None — removed. Footer shows copyright only, centered.
 
 ---
 
@@ -103,8 +106,8 @@ Getting your product data from wherever it lives to wherever it needs to go — 
 **Card 4: Listing Optimization**
 Fixing the content, structure, and classification issues that cause products to underperform or disappear. Titles, attributes, images, and channel-specific requirements — aligned to what each platform actually rewards.
 
-**Card 5: AI/LLM Integration**
-Connecting Claude and other LLMs to your existing product data workflows — for content generation, error detection, classification, and catalog enrichment at scale.
+**Card 5: Search & Findability**
+Getting a product listed is not the same as getting it found. Consumer search behavior varies by channel — and AI-powered discovery on Amazon, Walmart, and Google is changing what surfaces and what doesn't. Understanding how buyers actually search, and structuring product content accordingly, is what separates a visible product from an invisible one.
 
 **Card 6: GTM Strategy for Catalog Products**
 Channel activation planning and launch sequencing for teams bringing new products or platforms to market across complex multi-channel environments.
@@ -135,7 +138,7 @@ If your catalog is broken, let's fix it.
 **Subhead:**
 Tell me what you're dealing with. I'll tell you if I can help.
 
-**CTA:** Email Jeremy → mailto:hello@catalogshift.com
+**CTA:** Email CatalogShift → mailto:hello@catalogshift.com
 
 ---
 
@@ -189,7 +192,7 @@ For teams that want a catalog and integration specialist on call as they grow, l
 
 **Body:** I'm happy to have a conversation about what you're dealing with before any decisions get made.
 
-**CTA:** Email me → mailto:hello@catalogshift.com
+**CTA:** Email CatalogShift → mailto:hello@catalogshift.com
 
 ---
 
@@ -288,6 +291,7 @@ No perfect brief needed. I'll ask follow-up questions.
 | hello@catalogshift.com | ✅ Confirmed live | In use across all pages |
 | Page renamed "Work" (not "Writing") | ✅ Confirmed | work.html in production |
 | AI/LLM section on About page | ❌ Removed | Expertise level not yet sufficient for public claims — revisit as depth increases |
+| AI/LLM Integration service card (Card 5) | ❌ Removed | Removed per governance Section 2.4 — expertise level not yet sufficient; Card 5 slot filled by Search & Findability |
 | 6M+ rows/month | ❌ Not published | Unanchored claim without employer context |
 | 30–50% timeline reduction | ❌ Not published | Unanchored claim without employer context |
 | $50B+ GMV, attrition, SKU figures | ❌ Not published | Confidential — reference as methodology only |
