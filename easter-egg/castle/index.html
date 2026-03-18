@@ -823,7 +823,7 @@ function renderEnding() {
   backBtn.className = "rbtn";
   backBtn.style.marginTop = "4px";
   backBtn.textContent = "← Back to the Dungeon";
-  backBtn.onclick = () => { window.location.href = "../index.html"; };
+  backBtn.onclick = () => { try { localStorage.removeItem("dungeon_save"); } catch(e) {} window.location.href = "../index.html"; };
   cw.appendChild(backBtn);
 }
 
