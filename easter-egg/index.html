@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dungeon of Echoes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #06060c; }
+  body {
+    font-family: 'Share Tech Mono', monospace;
+    color: #c8b88a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .rpg {
+    width: 100%;
+    max-width: 860px;
+    height: 620px;
+    background: #09090f;
+    border: 1px solid #1c1c2c;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8);
+  }
+
+  /* HEADER */
+  .hdr {
+    background: #0c0c18;
+    border-bottom: 1px solid #1a1a2a;
+    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .ttl { font-family: 'VT323', monospace; font-size: 22px; color: #e8c87a; letter-spacing: 3px; margin-left: 4px; }
+  .sub { font-size: 11px; color: #383858; margin-left: auto; }
+
+  /* BODY */
+  .bdy { display: flex; flex: 1; overflow: hidden; }
+
+  /* SIDEBAR */
+  .sdb {
+    width: 184px; min-width: 184px;
+    background: #0b0b16;
+    border-right: 1px solid #181828;
+    padding: 12px 10px;
+    display: flex; flex-direction: column; gap: 9px;
+    overflow-y: auto;
+  }
+  .sdb::-webkit-scrollbar { width: 2px; }
+  .sdb::-webkit-scrollbar-thumb { background: #202038; }
+
+  .pnl { border: 1px solid #1e1e32; padding: 8px; border-radius: 4px; }
+  .plbl { font-size: 10px; color: #484868; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .pnm { font-family: 'VT323', monospace; font-size: 18px; color: #e8c87a; }
+  .sr { display: flex; justify-content: space-between; font-size: 11px; margin: 2px 0; }
+  .sl { color: #585878; } .sv { color: #c8b88a; }
+  .hp-v { color: #dd5555; } .mp-v { color: #6090e0; } .gd-v { color: #d8b040; }
+  .bw { height: 5px; background: #141424; border-radius: 3px; margin: 3px 0; overflow: hidden; }
+  .bf { height: 100%; border-radius: 3px; transition: width .4s; }
+  .inv-item { font-size: 11px; color: #7a7a98; margin: 2px 0; padding-left: 9px; position: relative; display: flex; align-items: center; gap: 4px; }
+  .inv-item::before { content: ">"; position: absolute; left: 0; color: #383858; }
+  .ubtn { font-size: 10px; background: #0e0e1e; border: 1px solid #1e1e38; color: #6060a0; font-family: 'Share Tech Mono', monospace; cursor: pointer; padding: 1px 5px; border-radius: 2px; }
+  .ubtn:hover { border-color: #8080c0; color: #a0a0e0; }
+
+  /* MAIN */
+  .mn { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* LOG */
+  .log {
+    flex: 1; overflow-y: auto;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .log::-webkit-scrollbar { width: 3px; }
+  .log::-webkit-scrollbar-thumb { background: #202038; border-radius: 2px; }
+
+  .mg { font-size: 13px; line-height: 1.7; }
+  .gm  { color: #c8b88a; }
+  .ev  { color: #d8b040; font-size: 12px; }
+  .ev::before  { content: "» "; }
+  .dn  { color: #dd5555; font-size: 12px; }
+  .dn::before  { content: "» "; }
+  .sy  { color: #303050; font-size: 11px; }
+  .lcbt { color: #e08040; font-size: 12px; }
+  .lcbt::before { content: "⚔ "; }
+
+  /* CHOICES */
+  .cw {
+    border-top: 1px solid #181828;
+    padding: 10px 14px;
+    background: #0b0b16;
+    display: flex; flex-direction: column; gap: 6px;
+    flex-shrink: 0;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .cw::-webkit-scrollbar { width: 2px; }
+  .cw::-webkit-scrollbar-thumb { background: #202038; }
+
+  .clbl { font-size: 10px; color: #484868; letter-spacing: 1px; text-transform: uppercase; }
+  .cbtn {
+    background: #0e0e1e; border: 1px solid #242440;
+    color: #a8a0c0; font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; padding: 8px 12px; cursor: pointer;
+    text-align: left; border-radius: 3px;
+    transition: all .15s; width: 100%; line-height: 1.5;
+  }
+  .cbtn:hover:not(:disabled) { border-color: #c8b87a; color: #e8d898; background: #121228; }
+  .cbtn:disabled { opacity: .38; cursor: default; border-color: #3a1a1a; color: #6a3a3a; }
+
+  /* CLASS SELECT */
+  .sel-t { font-family: 'VT323', monospace; font-size: 22px; color: #e8c87a; margin-bottom: 3px; }
+  .sel-s { font-size: 11px; color: #404060; margin-bottom: 8px; }
+  .csbtn {
+    background: #0e0e1e; border: 1px solid #252540;
+    color: #c8b88a; font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; padding: 10px 13px; cursor: pointer;
+    text-align: left; border-radius: 4px;
+    transition: all .15s; line-height: 1.6; width: 100%;
+  }
+  .csbtn:hover { border-color: #e8c87a; color: #e8d0a0; background: #131326; }
+  .cs-ic { font-family: 'VT323', monospace; font-size: 20px; color: #e8c87a; display: block; margin-bottom: 1px; }
+
+  /* COMBAT */
+  .cbt-name { font-family: 'VT323', monospace; font-size: 19px; color: #dd5555; margin-bottom: 5px; }
+  .cbt-br { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .cbt-bg { flex: 1; height: 7px; background: #1a1a28; border-radius: 4px; overflow: hidden; }
+  .cbt-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+  .cbt-txt { font-size: 11px; min-width: 55px; text-align: right; }
+  .cbt-acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
+  .abtn {
+    background: #0e0e1e; border: 1px solid #242440;
+    color: #a8a0c0; font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; padding: 6px 11px; cursor: pointer;
+    border-radius: 3px; transition: all .15s;
+  }
+  .abtn:hover:not(:disabled) { background: #121228; }
+  .abtn:disabled { opacity: .35; cursor: default; }
+  .abtn.a { border-color: #663333; color: #dd7777; }
+  .abtn.a:hover:not(:disabled) { background: #1a0f0f; }
+  .abtn.s { border-color: #334466; color: #7799dd; }
+  .abtn.s:hover:not(:disabled) { background: #0f1020; }
+  .abtn.i { border-color: #336633; color: #77dd77; }
+  .abtn.i:hover:not(:disabled) { background: #0f1a0f; }
+  .abtn.f { border-color: #444466; color: #8888cc; }
+  .abtn.f:hover:not(:disabled) { background: #0f0f18; }
+
+  /* ENDINGS */
+  .end-v { font-family: 'VT323', monospace; font-size: 21px; color: #e8c87a; letter-spacing: 2px; }
+  .end-d { font-family: 'VT323', monospace; font-size: 21px; color: #dd5555; letter-spacing: 2px; }
+  .rbtn {
+    background: #0e0e1e; border: 1px solid #2a2a4a;
+    color: #a8a0c0; font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; padding: 9px 14px; cursor: pointer;
+    border-radius: 4px; transition: all .15s; margin-top: 2px; width: fit-content;
+  }
+  .rbtn:hover { border-color: #c8b87a; color: #e8d898; }
+  .end-stats { font-size: 11px; color: #505070; margin-top: 3px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="rpg">
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="dot" style="background:#ff5f57"></div>
+    <div class="dot" style="background:#febc2e"></div>
+    <div class="dot" style="background:#28c840"></div>
+    <span class="ttl">DUNGEON OF ECHOES</span>
+    <span class="sub">you weren't supposed to find this</span>
+  </div>
+
+  <div class="bdy">
+    <!-- SIDEBAR -->
+    <div class="sdb">
+      <div class="pnl">
+        <div class="plbl">Adventurer</div>
+        <div class="pnm" id="s-class">???</div>
+        <div class="sr"><span class="sl">Level</span><span class="sv" id="s-level">1</span></div>
+        <div class="sr"><span class="sl">XP</span><span class="sv" id="s-xp">0</span></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Vitals</div>
+        <div class="sr"><span class="sl">HP</span><span class="sv hp-v" id="s-hp">— / —</span></div>
+        <div class="bw"><div class="bf" id="hp-bar" style="width:100%;background:#b03030"></div></div>
+        <div id="mp-row" class="hidden">
+          <div class="sr"><span class="sl">MP</span><span class="sv mp-v" id="s-mp">— / —</span></div>
+          <div class="bw"><div class="bf" id="mp-bar" style="width:100%;background:#4070b0"></div></div>
+        </div>
+        <div class="sr"><span class="sl">Gold</span><span class="sv gd-v" id="s-gold">0</span></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Stats</div>
+        <div class="sr"><span class="sl">ATK</span><span class="sv" id="s-atk">—</span></div>
+        <div class="sr"><span class="sl">DEF</span><span class="sv" id="s-def">—</span></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Inventory</div>
+        <div id="s-inv"><div class="inv-item" style="color:#303050">empty</div></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Location</div>
+        <div style="font-size:11px;color:#7a7a98" id="s-loc">—</div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="mn">
+      <div class="log" id="log"></div>
+      <div class="cw" id="choices"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const CLASSES = {
+  Warrior: { hp:120, mp:0,  atk:18, def:8,  icon:"⚔", desc:"HP: 120 · ATK: 18 · DEF: 8 · Tough and powerful" },
+  Mage:    { hp:60,  mp:80, atk:24, def:3,  icon:"✦", desc:"HP: 60  · ATK: 24 · DEF: 3 · Fragile but devastating" },
+  Rogue:   { hp:85,  mp:0,  atk:20, def:5,  icon:"◈", desc:"HP: 85  · ATK: 20 · DEF: 5 · Fast with high crit chance" },
+};
+
+const ITEMS = {
+  "Health Potion":   { type:"consumable", effect:"hp", val:40 },
+  "Mana Potion":     { type:"consumable", effect:"mp", val:40 },
+  "Iron Sword":      { type:"weapon",  bonus:5 },
+  "Shadow Dagger":   { type:"weapon",  bonus:8 },
+  "Staff of Embers": { type:"weapon",  bonus:10 },
+  "Iron Shield":     { type:"armor",   bonus:5 },
+  "Leather Vest":    { type:"armor",   bonus:3 },
+  "Rusty Key":       { type:"key" },
+  "Dungeon Map":     { type:"key" },
+  "Ancient Tome":    { type:"key" },
+  "Dragon Scale":    { type:"trophy" },
+};
+
+const ENEMIES = {
+  goblin:       { name:"Goblin Scout",     hp:30,  maxHp:30,  atk:8,  def:2,  xp:20,  gold:8,   loot:null },
+  goblin_chief: { name:"Goblin Chief",     hp:55,  maxHp:55,  atk:14, def:4,  xp:45,  gold:20,  loot:"Rusty Key" },
+  skeleton:     { name:"Skeleton Warrior", hp:45,  maxHp:45,  atk:12, def:6,  xp:35,  gold:5,   loot:"Health Potion" },
+  cultist:      { name:"Dark Cultist",     hp:40,  maxHp:40,  atk:16, def:2,  xp:40,  gold:15,  loot:"Ancient Tome" },
+  golem:        { name:"Stone Golem",      hp:80,  maxHp:80,  atk:18, def:12, xp:60,  gold:30,  loot:"Iron Shield" },
+  dragon:       { name:"Elder Dragon",     hp:150, maxHp:150, atk:28, def:8,  xp:200, gold:100, loot:"Dragon Scale" },
+};
+
+const STORY = {
+  start: {
+    loc:"Dungeon Entrance",
+    text:"Cold air breathes from the stone archway ahead. Torchlight flickers across ancient carvings — warnings, perhaps, or invitations. A narrow corridor splits in two: left leads toward distant clashing sounds, right toward an eerie green glow. A wooden chest sits half-open near the entrance.",
+    choices:[
+      { label:"Go left toward the clashing sounds", next:"goblin_corridor" },
+      { label:"Go right toward the green glow",     next:"chapel_approach" },
+      { label:"Examine the chest",                  next:"entrance_chest" },
+    ]
+  },
+  entrance_chest: {
+    loc:"Dungeon Entrance",
+    text:"You pry open the chest. Inside: a Health Potion and a crumpled Dungeon Map. The map shows several chambers — one marked with a skull and the word 'HOARD'.",
+    gives:["Health Potion","Dungeon Map"],
+    choices:[
+      { label:"Go left toward the clashing sounds", next:"goblin_corridor" },
+      { label:"Go right toward the green glow",     next:"chapel_approach" },
+    ]
+  },
+  goblin_corridor: {
+    loc:"Goblin Corridor",
+    text:"The corridor opens into a dank passage strewn with bones. Three goblins argue loudly over a pile of loot — they haven't noticed you. A door at the far end is bolted with a heavy iron lock.",
+    choices:[
+      { label:"Ambush the goblins!",                         next:"goblin_fight", combat:"goblin" },
+      { label:"Sneak past them toward the locked door",      next:"goblin_sneak" },
+      { label:"Retreat to the entrance",                     next:"start" },
+    ]
+  },
+  goblin_sneak: {
+    loc:"Goblin Corridor",
+    text:"You inch past the squabbling goblins — your foot catches a bone. It skitters. The goblins freeze... then go back to arguing. You reach the locked door, but it won't budge without a key.",
+    choices:[
+      { label:"Defeat the goblins to find a key", next:"goblin_fight", combat:"goblin" },
+      { label:"Head back and try the other path", next:"start" },
+    ]
+  },
+  goblin_fight:   { loc:"Goblin Corridor",  text:"With a war cry, you leap into battle!", combat:"goblin", onWin:"goblin_won", onLose:"death" },
+  goblin_won: {
+    loc:"Goblin Corridor",
+    text:"The goblins lie defeated. Rummaging through their scraps you find a battered Iron Sword leaning against the wall.",
+    gives:["Iron Sword"],
+    choices:[
+      { label:"Press deeper — find the Goblin Chief",    next:"chief_room" },
+      { label:"Take the other path (right corridor)",    next:"chapel_approach" },
+    ]
+  },
+  chief_room: {
+    loc:"Chief's Chamber",
+    text:"Beyond a curtain of hanging bones crouches a massive goblin — the Chief. He wears a crown of finger bones and grins, revealing three gold teeth.",
+    choices:[
+      { label:"Fight the Goblin Chief",               next:"chief_fight", combat:"goblin_chief" },
+      { label:"Offer him gold to pass (costs 25 gold)",next:"chief_bribe" },
+      { label:"Retreat to the corridor",              next:"goblin_won" },
+    ]
+  },
+  chief_bribe: {
+    loc:"Chief's Chamber",
+    text:"You toss coins at his feet. He grunts and jerks his thumb toward the far door.",
+    choices:[
+      { label:"Pay 25 gold and proceed", next:"armory",     goldCost:25 },
+      { label:"Fight instead",           next:"chief_fight", combat:"goblin_chief" },
+    ]
+  },
+  chief_fight: { loc:"Chief's Chamber",  text:"The Chief bellows and charges!", combat:"goblin_chief", onWin:"chief_won", onLose:"death" },
+  chief_won: {
+    loc:"Chief's Chamber",
+    text:"The Chief crashes down. A Rusty Key drops from his belt.",
+    gives:["Rusty Key"],
+    choices:[{ label:"Enter the armory beyond", next:"armory" }]
+  },
+  armory: {
+    loc:"Old Armory",
+    text:"In a locked cabinet — opened with the rusty key — you find a Leather Vest and a Health Potion. A trapdoor leads downward. A passage also connects to the chapel wing.",
+    gives:["Leather Vest","Health Potion"],
+    choices:[
+      { label:"Take the trapdoor to the lower dungeon", next:"lower_dungeon" },
+      { label:"Head to the chapel wing",               next:"chapel_approach" },
+    ]
+  },
+  chapel_approach: {
+    loc:"Shadow Passage",
+    text:"The green glow intensifies. Strange symbols pulse on the walls. You hear chanting. Two skeletal warriors stand guard at an iron gate.",
+    choices:[
+      { label:"Fight the skeletons",           next:"skeleton_fight", combat:"skeleton" },
+      { label:"Examine the glowing symbols",   next:"symbols" },
+      { label:"Turn back to the entrance",     next:"start" },
+    ]
+  },
+  symbols: {
+    loc:"Shadow Passage",
+    text:"The symbols form a crude map. A hidden panel slides open revealing a Mana Potion and the Staff of Embers, crackling with orange heat.",
+    gives:["Mana Potion","Staff of Embers"],
+    choices:[
+      { label:"Fight the skeletons and enter the chapel", next:"skeleton_fight", combat:"skeleton" },
+      { label:"Head back to the entrance",                next:"start" },
+    ]
+  },
+  skeleton_fight: { loc:"Shadow Passage", text:"The skeletons rattle to life, raising rusted blades!", combat:"skeleton", onWin:"chapel", onLose:"death" },
+  chapel: {
+    loc:"Dark Chapel",
+    text:"Inside, candles burn in purple flame around a stone altar. A robed cultist rises — his eyes are solid black. 'You should not be here,' he whispers.",
+    choices:[
+      { label:"Attack the cultist",                         next:"cultist_fight", combat:"cultist" },
+      { label:"Demand he stand aside",                      next:"cultist_talk" },
+      { label:"Grab the Ancient Tome and run",              next:"cultist_steal" },
+    ]
+  },
+  cultist_talk: {
+    loc:"Dark Chapel",
+    text:"He points to a gauntlet of fire traps. 'Survive that, and I will open the way.'",
+    choices:[
+      { label:"Accept — run the gauntlet",   next:"gauntlet" },
+      { label:"Attack instead",              next:"cultist_fight", combat:"cultist" },
+    ]
+  },
+  cultist_steal: {
+    loc:"Dark Chapel",
+    text:"You snatch the tome and sprint for the door. A bolt of dark energy catches you for 15 damage. The tome pulses warmly in your hands.",
+    gives:["Ancient Tome"], hpCost:15,
+    choices:[{ label:"Continue into the dungeon depths", next:"lower_dungeon" }]
+  },
+  cultist_fight: { loc:"Dark Chapel", text:"Dark energy crackles around his hands!", combat:"cultist", onWin:"cultist_won", onLose:"death" },
+  cultist_won: {
+    loc:"Dark Chapel",
+    text:"The cultist crumples. The candles extinguish. On the altar: the Ancient Tome. A door behind the altar swings open, revealing stairs descending into darkness.",
+    gives:["Ancient Tome"],
+    choices:[
+      { label:"Descend the stairs into the depths",    next:"lower_dungeon" },
+      { label:"Head back to the goblin wing",          next:"goblin_corridor" },
+    ]
+  },
+  gauntlet: {
+    loc:"Fire Gauntlet",
+    text:"You sprint through jets of flame — one catches your leg for 20 damage. You make it through. The cultist opens the passage without a word.",
+    hpCost:20,
+    choices:[{ label:"Descend into the dungeon depths", next:"lower_dungeon" }]
+  },
+  lower_dungeon: {
+    loc:"Lower Dungeon",
+    text:"The air changes — heavier, older. Three paths: a door marked with runes, a collapsed tunnel partially cleared by someone recently, and a vast hall radiating heat like an oven.",
+    choices:[
+      { label:"Study the rune door",                next:"rune_door" },
+      { label:"Crawl through the collapsed tunnel", next:"secret_vault" },
+      { label:"Approach the vast, hot hall",        next:"dragon_approach" },
+    ]
+  },
+  rune_door: {
+    loc:"Rune Chamber",
+    text:"The runes glow as you approach: 'I have cities but no houses, mountains but no trees, water but no fish. What am I?' The Ancient Tome has the answer in its margin.",
+    choices:[
+      { label:"Answer: A Map (requires Ancient Tome)", next:"rune_reward", requires:"Ancient Tome" },
+      { label:"Answer: A Map (take a guess)",          next:"rune_guess" },
+      { label:"Force the door open",                   next:"rune_fail" },
+      { label:"Leave and try another path",            next:"lower_dungeon" },
+    ]
+  },
+  rune_guess: { loc:"Rune Chamber", text:"You guess 'A Map' — a flash of blue light and the door grinds open. Lucky. Or clever.", choices:[{ label:"Enter", next:"rune_reward" }] },
+  rune_fail:  { loc:"Rune Chamber", text:"You throw yourself at the door. The runes flare and blast you back for 25 damage. The door stays sealed.", hpCost:25, choices:[
+    { label:"Try to solve the riddle", next:"rune_door" },
+    { label:"Leave and try another path", next:"lower_dungeon" },
+  ]},
+  rune_reward: {
+    loc:"Rune Chamber",
+    text:"The runes fade. Inside: a perfectly preserved treasury. A Stone Golem stirs — its guardian duty awakened.",
+    choices:[
+      { label:"Fight the Stone Golem",     next:"golem_fight", combat:"golem" },
+      { label:"Retreat and leave the treasure", next:"lower_dungeon" },
+    ]
+  },
+  golem_fight: { loc:"Rune Chamber", text:"The golem's eyes glow red as it lumbers forward!", combat:"golem", onWin:"golem_won", onLose:"death" },
+  golem_won: {
+    loc:"Rune Chamber",
+    text:"The golem shatters. Behind it: a chest with gold, a Shadow Dagger, and a Health Potion.",
+    gives:["Shadow Dagger","Health Potion"], goldGain:50,
+    choices:[
+      { label:"Head to the dragon's hall",         next:"dragon_approach" },
+      { label:"Check the collapsed tunnel first",  next:"secret_vault" },
+    ]
+  },
+  secret_vault: {
+    loc:"Hidden Vault",
+    text:"A skeleton clutches a satchel: two Health Potions and 30 gold. A note reads: 'DON'T WAKE IT. Leave the gold. RUN.'",
+    gives:["Health Potion","Health Potion"], goldGain:30,
+    choices:[
+      { label:"Head to the dragon's hall", next:"dragon_approach" },
+      { label:"Study the rune door",       next:"rune_door" },
+    ]
+  },
+  dragon_approach: {
+    loc:"The Dragon's Hall",
+    text:"Massive iron doors hang bent from their hinges. At the center of a cathedral of stone, coiled atop a mountain of gold and bones, sleeps the Elder Dragon. Its scales are midnight black. Each breath sends scorched air washing over you. This is the end.",
+    choices:[
+      { label:"Strike while it sleeps! (bonus first hit)",  next:"dragon_sneak" },
+      { label:"Wake it and demand it yield",                next:"dragon_demand" },
+      { label:"Flood the hall to weaken its fire",          next:"dragon_flood" },
+      { label:"Retreat — you are not ready",               next:"lower_dungeon" },
+    ]
+  },
+  dragon_sneak:  { loc:"The Dragon's Hall", text:"You strike hard before its eyes open — 30 bonus damage lands true. Now it's truly furious.", bonusAtk:30, choices:[{ label:"Fight!", next:"dragon_fight", combat:"dragon" }] },
+  dragon_demand: { loc:"The Dragon's Hall", text:"'Yield?' it rumbles, amused. 'Courage alone will not save you.' Fire builds in its throat.", choices:[{ label:"Fight!", next:"dragon_fight", combat:"dragon" }] },
+  dragon_flood:  { loc:"The Dragon's Hall", text:"You crank an ancient water mechanism. The hall floods — the dragon's fire sputters. It lunges in fury!", bonusDef:5, choices:[{ label:"Fight the weakened dragon!", next:"dragon_fight", combat:"dragon" }] },
+  dragon_fight:  { loc:"The Dragon's Hall", text:"The Elder Dragon is upon you!", combat:"dragon", onWin:"victory", onLose:"death" },
+  victory: {
+    loc:"The Dragon's Hall", ending:"victory",
+    text:"The Elder Dragon crashes down, shaking the mountain. Silence falls — broken only by settling coins and trickling water. Light pours through cracks in the ceiling as if the dungeon itself exhales. You have conquered the Dungeon of Echoes. Few ever will again.",
+    gives:["Dragon Scale"], goldGain:100, choices:[]
+  },
+  death: {
+    loc:"The Dungeon", ending:"death",
+    text:"Darkness closes in. The dungeon has claimed you, as it has countless others before. Your name joins the long list of those who dared and fell. The torches flicker out, one by one.",
+    choices:[]
+  },
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+let G = {};
+
+function freshState() {
+  return {
+    phase: "select",
+    charClass: null,
+    hp:0, maxHp:0, mp:0, maxMp:0, gold:0, xp:0, level:1,
+    inventory: [],
+    location: "—",
+    nodeId: "start",
+    bonusAtk: 0, bonusDef: 0,
+    combat: null,
+  };
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+
+function roll(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function calcAtk() { let b = CLASSES[G.charClass].atk; G.inventory.forEach(n => { if (ITEMS[n]?.type==="weapon") b += ITEMS[n].bonus; }); return b; }
+function calcDef() { let b = CLASSES[G.charClass].def + (G.bonusDef||0); G.inventory.forEach(n => { if (ITEMS[n]?.type==="armor") b += ITEMS[n].bonus; }); return b; }
+
+// ── LOG ───────────────────────────────────────────────────────────────────────
+
+function addMsg(cls, text) {
+  const log = document.getElementById("log");
+  const div = document.createElement("div");
+  div.className = "mg " + cls;
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+
+function updateSidebar() {
+  document.getElementById("s-class").textContent = G.charClass || "???";
+  document.getElementById("s-level").textContent = G.level;
+  document.getElementById("s-xp").textContent    = G.xp;
+  document.getElementById("s-hp").textContent    = G.hp + " / " + G.maxHp;
+  document.getElementById("s-gold").textContent  = G.gold;
+  document.getElementById("s-loc").textContent   = G.location;
+  document.getElementById("s-atk").textContent   = G.charClass ? calcAtk() : "—";
+  document.getElementById("s-def").textContent   = G.charClass ? calcDef() : "—";
+
+  const hpPct = G.maxHp > 0 ? Math.round(G.hp / G.maxHp * 100) : 100;
+  const hpBar = document.getElementById("hp-bar");
+  hpBar.style.width = hpPct + "%";
+  hpBar.style.background = hpPct > 50 ? "#b03030" : hpPct > 25 ? "#b07030" : "#dd2020";
+
+  const mpRow = document.getElementById("mp-row");
+  if (G.maxMp > 0) {
+    mpRow.classList.remove("hidden");
+    document.getElementById("s-mp").textContent = G.mp + " / " + G.maxMp;
+    document.getElementById("mp-bar").style.width = Math.round(G.mp / G.maxMp * 100) + "%";
+  } else {
+    mpRow.classList.add("hidden");
+  }
+
+  const invEl = document.getElementById("s-inv");
+  invEl.innerHTML = "";
+  if (G.inventory.length === 0) {
+    invEl.innerHTML = '<div class="inv-item" style="color:#303050">empty</div>';
+  } else {
+    G.inventory.forEach(name => {
+      const div = document.createElement("div");
+      div.className = "inv-item";
+      const span = document.createElement("span");
+      span.style.paddingLeft = "4px";
+      span.textContent = name;
+      div.appendChild(span);
+      if (ITEMS[name]?.type === "consumable") {
+        const btn = document.createElement("button");
+        btn.className = "ubtn";
+        btn.textContent = "use";
+        btn.onclick = () => useItem(name);
+        div.appendChild(btn);
+      }
+      invEl.appendChild(div);
+    });
+  }
+}
+
+// ── APPLY NODE ────────────────────────────────────────────────────────────────
+
+function applyNode(nodeId) {
+  const node = STORY[nodeId];
+  if (!node) return;
+  G.nodeId = nodeId;
+  G.location = node.loc || G.location;
+  G.bonusAtk = node.bonusAtk || 0;
+  G.bonusDef = node.bonusDef || 0;
+
+  if (node.gives) {
+    node.gives.forEach(it => {
+      if (!G.inventory.includes(it)) {
+        G.inventory.push(it);
+        addMsg("ev", "Obtained: " + it);
+      }
+    });
+  }
+  if (node.goldGain) { G.gold += node.goldGain; addMsg("ev", "Found " + node.goldGain + " gold!"); }
+  if (node.hpCost)   { G.hp = clamp(G.hp - node.hpCost, 0, G.maxHp); addMsg("dn", "Lost " + node.hpCost + " HP!"); }
+
+  addMsg("gm", node.text);
+  updateSidebar();
+
+  if (node.ending) {
+    G.phase = "ended";
+    renderChoices();
+    return;
+  }
+
+  if (node.combat && (!node.choices || node.choices.length === 0)) {
+    G.phase = "combat";
+    G.combat = { enemyId: node.combat, enemy: Object.assign({}, ENEMIES[node.combat]), onWin: node.onWin, onLose: node.onLose };
+    renderChoices();
+    return;
+  }
+
+  G.phase = "play";
+  renderChoices();
+}
+
+// ── CHOICES ───────────────────────────────────────────────────────────────────
+
+function renderChoices() {
+  const cw = document.getElementById("choices");
+  cw.innerHTML = "";
+
+  if (G.phase === "select") {
+    renderClassSelect();
+    return;
+  }
+
+  if (G.phase === "play") {
+    const node = STORY[G.nodeId];
+    if (!node?.choices?.length) return;
+    const lbl = document.createElement("div");
+    lbl.className = "clbl";
+    lbl.textContent = "What do you do?";
+    cw.appendChild(lbl);
+
+    node.choices.forEach(ch => {
+      const locked = ch.requires && !G.inventory.includes(ch.requires);
+      const poor   = ch.goldCost && G.gold < ch.goldCost;
+      const btn = document.createElement("button");
+      btn.className = "cbtn";
+      btn.disabled  = locked || poor;
+      let label = ch.label;
+      if (locked) label += " [need: " + ch.requires + "]";
+      if (poor)   label += " [need " + ch.goldCost + " gold]";
+      btn.textContent = label;
+      if (!locked && !poor) btn.onclick = () => chooseOption(ch);
+      cw.appendChild(btn);
+    });
+    return;
+  }
+
+  if (G.phase === "combat") {
+    renderCombat();
+    return;
+  }
+
+  if (G.phase === "ended") {
+    renderEnding();
+    return;
+  }
+}
+
+function renderClassSelect() {
+  const cw = document.getElementById("choices");
+  const t = document.createElement("div"); t.className = "sel-t"; t.textContent = "Choose Your Class"; cw.appendChild(t);
+  const s = document.createElement("div"); s.className = "sel-s"; s.textContent = "Your legend begins here. No API required."; cw.appendChild(s);
+  Object.entries(CLASSES).forEach(([cls, info]) => {
+    const btn = document.createElement("button");
+    btn.className = "csbtn";
+    btn.innerHTML = '<span class="cs-ic">' + info.icon + ' ' + cls.toUpperCase() + '</span>' + info.desc;
+    btn.onclick = () => startGame(cls);
+    cw.appendChild(btn);
+  });
+}
+
+function renderCombat() {
+  const cw = document.getElementById("choices");
+  const { enemy } = G.combat;
+  const hpPct = Math.round(enemy.hp / enemy.maxHp * 100);
+  const phPct = G.maxHp > 0 ? Math.round(G.hp / G.maxHp * 100) : 100;
+  const phClr = phPct > 50 ? "#b03030" : phPct > 25 ? "#b07030" : "#dd2020";
+
+  cw.innerHTML = `
+    <div class="cbt-name">⚔ ${enemy.name}</div>
+    <div class="cbt-br">
+      <div class="cbt-bg"><div class="cbt-fill" id="cbt-ehp" style="width:${hpPct}%;background:#b03030"></div></div>
+      <span class="cbt-txt" style="color:#dd5555">${enemy.hp}/${enemy.maxHp}</span>
+    </div>
+    <div class="cbt-br">
+      <div class="cbt-bg"><div class="cbt-fill" style="width:${phPct}%;background:${phClr}"></div></div>
+      <span class="cbt-txt" style="color:#dd5555">${G.hp}/${G.maxHp}</span>
+    </div>
+    <div class="cbt-acts" id="cbt-acts"></div>
+  `;
+
+  const acts = document.getElementById("cbt-acts");
+  const mkBtn = (cls, label, fn, disabled) => {
+    const b = document.createElement("button");
+    b.className = "abtn " + cls;
+    b.textContent = label;
+    b.disabled = !!disabled;
+    if (!disabled) b.onclick = fn;
+    acts.appendChild(b);
+  };
+  mkBtn("a", "⚔ Attack", () => combatAction("attack"));
+  if (G.charClass === "Mage") mkBtn("s", G.mp >= 15 ? "⚡ Spell (15 MP)" : "⚡ Spell (low MP)", () => combatAction("spell"), G.mp < 15);
+  G.inventory.filter(n => ITEMS[n]?.type === "consumable").forEach(n => {
+    mkBtn("i", "🧪 " + n, () => useItem(n));
+  });
+  mkBtn("f", "↩ Flee", () => combatAction("flee"));
+}
+
+function renderEnding() {
+  const cw = document.getElementById("choices");
+  const node = STORY[G.nodeId];
+  const win = node?.ending === "victory";
+  const title = document.createElement("div");
+  title.className = win ? "end-v" : "end-d";
+  title.textContent = win ? "✦ VICTORY — THE DUNGEON IS CONQUERED" : "☠ YOU HAVE FALLEN";
+  cw.appendChild(title);
+  const stats = document.createElement("div");
+  stats.className = "end-stats";
+  stats.textContent = "Final: Level " + G.level + " · " + G.gold + " gold · " + G.xp + " XP";
+  cw.appendChild(stats);
+  const btn = document.createElement("button");
+  btn.className = "rbtn";
+  btn.textContent = "↩ Play Again";
+  btn.onclick = () => {
+    document.getElementById("log").innerHTML = "";
+    G = freshState();
+    updateSidebar();
+    addMsg("ev", "Welcome back, adventurer. The dungeon awaits.");
+    addMsg("sy", "══════════════════════════════");
+    renderChoices();
+  };
+  cw.appendChild(btn);
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+
+function startGame(cls) {
+  const c = CLASSES[cls];
+  G.charClass  = cls;
+  G.hp = G.maxHp = c.hp;
+  G.mp = G.maxMp = c.mp;
+  G.gold = 15; G.xp = 0; G.level = 1;
+  G.inventory  = [];
+  G.phase      = "play";
+  addMsg("ev", "You enter the dungeon as a " + cls + ". Steel yourself.");
+  addMsg("sy", "══════════════════════════════");
+  applyNode("start");
+}
+
+function chooseOption(ch) {
+  if (ch.requires && !G.inventory.includes(ch.requires)) return;
+  if (ch.goldCost && G.gold < ch.goldCost) { addMsg("dn", "Not enough gold (need " + ch.goldCost + ")."); return; }
+  if (ch.goldCost) { G.gold -= ch.goldCost; addMsg("dn", "Paid " + ch.goldCost + " gold."); }
+
+  if (ch.combat) {
+    const node = STORY[ch.next];
+    G.nodeId   = ch.next;
+    G.location = node?.loc || G.location;
+    G.bonusAtk = node?.bonusAtk || 0;
+    G.bonusDef = node?.bonusDef || 0;
+    addMsg("gm", node?.text || "You enter combat!");
+    G.phase = "combat";
+    G.combat = { enemyId: ch.combat, enemy: Object.assign({}, ENEMIES[ch.combat]), onWin: node?.onWin, onLose: node?.onLose };
+    updateSidebar();
+    renderChoices();
+    return;
+  }
+  applyNode(ch.next);
+}
+
+function combatAction(action) {
+  const { enemy, onWin, onLose } = G.combat;
+  const pAtk = calcAtk() + (G.bonusAtk || 0);
+  const pDef = calcDef();
+
+  if (action === "attack") {
+    let dmg = Math.max(1, pAtk - enemy.def + roll(-3, 5));
+    const crit = G.charClass === "Rogue" && Math.random() < 0.3;
+    if (crit) dmg = Math.round(dmg * 1.8);
+    enemy.hp = Math.max(0, enemy.hp - dmg);
+    addMsg("lcbt", "You hit " + enemy.name + " for " + dmg + (crit?" (CRIT!)":"") + " dmg. [" + enemy.hp + "/" + enemy.maxHp + " HP]");
+  } else if (action === "spell") {
+    if (G.mp < 15) return;
+    let dmg = Math.max(1, pAtk + roll(5,15) - Math.floor(enemy.def/2));
+    enemy.hp = Math.max(0, enemy.hp - dmg);
+    G.mp = Math.max(0, G.mp - 15);
+    addMsg("lcbt", "⚡ Spell hits " + enemy.name + " for " + dmg + " dmg! [" + enemy.hp + "/" + enemy.maxHp + " HP]");
+  } else if (action === "flee") {
+    if (Math.random() < 0.45) {
+      addMsg("ev", "You manage to escape!");
+      G.phase = "play"; G.combat = null;
+      G.bonusAtk = 0; G.bonusDef = 0;
+      updateSidebar();
+      applyNode("lower_dungeon");
+      return;
+    } else {
+      addMsg("dn", "You failed to flee!");
+    }
+  }
+
+  if (enemy.hp <= 0) {
+    const def = ENEMIES[G.combat.enemyId];
+    addMsg("ev", enemy.name + " is defeated!");
+    G.xp += def.xp; G.gold += def.gold;
+    addMsg("ev", "+" + def.xp + " XP, +" + def.gold + " gold");
+    if (def.loot && !G.inventory.includes(def.loot)) {
+      G.inventory.push(def.loot);
+      addMsg("ev", "Obtained: " + def.loot);
+    }
+    if (G.xp >= G.level * 60) {
+      G.level++; G.maxHp += 15; G.hp = Math.min(G.hp + 15, G.maxHp);
+      addMsg("ev", "★ LEVEL UP! Now level " + G.level + ".");
+    }
+    G.phase = "play"; G.combat = null;
+    updateSidebar();
+    applyNode(onWin);
+    return;
+  }
+
+  // enemy hits back
+  const eDmg = Math.max(0, enemy.atk - pDef + roll(-2, 4));
+  G.hp = Math.max(0, G.hp - eDmg);
+  G.combat.enemy = enemy;
+  addMsg("dn", enemy.name + " hits you for " + eDmg + " dmg! [" + G.hp + "/" + G.maxHp + " HP]");
+
+  if (G.hp <= 0) {
+    G.phase = "play"; G.combat = null;
+    updateSidebar();
+    applyNode(onLose || "death");
+    return;
+  }
+
+  updateSidebar();
+  renderChoices();
+}
+
+function useItem(name) {
+  const it = ITEMS[name];
+  if (!it || it.type !== "consumable") return;
+  G.inventory = G.inventory.filter(i => i !== name);
+  if (it.effect === "hp") { const g2 = Math.min(it.val, G.maxHp - G.hp); G.hp += g2; addMsg("ev", "Used " + name + ": +" + g2 + " HP."); }
+  if (it.effect === "mp") { const g2 = Math.min(it.val, G.maxMp - G.mp); G.mp += g2; addMsg("ev", "Used " + name + ": +" + g2 + " MP."); }
+  updateSidebar();
+  if (G.phase === "combat") renderChoices();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+G = freshState();
+addMsg("ev", "Welcome, adventurer. The Dungeon of Echoes awaits.");
+addMsg("sy", "══════════════════════════════");
+renderChoices();
+updateSidebar();
+</script>
+</body>
+</html>
