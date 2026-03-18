@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Castle of Echoes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  button { text-decoration: none; -webkit-appearance: none; }
+  html { min-height: 100%; background: #06060c; }
+  body {
+    font-family: 'Share Tech Mono', monospace;
+    color: #c8b88a;
+    background: #06060c;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .rpg {
+    width: 100%; max-width: 860px; height: 620px;
+    background: #09090f; border: 1px solid #1c2c1c;
+    border-radius: 10px; overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8);
+  }
+  .hdr {
+    background: #0c180c; border-bottom: 1px solid #1a2a1a;
+    padding: 9px 16px; display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .ttl { font-family: 'VT323', monospace; font-size: 22px; color: #a8d878; letter-spacing: 3px; margin-left: 4px; }
+  .sub { font-size: 11px; color: #2a4828; margin-left: auto; }
+  .bdy { display: flex; flex: 1; overflow: hidden; }
+  .sdb {
+    width: 184px; min-width: 184px; background: #0b160b;
+    border-right: 1px solid #182818; padding: 12px 10px;
+    display: flex; flex-direction: column; gap: 9px; overflow-y: auto;
+  }
+  .sdb::-webkit-scrollbar { width: 2px; }
+  .sdb::-webkit-scrollbar-thumb { background: #203820; }
+  .mobile-stats { display: none; background: #0b160b; border-bottom: 1px solid #182818; flex-shrink: 0; }
+  .stats-bar-top { display: flex; align-items: center; gap: 10px; padding: 8px 12px; cursor: pointer; user-select: none; }
+  .stats-bar-top:active { background: #0e1e0e; }
+  .sb-name { font-family: 'VT323', monospace; font-size: 17px; color: #a8d878; }
+  .sb-hp   { font-size: 12px; color: #dd5555; }
+  .sb-gold { font-size: 12px; color: #d8b040; }
+  .sb-loc  { font-size: 11px; color: #486848; margin-left: auto; }
+  .sb-arrow { font-size: 11px; color: #486848; transition: transform .2s; }
+  .sb-arrow.open { transform: rotate(180deg); }
+  .stats-bar-mini-hp { height: 3px; background: #141424; flex: 1; border-radius: 2px; overflow: hidden; max-width: 60px; }
+  .stats-bar-mini-hp-fill { height: 100%; border-radius: 2px; transition: width .4s; }
+  .stats-expanded { padding: 0 12px 10px; display: none; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stats-expanded.open { display: grid; }
+  .pnl { border: 1px solid #1e321e; padding: 8px; border-radius: 4px; }
+  .plbl { font-size: 10px; color: #486848; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .pnm { font-family: 'VT323', monospace; font-size: 18px; color: #a8d878; }
+  .sr { display: flex; justify-content: space-between; font-size: 11px; margin: 2px 0; }
+  .sl { color: #486848; } .sv { color: #c8b88a; }
+  .hp-v { color: #dd5555; } .mp-v { color: #6090e0; } .gd-v { color: #d8b040; }
+  .bw { height: 5px; background: #141424; border-radius: 3px; margin: 3px 0; overflow: hidden; }
+  .bf { height: 100%; border-radius: 3px; transition: width .4s; }
+  .inv-item { font-size: 11px; color: #7a9878; margin: 2px 0; padding-left: 9px; position: relative; display: flex; align-items: center; gap: 4px; }
+  .inv-item::before { content: ">"; position: absolute; left: 0; color: #284828; }
+  .ubtn { font-size: 11px; background: #0e1e0e; border: 1px solid #1e381e; color: #607860; font-family: 'Share Tech Mono', monospace; cursor: pointer; padding: 3px 8px; border-radius: 2px; min-height: 28px; }
+  .ubtn:hover { border-color: #80b080; color: #a0d0a0; }
+  .mn { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .log { flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 7px; }
+  .log::-webkit-scrollbar { width: 3px; }
+  .log::-webkit-scrollbar-thumb { background: #203820; border-radius: 2px; }
+  .mg { font-size: 13px; line-height: 1.7; }
+  .gm   { color: #c8b88a; }
+  .ev   { color: #88c868; font-size: 12px; } .ev::before   { content: "» "; }
+  .dn   { color: #dd5555; font-size: 12px; } .dn::before   { content: "» "; }
+  .sy   { color: #284828; font-size: 11px; }
+  .lcbt { color: #d88840; font-size: 12px; } .lcbt::before { content: "⚔ "; }
+  .cw {
+    border-top: 1px solid #182818; padding: 10px 14px; background: #0b160b;
+    display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;
+    max-height: 260px; overflow-y: auto;
+  }
+  .cw::-webkit-scrollbar { width: 2px; }
+  .cw::-webkit-scrollbar-thumb { background: #203820; }
+  .clbl { font-size: 10px; color: #486848; letter-spacing: 1px; text-transform: uppercase; }
+  .cbtn {
+    background: #0e1e0e; border: 1px solid #244024;
+    color: #a0b890; font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; padding: 10px 13px; cursor: pointer;
+    text-align: left; border-radius: 4px; transition: all .15s;
+    width: 100%; line-height: 1.5; min-height: 44px;
+    display: block; height: auto;
+  }
+  .cbtn:hover:not(:disabled) { border-color: #a8d878; color: #c8e898; background: #121e12; }
+  .cbtn:active:not(:disabled) { background: #162416; }
+  .cbtn:disabled { opacity: .38; cursor: default; border-color: #3a1a1a; color: #6a3a3a; }
+  .sel-t { font-family: 'VT323', monospace; font-size: 22px; color: #a8d878; margin-bottom: 3px; }
+  .sel-s { font-size: 11px; color: #304830; margin-bottom: 8px; }
+  .cbt-name { font-family: 'VT323', monospace; font-size: 19px; color: #dd5555; margin-bottom: 5px; }
+  .cbt-br { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .cbt-bg { flex: 1; height: 7px; background: #1a281a; border-radius: 4px; overflow: hidden; }
+  .cbt-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+  .cbt-txt { font-size: 11px; min-width: 55px; text-align: right; }
+  .cbt-acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
+  .abtn {
+    background: #0e1e0e; border: 1px solid #244024;
+    color: #a0b890; font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; padding: 10px 14px; cursor: pointer;
+    border-radius: 4px; transition: all .15s; min-height: 42px;
+  }
+  .abtn:hover:not(:disabled) { background: #121e12; }
+  .abtn:active:not(:disabled) { background: #162416; }
+  .abtn:disabled { opacity: .35; cursor: default; }
+  .abtn.a { border-color: #663333; color: #dd7777; } .abtn.a:hover:not(:disabled) { background: #1a0f0f; }
+  .abtn.s { border-color: #334466; color: #7799dd; } .abtn.s:hover:not(:disabled) { background: #0f1020; }
+  .abtn.i { border-color: #336633; color: #77dd77; } .abtn.i:hover:not(:disabled) { background: #0f1a0f; }
+  .abtn.f { border-color: #446644; color: #88cc88; } .abtn.f:hover:not(:disabled) { background: #0f180f; }
+  .end-v { font-family: 'VT323', monospace; font-size: 21px; color: #a8d878; letter-spacing: 2px; }
+  .end-d { font-family: 'VT323', monospace; font-size: 21px; color: #dd5555; letter-spacing: 2px; }
+  .rbtn {
+    background: #0e1e0e; border: 1px solid #2a4a2a;
+    color: #a0b890; font-family: 'Share Tech Mono', monospace;
+    font-size: 13px; padding: 12px 18px; cursor: pointer;
+    border-radius: 4px; transition: all .15s; margin-top: 4px; min-height: 44px;
+  }
+  .rbtn:hover { border-color: #a8d878; color: #c8e898; }
+  .end-stats { font-size: 11px; color: #486848; margin-top: 3px; }
+  .hidden { display: none; }
+
+  @media (max-width: 600px) {
+    body { padding: 0; align-items: stretch; }
+    .rpg { height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; border: none; }
+    .sub { display: none; }
+    .ttl { font-size: 19px; }
+    .sdb { display: none; }
+    .mobile-stats { display: block; }
+    .bdy { flex-direction: column; }
+    .mn { flex: 1; overflow: hidden; }
+    .log { padding: 12px 14px; gap: 8px; }
+    .mg { font-size: 14px; }
+    .ev, .dn, .lcbt { font-size: 13px; }
+    .cw { max-height: 55vh; padding: 10px 12px; gap: 7px; }
+    .cbtn { font-size: 13px; padding: 12px 14px; min-height: 48px; border-radius: 5px; }
+    .abtn { font-size: 13px; padding: 12px 14px; min-height: 46px; flex: 1; text-align: center; }
+    .cbt-acts { gap: 8px; }
+    .rbtn { font-size: 14px; padding: 13px 20px; width: 100%; }
+    .ubtn { font-size: 12px; padding: 5px 10px; min-height: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="rpg">
+  <div class="hdr">
+    <div class="dot" style="background:#ff5f57"></div>
+    <div class="dot" style="background:#febc2e"></div>
+    <div class="dot" style="background:#28c840"></div>
+    <span class="ttl">CASTLE OF ECHOES</span>
+    <span class="sub">level 2 — you still weren't supposed to find this</span>
+  </div>
+
+  <!-- MOBILE STATS BAR -->
+  <div class="mobile-stats">
+    <div class="stats-bar-top" onclick="toggleMobileStats()">
+      <span class="sb-name" id="m-class">???</span>
+      <div class="stats-bar-mini-hp">
+        <div class="stats-bar-mini-hp-fill" id="m-hpbar" style="width:100%;background:#b03030"></div>
+      </div>
+      <span class="sb-hp" id="m-hp">HP —</span>
+      <span class="sb-gold" id="m-gold">0g</span>
+      <span class="sb-loc" id="m-loc">—</span>
+      <span class="sb-arrow" id="m-arrow">▼</span>
+    </div>
+    <div class="stats-expanded" id="stats-expanded">
+      <div class="pnl">
+        <div class="plbl">Stats</div>
+        <div class="sr"><span class="sl">ATK</span><span class="sv" id="m-atk">—</span></div>
+        <div class="sr"><span class="sl">DEF</span><span class="sv" id="m-def">—</span></div>
+        <div class="sr"><span class="sl">Level</span><span class="sv" id="m-level">1</span></div>
+        <div class="sr"><span class="sl">XP</span><span class="sv" id="m-xp">0</span></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Inventory</div>
+        <div id="m-inv"><div class="inv-item" style="color:#284828">empty</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bdy">
+    <div class="sdb">
+      <div class="pnl">
+        <div class="plbl">Adventurer</div>
+        <div class="pnm" id="s-class">???</div>
+        <div class="sr"><span class="sl">Level</span><span class="sv" id="s-level">1</span></div>
+        <div class="sr"><span class="sl">XP</span><span class="sv" id="s-xp">0</span></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Vitals</div>
+        <div class="sr"><span class="sl">HP</span><span class="sv hp-v" id="s-hp">— / —</span></div>
+        <div class="bw"><div class="bf" id="hp-bar" style="width:100%;background:#b03030"></div></div>
+        <div id="mp-row" class="hidden">
+          <div class="sr"><span class="sl">MP</span><span class="sv mp-v" id="s-mp">— / —</span></div>
+          <div class="bw"><div class="bf" id="mp-bar" style="width:100%;background:#4070b0"></div></div>
+        </div>
+        <div class="sr"><span class="sl">Gold</span><span class="sv gd-v" id="s-gold">0</span></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Stats</div>
+        <div class="sr"><span class="sl">ATK</span><span class="sv" id="s-atk">—</span></div>
+        <div class="sr"><span class="sl">DEF</span><span class="sv" id="s-def">—</span></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Inventory</div>
+        <div id="s-inv"><div class="inv-item" style="color:#284828">empty</div></div>
+      </div>
+      <div class="pnl">
+        <div class="plbl">Location</div>
+        <div style="font-size:11px;color:#7a9878" id="s-loc">—</div>
+      </div>
+    </div>
+
+    <div class="mn">
+      <div class="log" id="log"></div>
+      <div class="cw" id="choices"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CARRY-OVER CLASSES & ITEMS ────────────────────────────────────────────────
+
+const CLASSES = {
+  Warrior: { hp:120, mp:0,  atk:18, def:8  },
+  Mage:    { hp:60,  mp:80, atk:24, def:3  },
+  Rogue:   { hp:85,  mp:0,  atk:20, def:5  },
+};
+
+const ITEMS = {
+  // from level 1
+  "Health Potion":   { type:"consumable", effect:"hp", val:40 },
+  "Mana Potion":     { type:"consumable", effect:"mp", val:40 },
+  "Iron Sword":      { type:"weapon",  bonus:5 },
+  "Shadow Dagger":   { type:"weapon",  bonus:8 },
+  "Staff of Embers": { type:"weapon",  bonus:10 },
+  "Iron Shield":     { type:"armor",   bonus:5 },
+  "Leather Vest":    { type:"armor",   bonus:3 },
+  "Rusty Key":       { type:"key" },
+  "Dungeon Map":     { type:"key" },
+  "Ancient Tome":    { type:"key" },
+  "Dragon Scale":    { type:"trophy" },
+  // castle items
+  "Healing Herb":    { type:"consumable", effect:"hp", val:35 },
+  "Castle Key":      { type:"key" },
+  "Knight's Sword":  { type:"weapon",  bonus:7 },
+  "Royal Shield":    { type:"armor",   bonus:6 },
+  "Crown Fragment":  { type:"key" },
+  "Shadow Crown":    { type:"trophy" },
+};
+
+const ENEMIES = {
+  castle_guard:   { name:"Castle Guard",    hp:55,  maxHp:55,  atk:14, def:5,  xp:30,  gold:12,  loot:null },
+  dark_knight:    { name:"Dark Knight",     hp:90,  maxHp:90,  atk:22, def:10, xp:70,  gold:35,  loot:"Knight's Sword" },
+  court_sorcerer: { name:"Court Sorcerer",  hp:60,  maxHp:60,  atk:26, def:3,  xp:65,  gold:28,  loot:"Mana Potion" },
+  shadow_king:    { name:"The Shadow King", hp:180, maxHp:180, atk:32, def:10, xp:300, gold:150, loot:"Shadow Crown" },
+};
+
+// ── STORY ─────────────────────────────────────────────────────────────────────
+
+const STORY = {
+  castle_gate: {
+    loc: "Castle Gate",
+    text: "You emerge from the dragon's lair through a passage that opens onto a stone bridge. Ahead looms the Castle of Echoes — black towers clawing at a moonless sky. Two guards flank the iron portcullis, their torches casting long orange shadows. Somewhere inside, something is wrong. You can feel it.",
+    choices: [
+      { label: "Fight through the guards", next: "gate_fight", combat: "castle_guard" },
+      { label: "Slip into the shadows and sneak past", next: "gate_sneak" },
+      { label: "Examine the castle walls for another way in", next: "gate_wall" },
+    ]
+  },
+  gate_fight: {
+    loc: "Castle Gate",
+    text: "The guards raise their halberds as you approach!",
+    combat: "castle_guard", onWin: "gate_won", onLose: "death",
+  },
+  gate_won: {
+    loc: "Castle Gate",
+    text: "The guards crumple. You step over them through the portcullis. The castle courtyard spreads ahead — torchlit, eerily quiet. A stairwell to your left descends toward what must be the dungeons.",
+    choices: [
+      { label: "Cross the courtyard", next: "courtyard" },
+      { label: "Descend to the castle dungeons", next: "dungeons" },
+    ]
+  },
+  gate_sneak: {
+    loc: "Castle Gate",
+    text: "You press against the wall, moving through pools of shadow. The guards are alert — one turns directly toward you, lantern raised. You freeze. A bat swoops past and the guard curses, swatting at it. You slip through.",
+    choices: [
+      { label: "Cross the courtyard", next: "courtyard" },
+      { label: "Descend to the castle dungeons", next: "dungeons" },
+    ]
+  },
+  gate_wall: {
+    loc: "Castle Wall",
+    text: "Running your hands along the moss-slick stone, you find a loose block that pivots inward — a servants' passage, long forgotten. Inside you discover a Castle Key hanging on a hook and a small cache of supplies left by someone who never came back.",
+    gives: ["Castle Key", "Healing Herb"],
+    choices: [
+      { label: "Cross the courtyard", next: "courtyard" },
+      { label: "Descend to the castle dungeons", next: "dungeons" },
+    ]
+  },
+  courtyard: {
+    loc: "Castle Courtyard",
+    text: "The courtyard is wide and paved with cracked stone. A dry fountain stands at its center — carved in the shape of a weeping figure. Two Dark Knights patrol in slow circles, their black plate armor reflecting no light. Ahead, great doors lead into the castle's Great Hall. A tower rises to the east.",
+    choices: [
+      { label: "Fight the Dark Knights", next: "courtyard_fight", combat: "dark_knight" },
+      { label: "Sneak around them to the Great Hall", next: "courtyard_sneak" },
+      { label: "Check the stables near the east tower", next: "stables" },
+    ]
+  },
+  courtyard_fight: {
+    loc: "Castle Courtyard",
+    text: "The Dark Knights move to intercept you, greatswords drawn!",
+    combat: "dark_knight", onWin: "courtyard_won", onLose: "death",
+  },
+  courtyard_won: {
+    loc: "Castle Courtyard",
+    text: "The knights crash to the ground with a sound like a collapsing forge. The courtyard falls silent. You notice the fountain's weeping figure is actually a keyhole — it opens something, but what?",
+    choices: [
+      { label: "Enter the Great Hall", next: "great_hall" },
+      { label: "Check the stables by the east tower", next: "stables" },
+      { label: "Descend to the dungeons", next: "dungeons" },
+    ]
+  },
+  courtyard_sneak: {
+    loc: "Castle Courtyard",
+    text: "You time your movement between patrols and make it to the Great Hall doors without incident. The knights continue their slow circuits, oblivious.",
+    choices: [
+      { label: "Enter the Great Hall", next: "great_hall" },
+      { label: "Head to the stables first", next: "stables" },
+    ]
+  },
+  stables: {
+    loc: "East Stables",
+    text: "The horses are long gone — only old straw and rusted tack remain. But tucked into the corner you find a satchel containing a Healing Herb and a folded note: 'The Shadow King was not always shadow. The Crown Fragment is hidden in the East Tower — it was his before the curse took him. Return it and you may find weakness where there was none.'",
+    gives: ["Healing Herb"],
+    choices: [
+      { label: "Enter the Great Hall", next: "great_hall" },
+      { label: "Head to the East Tower", next: "tower" },
+      { label: "Descend to the dungeons", next: "dungeons" },
+    ]
+  },
+  dungeons: {
+    loc: "Castle Dungeons",
+    text: "The dungeon stinks of damp stone and old fear. Most cells are empty. In the last one, a gaunt figure grips the bars — a woman in torn armour, her eyes still sharp. 'You. You actually made it down here.' She studies you hard. 'I know how to reach the throne room unseen. Get me out.'",
+    choices: [
+      { label: "Unlock her cell — use Castle Key", next: "free_prisoner", requires: "Castle Key" },
+      { label: "You have no key — ask what she knows anyway", next: "dungeon_talk" },
+      { label: "Search the other cells", next: "dungeon_search" },
+      { label: "Head back up to the courtyard", next: "courtyard" },
+    ]
+  },
+  dungeon_talk: {
+    loc: "Castle Dungeons",
+    text: "'Without the key? I tell you nothing.' She turns away. You notice a loose stone near her cell — but it leads nowhere useful. A guard's corpse in the corner clutches a small pouch of gold.",
+    goldGain: 20,
+    choices: [
+      { label: "Head back to the courtyard", next: "courtyard" },
+      { label: "Search the other cells", next: "dungeon_search" },
+    ]
+  },
+  dungeon_search: {
+    loc: "Castle Dungeons",
+    text: "Scattered across the cells: mouldy bedding, scratched names on walls, and — wedged behind a loose brick — a forgotten Health Potion and 15 gold coins.",
+    gives: ["Health Potion"], goldGain: 15,
+    choices: [
+      { label: "Head back up to the courtyard", next: "courtyard" },
+    ]
+  },
+  free_prisoner: {
+    loc: "Castle Dungeons",
+    text: "The lock clicks open. She rolls her shoulders and hands you a Royal Shield from beneath her cot — 'Kept it hidden. Yours now.' She tells you of a secret passage behind the throne room fireplace, and warns you the Shadow King cannot be wounded until his stolen Crown Fragment is returned or destroyed. Then she disappears into the dark.",
+    gives: ["Royal Shield"],
+    choices: [
+      { label: "Head to the East Tower for the Crown Fragment", next: "tower" },
+      { label: "Go straight to the Great Hall", next: "great_hall" },
+    ]
+  },
+  great_hall: {
+    loc: "The Great Hall",
+    text: "Vaulted ceilings vanish into darkness above. A long banquet table runs the length of the room, set for a feast that was never eaten — plates dusty, candles burnt to stubs. At the far end, hunched over a lectern of open scrolls, a Court Sorcerer mutters to himself. He hasn't noticed you yet.",
+    choices: [
+      { label: "Attack before he can cast", next: "sorcerer_fight", combat: "court_sorcerer" },
+      { label: "Speak to him — perhaps he knows something", next: "sorcerer_talk" },
+      { label: "Sneak around to search the hall", next: "hall_search" },
+    ]
+  },
+  sorcerer_fight: {
+    loc: "The Great Hall",
+    text: "The sorcerer spins as you charge, hurling a bolt of green energy!",
+    combat: "court_sorcerer", onWin: "sorcerer_won", onLose: "death",
+  },
+  sorcerer_won: {
+    loc: "The Great Hall",
+    text: "The sorcerer collapses over his scrolls. Searching them, you find something useful — a diagram of the throne room's defences — and a door at the back of the hall leads toward the tower stairs.",
+    choices: [
+      { label: "Head to the East Tower", next: "tower" },
+      { label: "Go straight to the throne room", next: "throne_approach" },
+    ]
+  },
+  sorcerer_talk: {
+    loc: "The Great Hall",
+    text: "He startles — then sags with relief. 'You're not one of his.' He lowers his voice. 'The king was cursed by the Crown Fragment — a sliver of black magic trapped in gold. It's in the East Tower. Bring it to the throne room and press it to the Shadow King's chest. It will shatter his armour. Without it, your blows will barely scratch him.' He gestures toward the tower staircase.",
+    choices: [
+      { label: "Thank him and head to the East Tower", next: "tower" },
+      { label: "Go straight to the throne room — you'll manage", next: "throne_approach" },
+    ]
+  },
+  hall_search: {
+    loc: "The Great Hall",
+    text: "You circle the table quietly. Under one of the chairs: a Healing Herb. The sorcerer glances up — and sees you. He leaps to his feet.",
+    gives: ["Healing Herb"],
+    choices: [
+      { label: "Fight him!", next: "sorcerer_fight", combat: "court_sorcerer" },
+    ]
+  },
+  tower: {
+    loc: "East Tower",
+    text: "A spiral staircase winds upward in darkness. At the top, an iron-banded door is sealed shut. The lock looks ancient — a Castle Key might open it, or you could shoulder through it for the cost of some bruises.",
+    choices: [
+      { label: "Unlock it with the Castle Key", next: "tower_top", requires: "Castle Key" },
+      { label: "Force the door open (lose 15 HP)", next: "tower_force" },
+      { label: "Head back down", next: "great_hall" },
+    ]
+  },
+  tower_force: {
+    loc: "East Tower",
+    text: "You throw your full weight against the door. It bursts open — and sends you staggering into the room, shoulder screaming. Worth it.",
+    hpCost: 15,
+    choices: [{ label: "Search the tower room", next: "tower_top" }]
+  },
+  tower_top: {
+    loc: "East Tower — Top",
+    text: "A circular room filled with star charts, broken instruments, and a single locked glass case. Inside pulses a shard of gold shot through with black veins — the Crown Fragment. The glass shatters at a touch, as if it was waiting for you. The fragment hums with strange energy in your palm.",
+    gives: ["Crown Fragment"],
+    choices: [
+      { label: "Descend and face the Shadow King", next: "throne_approach" },
+    ]
+  },
+  throne_approach: {
+    loc: "Throne Room Doors",
+    text: "Two enormous doors of blackened iron stand before you, carved with the sigil of the castle — a crown encircled by a serpent. The air here is cold in a way that has nothing to do with temperature. Beyond these doors is the Shadow King. There is no turning back.",
+    choices: [
+      { label: "Kick the doors open and charge in", next: "throne_charge" },
+      { label: "Enter slowly — give yourself time to take stock", next: "throne_slow" },
+      { label: "Rest briefly and tend your wounds (+20 HP)", next: "throne_rest" },
+    ]
+  },
+  throne_rest: {
+    loc: "Throne Room Doors",
+    text: "You sit with your back against the cold stone and breathe. A Healing Herb or potion helps. The silence is absolute. When you rise, you feel steadier.",
+    hpGain: 20,
+    choices: [
+      { label: "Kick the doors open and charge", next: "throne_charge" },
+      { label: "Enter slowly and deliberately", next: "throne_slow" },
+    ]
+  },
+  throne_charge: {
+    loc: "Throne Room",
+    text: "The doors crash open. A vast hall yawns before you — columns of shadow, a floor of polished obsidian. On the throne at the far end sits a figure in armour so dark it seems to absorb the light. Two burning eyes open. 'At last,' says the Shadow King. 'Something worth killing.'",
+    choices: [
+      { label: "Press the Crown Fragment to his chest", next: "crown_used", requires: "Crown Fragment" },
+      { label: "Attack! (harder without the fragment)", next: "shadow_king_fight", combat: "shadow_king" },
+    ]
+  },
+  throne_slow: {
+    loc: "Throne Room",
+    text: "You enter quietly. The Shadow King watches you from his throne, utterly still. 'You carry something of mine,' he says softly, his gaze on your hand. There is a flicker of something — not quite emotion — behind those burning eyes.",
+    choices: [
+      { label: "Hold out the Crown Fragment", next: "crown_used", requires: "Crown Fragment" },
+      { label: "You have nothing — attack!", next: "shadow_king_fight", combat: "shadow_king" },
+      { label: "Ask him what he was before the curse", next: "king_talk" },
+    ]
+  },
+  king_talk: {
+    loc: "Throne Room",
+    text: "For a long moment he is silent. Then: 'A man. A poor one, at that.' His armour seems to loosen slightly, the shadow around him dimming. 'If you carry the fragment... I would ask you to end it. The curse, not merely me.' He rises slowly, drawing his sword. 'But you will have to earn the right.'",
+    bonusDef: 4,
+    choices: [
+      { label: "Press the Crown Fragment to his chest", next: "crown_used", requires: "Crown Fragment" },
+      { label: "Fight him with respect", next: "shadow_king_fight", combat: "shadow_king" },
+    ]
+  },
+  crown_used: {
+    loc: "Throne Room",
+    text: "You thrust the Crown Fragment against the Shadow King's breastplate. It shatters with a sound like a bell tolling. The dark armour cracks along every seam, light pouring through. The Shadow King staggers — his form flickering between shadow and something more human. Then he raises his sword. 'Finish it.'",
+    bonusAtk: 35,
+    choices: [
+      { label: "Fight the weakened Shadow King!", next: "shadow_king_fight", combat: "shadow_king" },
+    ]
+  },
+  shadow_king_fight: {
+    loc: "Throne Room",
+    text: "The Shadow King descends from his throne, shadow trailing from his hands like smoke!",
+    combat: "shadow_king", onWin: "victory", onLose: "death",
+  },
+  victory: {
+    loc: "Throne Room",
+    ending: "victory",
+    text: "The Shadow King falls. Not with fury — with something almost like relief. His armour crumbles to dust and the shadow that filled the castle begins to thin, grey light creeping through windows that hadn't seen morning in years. You stand in the silence of a broken curse, the Castle of Echoes finally, utterly still. Whatever you came for — glory, gold, something to prove — you've earned all of it.",
+    gives: ["Shadow Crown"], goldGain: 150,
+    choices: []
+  },
+  death: {
+    loc: "The Castle",
+    ending: "death",
+    text: "The castle swallows you. Somewhere above, the Shadow King returns to his throne. The echoes fade. Your story ends here — though the walls will remember it.",
+    choices: []
+  },
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+let G = {};
+
+function freshState(crossLevel) {
+  if (crossLevel) {
+    return {
+      phase: "play",
+      charClass: crossLevel.charClass,
+      hp: crossLevel.hp, maxHp: crossLevel.maxHp,
+      mp: crossLevel.mp, maxMp: crossLevel.maxMp,
+      gold: crossLevel.gold, xp: crossLevel.xp, level: crossLevel.level,
+      inventory: (crossLevel.inventory || []).filter(n => n !== "Dragon Scale"),
+      location: "Castle Gate",
+      nodeId: "castle_gate",
+      bonusAtk: 0, bonusDef: 0,
+      combat: null, clearedCombats: [],
+      hpGainPending: 0,
+    };
+  }
+  return {
+    phase: "no_save",
+    charClass: null, hp:0, maxHp:0, mp:0, maxMp:0,
+    gold:0, xp:0, level:1, inventory:[],
+    location:"—", nodeId:"castle_gate",
+    bonusAtk:0, bonusDef:0, combat:null, clearedCombats:[],
+  };
+}
+
+function roll(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function calcAtk() { let b = CLASSES[G.charClass].atk; G.inventory.forEach(n => { if (ITEMS[n]?.type==="weapon") b += ITEMS[n].bonus; }); return b; }
+function calcDef() { let b = CLASSES[G.charClass].def + (G.bonusDef||0); G.inventory.forEach(n => { if (ITEMS[n]?.type==="armor") b += ITEMS[n].bonus; }); return b; }
+
+// ── SAVE / LOAD ───────────────────────────────────────────────────────────────
+
+function saveGame() {
+  if (!G.charClass || G.phase === "no_save") return;
+  try {
+    const data = {
+      phase: G.phase === "combat" ? "play" : G.phase,
+      charClass: G.charClass,
+      hp: G.hp, maxHp: G.maxHp, mp: G.mp, maxMp: G.maxMp,
+      gold: G.gold, xp: G.xp, level: G.level,
+      inventory: G.inventory, location: G.location,
+      nodeId: G.phase === "combat" ? (STORY[G.nodeId]?.onWin || G.nodeId) : G.nodeId,
+      clearedCombats: G.clearedCombats,
+    };
+    localStorage.setItem("castle_save", JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadCastleSave() {
+  try {
+    const raw = localStorage.getItem("castle_save");
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (!d.charClass || !CLASSES[d.charClass]) return false;
+    Object.assign(G, d);
+    G.combat = null; G.bonusAtk = 0; G.bonusDef = 0;
+    G.clearedCombats = d.clearedCombats || [];
+    return true;
+  } catch(e) { return false; }
+}
+
+function loadCrossLevel() {
+  try {
+    const raw = localStorage.getItem("dungeon_crosslevel");
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d.charClass || !CLASSES[d.charClass]) return null;
+    return d;
+  } catch(e) { return null; }
+}
+
+function clearSave() {
+  try { localStorage.removeItem("castle_save"); } catch(e) {}
+}
+
+// ── LOG ───────────────────────────────────────────────────────────────────────
+
+function addMsg(cls, text) {
+  const log = document.getElementById("log");
+  const div = document.createElement("div");
+  div.className = "mg " + cls;
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+
+function updateSidebar() {
+  document.getElementById("s-class").textContent = G.charClass || "???";
+  document.getElementById("s-level").textContent = G.level;
+  document.getElementById("s-xp").textContent    = G.xp;
+  document.getElementById("s-hp").textContent    = G.hp + " / " + G.maxHp;
+  document.getElementById("s-gold").textContent  = G.gold;
+  document.getElementById("s-loc").textContent   = G.location;
+  document.getElementById("s-atk").textContent   = G.charClass ? calcAtk() : "—";
+  document.getElementById("s-def").textContent   = G.charClass ? calcDef() : "—";
+
+  const hpPct = G.maxHp > 0 ? Math.round(G.hp / G.maxHp * 100) : 100;
+  const hpBar = document.getElementById("hp-bar");
+  hpBar.style.width = hpPct + "%";
+  hpBar.style.background = hpPct > 50 ? "#b03030" : hpPct > 25 ? "#b07030" : "#dd2020";
+
+  const mpRow = document.getElementById("mp-row");
+  if (G.maxMp > 0) {
+    mpRow.classList.remove("hidden");
+    document.getElementById("s-mp").textContent = G.mp + " / " + G.maxMp;
+    document.getElementById("mp-bar").style.width = Math.round(G.mp / G.maxMp * 100) + "%";
+  } else { mpRow.classList.add("hidden"); }
+
+  const invEl = document.getElementById("s-inv");
+  invEl.innerHTML = "";
+  if (G.inventory.length === 0) {
+    invEl.innerHTML = '<div class="inv-item" style="color:#284828">empty</div>';
+  } else {
+    G.inventory.forEach(name => {
+      const div = document.createElement("div");
+      div.className = "inv-item";
+      const span = document.createElement("span");
+      span.style.paddingLeft = "4px";
+      span.textContent = name;
+      div.appendChild(span);
+      if (ITEMS[name]?.type === "consumable") {
+        const btn = document.createElement("button");
+        btn.className = "ubtn";
+        btn.textContent = "use";
+        btn.onclick = () => useItem(name);
+        div.appendChild(btn);
+      }
+      invEl.appendChild(div);
+    });
+  }
+
+  // mobile bar
+  document.getElementById("m-class").textContent = G.charClass || "???";
+  document.getElementById("m-hp").textContent    = "HP " + G.hp + "/" + G.maxHp;
+  document.getElementById("m-gold").textContent  = G.gold + "g";
+  document.getElementById("m-loc").textContent   = G.location;
+  document.getElementById("m-level").textContent = G.level;
+  document.getElementById("m-xp").textContent    = G.xp;
+  document.getElementById("m-atk").textContent   = G.charClass ? calcAtk() : "—";
+  document.getElementById("m-def").textContent   = G.charClass ? calcDef() : "—";
+  const mhpBar = document.getElementById("m-hpbar");
+  mhpBar.style.width = hpPct + "%";
+  mhpBar.style.background = hpPct > 50 ? "#b03030" : hpPct > 25 ? "#b07030" : "#dd2020";
+  document.getElementById("m-inv").innerHTML = invEl.innerHTML;
+
+  saveGame();
+}
+
+function toggleMobileStats() {
+  document.getElementById("stats-expanded").classList.toggle("open");
+  document.getElementById("m-arrow").classList.toggle("open");
+}
+
+// ── APPLY NODE ────────────────────────────────────────────────────────────────
+
+function applyNode(nodeId) {
+  const node = STORY[nodeId];
+  if (!node) return;
+  G.nodeId = nodeId;
+  G.location = node.loc || G.location;
+  G.bonusAtk = node.bonusAtk || 0;
+  G.bonusDef = node.bonusDef || 0;
+
+  if (node.gives) {
+    node.gives.forEach(it => {
+      if (!G.inventory.includes(it)) { G.inventory.push(it); addMsg("ev", "Obtained: " + it); }
+    });
+  }
+  if (node.goldGain) { G.gold += node.goldGain; addMsg("ev", "Found " + node.goldGain + " gold!"); }
+  if (node.hpCost)   { G.hp = clamp(G.hp - node.hpCost, 0, G.maxHp); addMsg("dn", "Lost " + node.hpCost + " HP!"); }
+  if (node.hpGain)   { const g2 = Math.min(node.hpGain, G.maxHp - G.hp); G.hp += g2; addMsg("ev", "Recovered " + g2 + " HP."); }
+
+  addMsg("gm", node.text);
+
+  if (node.combat && (!node.choices || node.choices.length === 0)) {
+    G.phase = "combat";
+    G.combat = { enemyId: node.combat, enemy: Object.assign({}, ENEMIES[node.combat]), onWin: node.onWin, onLose: node.onLose };
+  }
+  if (node.ending) { G.phase = "ended"; }
+  updateSidebar();
+  renderChoices();
+}
+
+// ── CHOICES ───────────────────────────────────────────────────────────────────
+
+function renderChoices() {
+  const cw = document.getElementById("choices");
+  cw.innerHTML = "";
+
+  if (G.phase === "no_save") {
+    const t = document.createElement("div"); t.className = "sel-t"; t.textContent = "No Save Found"; cw.appendChild(t);
+    const s = document.createElement("div"); s.className = "sel-s";
+    s.textContent = "You need to complete the Dungeon of Echoes first to continue here."; cw.appendChild(s);
+    const btn = document.createElement("button"); btn.className = "cbtn";
+    btn.textContent = "← Return to the Dungeon"; btn.onclick = () => { window.location.href = "../index.html"; };
+    cw.appendChild(btn);
+    return;
+  }
+
+  if (G.phase === "play") {
+    const node = STORY[G.nodeId];
+    if (!node?.choices?.length) return;
+    const lbl = document.createElement("div"); lbl.className = "clbl"; lbl.textContent = "What do you do?"; cw.appendChild(lbl);
+    node.choices.forEach(ch => {
+      const locked = ch.requires && !G.inventory.includes(ch.requires);
+      const poor   = ch.goldCost && G.gold < ch.goldCost;
+      const btn = document.createElement("button");
+      btn.className = "cbtn"; btn.disabled = locked || poor;
+      let label = ch.label;
+      if (locked) label += " [need: " + ch.requires + "]";
+      if (poor)   label += " [need " + ch.goldCost + " gold]";
+      btn.textContent = label;
+      if (!locked && !poor) btn.onclick = () => chooseOption(ch);
+      cw.appendChild(btn);
+    });
+    return;
+  }
+
+  if (G.phase === "combat") { renderCombat(); return; }
+  if (G.phase === "ended")  { renderEnding();  return; }
+}
+
+function renderCombat() {
+  const cw = document.getElementById("choices");
+  const { enemy } = G.combat;
+  const hpPct = Math.round(enemy.hp / enemy.maxHp * 100);
+  const phPct = G.maxHp > 0 ? Math.round(G.hp / G.maxHp * 100) : 100;
+  const phClr = phPct > 50 ? "#b03030" : phPct > 25 ? "#b07030" : "#dd2020";
+  cw.innerHTML = `
+    <div class="cbt-name">⚔ ${enemy.name}</div>
+    <div class="cbt-br">
+      <div class="cbt-bg"><div class="cbt-fill" style="width:${hpPct}%;background:#b03030"></div></div>
+      <span class="cbt-txt" style="color:#dd5555">${enemy.hp}/${enemy.maxHp}</span>
+    </div>
+    <div class="cbt-br">
+      <div class="cbt-bg"><div class="cbt-fill" style="width:${phPct}%;background:${phClr}"></div></div>
+      <span class="cbt-txt" style="color:#dd5555">${G.hp}/${G.maxHp}</span>
+    </div>
+    <div class="cbt-acts" id="cbt-acts"></div>`;
+  const acts = document.getElementById("cbt-acts");
+  const mkBtn = (cls, label, fn, disabled) => {
+    const b = document.createElement("button"); b.className = "abtn " + cls;
+    b.textContent = label; b.disabled = !!disabled;
+    if (!disabled) b.onclick = fn; acts.appendChild(b);
+  };
+  mkBtn("a", "⚔ Attack", () => combatAction("attack"));
+  if (G.charClass === "Mage") mkBtn("s", G.mp >= 15 ? "⚡ Spell (15 MP)" : "⚡ Spell (low MP)", () => combatAction("spell"), G.mp < 15);
+  G.inventory.filter(n => ITEMS[n]?.type === "consumable").forEach(n => {
+    mkBtn("i", "🧪 " + n, () => useItem(n));
+  });
+  mkBtn("f", "↩ Flee", () => combatAction("flee"));
+}
+
+function renderEnding() {
+  const cw = document.getElementById("choices");
+  const node = STORY[G.nodeId];
+  const win = node?.ending === "victory";
+  const title = document.createElement("div");
+  title.className = win ? "end-v" : "end-d";
+  title.textContent = win ? "✦ THE CASTLE OF ECHOES HAS FALLEN" : "☠ YOU HAVE FALLEN";
+  cw.appendChild(title);
+  const stats = document.createElement("div");
+  stats.className = "end-stats";
+  stats.textContent = "Final: Level " + G.level + " · " + G.gold + " gold · " + G.xp + " XP";
+  cw.appendChild(stats);
+
+  if (win) {
+    const congrats = document.createElement("div");
+    congrats.style.cssText = "font-size:12px;color:#607860;margin-top:6px;line-height:1.6;";
+    congrats.textContent = "You've completed both the Dungeon and the Castle of Echoes. Not many do.";
+    cw.appendChild(congrats);
+  }
+
+  const btn = document.createElement("button");
+  btn.className = "rbtn";
+  btn.textContent = win ? "↩ Play Again from the Castle" : "↩ Try Again";
+  btn.onclick = () => {
+    clearSave();
+    document.getElementById("log").innerHTML = "";
+    const cross = loadCrossLevel();
+    if (cross) {
+      G = freshState(cross);
+      updateSidebar();
+      addMsg("ev", "You stand before the Castle of Echoes once more.");
+      addMsg("sy", "══════════════════════════════");
+      applyNode("castle_gate");
+    } else {
+      G = freshState(null);
+      updateSidebar();
+      addMsg("dn", "No dungeon save found. Return to Level 1 first.");
+      renderChoices();
+    }
+  };
+  cw.appendChild(btn);
+
+  const backBtn = document.createElement("button");
+  backBtn.className = "rbtn";
+  backBtn.style.marginTop = "4px";
+  backBtn.textContent = "← Back to the Dungeon";
+  backBtn.onclick = () => { window.location.href = "../index.html"; };
+  cw.appendChild(backBtn);
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+
+function chooseOption(ch) {
+  if (ch.requires && !G.inventory.includes(ch.requires)) return;
+  if (ch.goldCost && G.gold < ch.goldCost) { addMsg("dn", "Not enough gold (need " + ch.goldCost + ")."); return; }
+  if (ch.goldCost) { G.gold -= ch.goldCost; addMsg("dn", "Paid " + ch.goldCost + " gold."); }
+
+  if (ch.combat) {
+    if (G.clearedCombats.includes(ch.next)) {
+      addMsg("sy", "[This area is already cleared.]");
+      applyNode(STORY[ch.next]?.onWin || ch.next);
+      return;
+    }
+    const node = STORY[ch.next];
+    G.nodeId = ch.next; G.location = node?.loc || G.location;
+    G.bonusAtk = node?.bonusAtk || 0; G.bonusDef = node?.bonusDef || 0;
+    addMsg("gm", node?.text || "You enter combat!");
+    G.phase = "combat";
+    G.combat = { enemyId: ch.combat, enemy: Object.assign({}, ENEMIES[ch.combat]), onWin: node?.onWin, onLose: node?.onLose };
+    updateSidebar(); renderChoices(); return;
+  }
+  applyNode(ch.next);
+}
+
+function combatAction(action) {
+  const { enemy, onWin, onLose } = G.combat;
+  const pAtk = calcAtk() + (G.bonusAtk || 0);
+  const pDef = calcDef();
+
+  if (action === "attack") {
+    let dmg = Math.max(1, pAtk - enemy.def + roll(-3, 5));
+    const crit = G.charClass === "Rogue" && Math.random() < 0.3;
+    if (crit) dmg = Math.round(dmg * 1.8);
+    enemy.hp = Math.max(0, enemy.hp - dmg);
+    addMsg("lcbt", "You hit " + enemy.name + " for " + dmg + (crit?" (CRIT!)":"") + " dmg. [" + enemy.hp + "/" + enemy.maxHp + " HP]");
+  } else if (action === "spell") {
+    if (G.mp < 15) return;
+    let dmg = Math.max(1, pAtk + roll(5,15) - Math.floor(enemy.def/2));
+    enemy.hp = Math.max(0, enemy.hp - dmg);
+    G.mp = Math.max(0, G.mp - 15);
+    addMsg("lcbt", "⚡ Spell hits " + enemy.name + " for " + dmg + " dmg! [" + enemy.hp + "/" + enemy.maxHp + " HP]");
+  } else if (action === "flee") {
+    if (Math.random() < 0.4) {
+      addMsg("ev", "You fall back to the courtyard!");
+      G.phase = "play"; G.combat = null; G.bonusAtk = 0; G.bonusDef = 0;
+      updateSidebar(); applyNode("courtyard"); return;
+    } else { addMsg("dn", "You can't get away!"); }
+  }
+
+  if (enemy.hp <= 0) {
+    const def = ENEMIES[G.combat.enemyId];
+    addMsg("ev", enemy.name + " is defeated!");
+    G.xp += def.xp; G.gold += def.gold;
+    addMsg("ev", "+" + def.xp + " XP, +" + def.gold + " gold");
+    if (def.loot && !G.inventory.includes(def.loot)) { G.inventory.push(def.loot); addMsg("ev", "Obtained: " + def.loot); }
+    if (G.xp >= G.level * 60) { G.level++; G.maxHp += 15; G.hp = Math.min(G.hp + 15, G.maxHp); addMsg("ev", "★ LEVEL UP! Now level " + G.level + "."); }
+    if (!G.clearedCombats.includes(G.nodeId)) G.clearedCombats.push(G.nodeId);
+    G.phase = "play"; G.combat = null;
+    updateSidebar(); applyNode(onWin); return;
+  }
+
+  const eDmg = Math.max(0, enemy.atk - pDef + roll(-2, 4));
+  G.hp = Math.max(0, G.hp - eDmg);
+  G.combat.enemy = enemy;
+  addMsg("dn", enemy.name + " hits you for " + eDmg + " dmg! [" + G.hp + "/" + G.maxHp + " HP]");
+
+  if (G.hp <= 0) {
+    G.phase = "play"; G.combat = null;
+    updateSidebar(); applyNode(onLose || "death"); return;
+  }
+  updateSidebar(); renderChoices();
+}
+
+function useItem(name) {
+  const it = ITEMS[name];
+  if (!it || it.type !== "consumable") return;
+  G.inventory = G.inventory.filter(i => i !== name);
+  if (it.effect === "hp") { const g2 = Math.min(it.val, G.maxHp - G.hp); G.hp += g2; addMsg("ev", "Used " + name + ": +" + g2 + " HP."); }
+  if (it.effect === "mp") { const g2 = Math.min(it.val, G.maxMp - G.mp); G.mp += g2; addMsg("ev", "Used " + name + ": +" + g2 + " MP."); }
+  updateSidebar();
+  if (G.phase === "combat") renderChoices();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+G = freshState(null);
+
+if (loadCastleSave()) {
+  updateSidebar();
+  const node = STORY[G.nodeId];
+  addMsg("ev", "↩ Welcome back, " + G.charClass + ". The castle remembers you.");
+  addMsg("sy", "══════════════════════════════");
+  if (node) addMsg("gm", node.text);
+  renderChoices();
+} else {
+  const cross = loadCrossLevel();
+  if (cross) {
+    G = freshState(cross);
+    updateSidebar();
+    addMsg("ev", "You emerge from the dragon's lair — battered, victorious, and very much alive.");
+    addMsg("ev", cross.charClass + " · Level " + cross.level + " · " + cross.gold + " gold carried over");
+    addMsg("sy", "══════════════════════════════");
+    applyNode("castle_gate");
+  } else {
+    updateSidebar();
+    addMsg("dn", "No dungeon save found.");
+    renderChoices();
+  }
+}
+</script>
+</body>
+</html>
