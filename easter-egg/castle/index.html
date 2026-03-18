@@ -597,6 +597,20 @@ function clearSave() {
   try { localStorage.removeItem("castle_save"); } catch(e) {}
 }
 
+function writeCastleCrossLevel() {
+  try {
+    const data = {
+      charClass: G.charClass,
+      hp: Math.max(Math.floor(G.maxHp * 0.5), G.hp),
+      maxHp: G.maxHp, mp: G.mp, maxMp: G.maxMp,
+      gold: G.gold, xp: G.xp, level: G.level,
+      inventory: G.inventory,
+    };
+    localStorage.setItem("castle_crosslevel", JSON.stringify(data));
+    try { localStorage.removeItem("level_3_save"); } catch(e) {}
+  } catch(e) {}
+}
+
 // ── LOG ───────────────────────────────────────────────────────────────────────
 
 function addMsg(cls, text) {
@@ -791,10 +805,17 @@ function renderEnding() {
   cw.appendChild(stats);
 
   if (win) {
+    writeCastleCrossLevel();
     const congrats = document.createElement("div");
     congrats.style.cssText = "font-size:12px;color:#607860;margin-top:6px;line-height:1.6;";
     congrats.textContent = "You've completed both the Dungeon and the Castle of Echoes. Not many do.";
     cw.appendChild(congrats);
+
+    const forestBtn = document.createElement("button");
+    forestBtn.className = "rbtn";
+    forestBtn.textContent = "→ Continue to the Forest of Echoes";
+    forestBtn.onclick = () => { window.location.href = "../forest/index.html"; };
+    cw.appendChild(forestBtn);
   }
 
   const btn = document.createElement("button");

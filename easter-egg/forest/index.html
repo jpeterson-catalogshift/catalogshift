@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forest of Echoes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  button { text-decoration: none; -webkit-appearance: none; }
+  html { min-height: 100%; background: #04080a; }
+  body {
+    font-family: 'Share Tech Mono', monospace;
+    color: #c4ba8a;
+    background: #04080a;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .rpg {
+    width: 100%; max-width: 860px; height: 620px;
+    background: #060c07; border: 1px solid #1a2e14;
+    border-radius: 10px; overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8);
+  }
+  .hdr {
+    background: #0a1a0b; border-bottom: 1px solid #1a2a14;
+    padding: 9px 16px; display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .ttl { font-family: 'VT323', monospace; font-size: 22px; color: #a0c848; letter-spacing: 3px; margin-left: 4px; }
+  .sub { font-size: 11px; color: #243818; margin-left: auto; }
+  .bdy { display: flex; flex: 1; overflow: hidden; }
+  .sdb {
+    width: 184px; min-width: 184px; background: #080f08;
+    border-right: 1px solid #162812; padding: 12px 10px;
+    display: flex; flex-direction: column; gap: 9px; overflow-y: auto;
+  }
+  .sdb::-webkit-scrollbar { width: 4px; }
+  .sdb::-webkit-scrollbar-thumb { background: #1e3018; border-radius: 2px; }
+  .slbl { font-size: 9px; color: #2a4020; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+  .sval { font-size: 13px; color: #a0c848; }
+  .sbar { height: 4px; background: #162010; border-radius: 2px; margin-top: 3px; }
+  .sbar-f { height: 100%; border-radius: 2px; transition: width 0.3s; }
+  .sinv { display: flex; flex-direction: column; gap: 3px; margin-top: 2px; }
+  .inv-item { font-size: 10px; color: #7a9848; display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+  .ubtn { font-size: 9px; font-family: 'Share Tech Mono', monospace; background: #162010; color: #7a9848; border: 1px solid #2a4020; border-radius: 2px; padding: 1px 4px; cursor: pointer; }
+  .ubtn:hover { background: #2a4020; }
+  .hidden { display: none !important; }
+  .mbl { display: none; }
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .log {
+    flex: 1; overflow-y: auto; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .log::-webkit-scrollbar { width: 4px; }
+  .log::-webkit-scrollbar-thumb { background: #1e3018; border-radius: 2px; }
+  .mg { font-size: 13px; line-height: 1.55; }
+  .mg.gm  { color: #c4ba8a; }
+  .mg.ev  { color: #a0c848; }
+  .mg.dn  { color: #c04040; }
+  .mg.sy  { color: #2e4824; font-size: 11px; }
+  .mg.lcbt { color: #d09848; font-size: 12px; }
+  .choices {
+    border-top: 1px solid #162812; padding: 10px 14px;
+    display: flex; flex-direction: column; gap: 6px;
+    min-height: 130px; max-height: 200px; overflow-y: auto; flex-shrink: 0;
+  }
+  .choices::-webkit-scrollbar { width: 4px; }
+  .choices::-webkit-scrollbar-thumb { background: #1e3018; border-radius: 2px; }
+  .clbl { font-size: 10px; color: #2a4020; letter-spacing: 2px; }
+  .cbtn {
+    background: #0a1408; color: #c4ba8a; border: 1px solid #2a4020;
+    border-radius: 4px; padding: 7px 10px; font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; text-align: left; cursor: pointer; line-height: 1.4;
+    height: auto; display: block; overflow: visible;
+  }
+  .cbtn:hover:not(:disabled) { background: #162010; border-color: #4a7030; color: #c8e060; }
+  .cbtn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .rbtn {
+    background: #0a1408; color: #7a9848; border: 1px solid #2a4020;
+    border-radius: 4px; padding: 7px 10px; font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; text-align: left; cursor: pointer; width: 100%;
+  }
+  .rbtn:hover { background: #162010; }
+  .sel-t { font-family: 'VT323', monospace; font-size: 26px; color: #a0c848; letter-spacing: 2px; }
+  .sel-s { font-size: 11px; color: #4a6830; line-height: 1.6; margin: 4px 0 8px; }
+  .sel-cls { display: flex; flex-direction: column; gap: 5px; }
+  .cbt-name { font-family: 'VT323', monospace; font-size: 20px; color: #c04040; letter-spacing: 1px; margin-bottom: 4px; }
+  .cbt-br { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .cbt-bg { flex: 1; height: 6px; background: #162010; border-radius: 3px; overflow: hidden; }
+  .cbt-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .cbt-txt { font-size: 11px; min-width: 60px; text-align: right; }
+  .cbt-acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .abtn {
+    font-family: 'Share Tech Mono', monospace; font-size: 11px;
+    padding: 5px 10px; border-radius: 4px; cursor: pointer; border: 1px solid;
+  }
+  .abtn.a { background: #1a1008; color: #d09848; border-color: #4a3010; }
+  .abtn.a:hover:not(:disabled) { background: #2a1a08; }
+  .abtn.s { background: #080a18; color: #8088d0; border-color: #202858; }
+  .abtn.s:hover:not(:disabled) { background: #101428; }
+  .abtn.i { background: #0a1408; color: #7a9848; border-color: #2a4020; }
+  .abtn.i:hover:not(:disabled) { background: #162010; }
+  .abtn.f { background: #100808; color: #a04040; border-color: #381818; }
+  .abtn.f:hover:not(:disabled) { background: #1a0c0c; }
+  .abtn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .end-v { font-family: 'VT323', monospace; font-size: 22px; color: #a0c848; letter-spacing: 2px; }
+  .end-d { font-family: 'VT323', monospace; font-size: 22px; color: #c04040; letter-spacing: 2px; }
+  .end-stats { font-size: 11px; color: #4a6830; margin: 4px 0 8px; }
+  @media (max-width: 600px) {
+    .rpg { height: 100svh; border-radius: 0; }
+    .sdb { display: none; }
+    .mbl { display: flex; flex-direction: column; border-bottom: 1px solid #162812; padding: 6px 10px; background: #080f08; flex-shrink: 0; }
+    .mbl-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #7a9848; cursor: pointer; }
+    .m-arrow { font-size: 10px; margin-left: auto; transition: transform 0.2s; }
+    .m-arrow.open { transform: rotate(180deg); }
+    #stats-expanded { display: none; padding: 6px 0 2px; }
+    #stats-expanded.open { display: block; }
+    .m-row { display: flex; gap: 10px; flex-wrap: wrap; font-size: 10px; color: #7a9848; margin-bottom: 4px; }
+    .m-inv-wrap { font-size: 10px; color: #7a9848; }
+  }
+</style>
+</head>
+<body>
+<div class="rpg">
+  <div class="hdr">
+    <div class="dot" style="background:#a0c848"></div>
+    <div class="dot" style="background:#3a5828"></div>
+    <div class="dot" style="background:#1e3010"></div>
+    <div class="ttl">FOREST OF ECHOES</div>
+    <div class="sub">echoes // level 3</div>
+  </div>
+  <div class="bdy">
+    <div class="sdb">
+      <div><div class="slbl">Class</div><div class="sval" id="s-class">—</div></div>
+      <div><div class="slbl">Level</div><div class="sval" id="s-level">1</div></div>
+      <div>
+        <div class="slbl">HP</div><div class="sval" id="s-hp">0/0</div>
+        <div class="sbar"><div class="sbar-f" id="hp-bar" style="width:100%;background:#b03030"></div></div>
+      </div>
+      <div id="mp-row" class="hidden">
+        <div class="slbl">MP</div><div class="sval" id="s-mp">0/0</div>
+        <div class="sbar"><div class="sbar-f" id="mp-bar" style="width:100%;background:#4848b0"></div></div>
+      </div>
+      <div><div class="slbl">XP</div><div class="sval" id="s-xp">0</div></div>
+      <div><div class="slbl">Gold</div><div class="sval" id="s-gold">0</div></div>
+      <div><div class="slbl">ATK</div><div class="sval" id="s-atk">—</div></div>
+      <div><div class="slbl">DEF</div><div class="sval" id="s-def">—</div></div>
+      <div><div class="slbl">Location</div><div class="sval" id="s-loc" style="font-size:11px">—</div></div>
+      <div><div class="slbl">Inventory</div><div class="sinv" id="s-inv"></div></div>
+    </div>
+    <div class="main">
+      <div class="mbl">
+        <div class="mbl-bar" onclick="toggleMobileStats()">
+          <span id="m-class">—</span> · <span id="m-hp">HP 0/0</span> · <span id="m-gold">0g</span> · <span id="m-loc">—</span>
+          <span class="m-arrow" id="m-arrow">▼</span>
+        </div>
+        <div id="stats-expanded">
+          <div class="m-row">
+            <span>Lv <span id="m-level">1</span></span>
+            <span>XP <span id="m-xp">0</span></span>
+            <span>ATK <span id="m-atk">—</span></span>
+            <span>DEF <span id="m-def">—</span></span>
+          </div>
+          <div class="m-inv-wrap" id="m-inv"></div>
+        </div>
+      </div>
+      <div class="log" id="log"></div>
+      <div class="choices" id="choices"></div>
+    </div>
+  </div>
+</div>
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const CLASSES = {
+  Warrior: { hp: 120, mp: 0,  atk: 18, def: 8,  desc: "High HP and defence. Straightforward and durable." },
+  Mage:    { hp: 60,  mp: 80, atk: 24, def: 3,  desc: "Low HP, high ATK. Spells bypass half enemy DEF." },
+  Rogue:   { hp: 85,  mp: 0,  atk: 20, def: 5,  desc: "30% critical hit chance (×1.8 damage)." },
+};
+
+const ITEMS = {
+  "Health Potion":   { type: "consumable", effect: "hp", val: 40 },
+  "Mana Potion":     { type: "consumable", effect: "mp", val: 40 },
+  "Forest Potion":   { type: "consumable", effect: "hp", val: 35 },
+  "Healing Herb":    { type: "consumable", effect: "hp", val: 20 },
+  "Iron Sword":      { type: "weapon", bonus: 4 },
+  "Shadow Dagger":   { type: "weapon", bonus: 3 },
+  "Staff of Embers": { type: "weapon", bonus: 5 },
+  "Knight's Sword":  { type: "weapon", bonus: 5 },
+  "Iron Shield":     { type: "armor",  bonus: 3 },
+  "Leather Vest":    { type: "armor",  bonus: 2 },
+  "Royal Shield":    { type: "armor",  bonus: 4 },
+  "Grove Sigil":     { type: "key" },
+  "Ancient Torch":   { type: "key" },
+  "Forest Blessing": { type: "key" },
+  "Moonwort":        { type: "key" },
+  "Sealed Message":  { type: "key" },
+  "Captain's Map":   { type: "key" },
+  "Smuggler's Note": { type: "key" },
+  "Wolf Pelt":       { type: "key" },
+  "Beast Fang":      { type: "key" },
+  "Ancient Tome":    { type: "key" },
+  "Dragon Scale":    { type: "key" },
+  "Shadow Crown":    { type: "key" },
+  "Rusty Key":       { type: "key" },
+  "Dungeon Map":     { type: "key" },
+  "Castle Key":      { type: "key" },
+  "Crown Fragment":  { type: "key" },
+};
+
+const ENEMIES = {
+  forest_bandit:    { name: "Forest Bandit",   hp: 45,  maxHp: 45,  atk: 13, def: 4,  xp: 35,  gold: 15 },
+  bandit_captain:   { name: "Captain Greave",  hp: 100, maxHp: 100, atk: 24, def: 7,  xp: 90,  gold: 50, loot: "Captain's Map" },
+  wolf_pack:        { name: "Wolf Pack",        hp: 55,  maxHp: 55,  atk: 15, def: 3,  xp: 45,  gold: 0,  loot: "Wolf Pelt" },
+  forest_bear:      { name: "Forest Bear",      hp: 90,  maxHp: 90,  atk: 22, def: 8,  xp: 70,  gold: 0 },
+  corrupted_treant: { name: "Corrupted Treant", hp: 75,  maxHp: 75,  atk: 17, def: 10, xp: 65,  gold: 10 },
+  shadow_beast:     { name: "Shadow Beast",     hp: 130, maxHp: 130, atk: 27, def: 8,  xp: 120, gold: 0,  loot: "Beast Fang" },
+  ancient_entity:   { name: "Ancient Entity",   hp: 200, maxHp: 200, atk: 34, def: 12, xp: 280, gold: 0 },
+};
+
+// ── STORY ─────────────────────────────────────────────────────────────────────
+
+const STORY = {
+
+  // ── FOREST EDGE (5) ───────────────────────────────────────────────────────
+
+  forest_edge: {
+    loc: "Forest Edge",
+    text: "The forest looms before you — ancient, dense, its canopy swallowing the sky. The air smells of damp earth and something older than either. Two paths enter the trees: north, a wide cart-rutted road; east, a narrow trail barely wider than your shoulders. A merchant has made camp at the treeline, his wagon listing under its load.",
+    choices: [
+      { label: "Speak with the merchant before entering", next: "merchant_rest" },
+      { label: "Search the treeline", next: "forest_treeline" },
+      { label: "Take the Bandit Road north", next: "bandit_road" },
+      { label: "Follow the Old Trail east", next: "old_trail" },
+    ]
+  },
+
+  forest_treeline: {
+    loc: "Forest Edge",
+    text: "Running your hand along the nearest trunks you find a carved arrow — deliberate, fresh, pointing north. Below it, three parallel scratches. A route marker. Someone moves through this forest regularly and wants to remember the way. The marks are too neat to be casual.",
+    choices: [
+      { label: "Speak with the merchant", next: "merchant_rest" },
+      { label: "Take the Bandit Road north", next: "bandit_road" },
+      { label: "Follow the Old Trail east", next: "old_trail" },
+    ]
+  },
+
+  merchant_rest: {
+    loc: "Forest Edge — Merchant Camp",
+    text: "He's broad, road-worn, and relaxes only slightly when he sees you aren't bandits. \"Heading in? Brave or lost — same outcome usually.\" He's been stuck here two days. Bandits run the north road. Something wrong with the river beyond the forest. He has supplies if you have coin.",
+    choices: [
+      { label: "Ask what he knows about the forest", next: "merchant_intel" },
+      { label: "Buy a Forest Potion (15 gold)", next: "merchant_trade", goldCost: 15 },
+      { label: "Head north — Bandit Road", next: "bandit_road" },
+      { label: "Head east — Old Trail", next: "old_trail" },
+    ]
+  },
+
+  merchant_intel: {
+    loc: "Forest Edge — Merchant Camp",
+    text: "\"Captain named Greave runs the north road. Nasty, but predictable — he takes money, messages, or favours. Kills the rest.\" He lowers his voice. \"Eastern trail has an old hermit somewhere deep in it. Forest folk say he knows the old paths. If you're going all the way through, find him.\" He looks at the treeline. \"I'd go myself but I value being alive.\"",
+    choices: [
+      { label: "Buy a Forest Potion (15 gold)", next: "merchant_trade", goldCost: 15 },
+      { label: "Head north — Bandit Road", next: "bandit_road" },
+      { label: "Head east — Old Trail", next: "old_trail" },
+    ]
+  },
+
+  merchant_trade: {
+    loc: "Forest Edge — Merchant Camp",
+    text: "He presses the bottle into your hand and takes the coin in one smooth motion. \"Whatever you hear in the deep wood — don't follow it.\" He says it like a man who already made that mistake once.",
+    gives: ["Forest Potion"],
+    choices: [
+      { label: "Head north — Bandit Road", next: "bandit_road" },
+      { label: "Head east — Old Trail", next: "old_trail" },
+    ]
+  },
+
+  // ── PATH A — BANDIT ROAD (15) ─────────────────────────────────────────────
+
+  bandit_road: {
+    loc: "Bandit Road",
+    text: "The road is wider than you expected — cart-rutted, well-used. Fifty yards in, movement: a bandit scout crouched in the undergrowth, watching the road. He hasn't seen you yet.",
+    choices: [
+      { label: "Strike before he raises the alarm", next: "bandit_scout_fight", combat: "forest_bandit" },
+      { label: "Slip into the trees and sneak past", next: "bandit_scout_sneak" },
+    ]
+  },
+
+  bandit_scout_fight: {
+    loc: "Bandit Road",
+    text: "You close the distance before he can reach his horn—",
+    combat: "forest_bandit", onWin: "bandit_scout_won",
+  },
+
+  bandit_scout_won: {
+    loc: "Bandit Road",
+    text: "He goes down quietly. The road curves ahead toward firelight — the camp.",
+    choices: [
+      { label: "Approach the camp", next: "bandit_camp" },
+      { label: "Check the watchtower to the east first", next: "watchtower_path" },
+    ]
+  },
+
+  bandit_scout_sneak: {
+    loc: "Bandit Road",
+    text: "You circle through the undergrowth. The scout stares at nothing. You rejoin the road thirty yards on. The camp is visible — shelters around a central fire, a horse at a post.",
+    choices: [
+      { label: "Approach the camp", next: "bandit_camp" },
+    ]
+  },
+
+  bandit_camp: {
+    loc: "Bandit Camp",
+    text: "Six or seven men. A broad figure at the centre with a captain's insignia beaten from a stolen coin-belt. He sees you before you're close enough to stop. \"Brave or stupid — haven't decided yet.\" He doesn't reach for his weapon. Not yet.",
+    choices: [
+      { label: "Draw your weapon", next: "bandit_captain_fight", combat: "bandit_captain" },
+      { label: "Talk to him", next: "bandit_captain_confront" },
+      { label: "Spot the watchtower east — investigate first", next: "watchtower_path" },
+    ]
+  },
+
+  bandit_captain_confront: {
+    loc: "Bandit Camp — Captain Greave",
+    text: "Greave leans back. \"Three options. Thirty gold — road's yours. Fight me — maybe you win. Or carry something to my contact at the river. Sealed pouch, no questions.\" His eyes say he'll know if you open it.",
+    choices: [
+      { label: "Pay the toll (30 gold)", next: "bandit_bribe", goldCost: 30 },
+      { label: "Accept the deal — carry the message", next: "bandit_deal" },
+      { label: "Draw your weapon", next: "bandit_captain_fight", combat: "bandit_captain" },
+    ]
+  },
+
+  bandit_captain_fight: {
+    loc: "Bandit Camp",
+    text: "Greave draws a long knife. The camp erupts.",
+    combat: "bandit_captain", onWin: "bandit_captain_won",
+  },
+
+  bandit_captain_won: {
+    loc: "Bandit Camp",
+    text: "Greave goes down hard. The others scatter. You search the camp quickly.",
+    gives: ["Captain's Map"],
+    choices: [
+      { label: "Search the camp further", next: "bandit_camp_after" },
+      { label: "Check the watchtower east", next: "watchtower_path" },
+      { label: "Continue north into the forest", next: "road_continues" },
+    ]
+  },
+
+  bandit_bribe: {
+    loc: "Bandit Camp",
+    text: "Greave counts it twice, pockets it, waves his men back. Pure business. You notice one of the supply crates bears the same carved arrow you saw at the treeline.",
+    choices: [
+      { label: "Search the camp while you have safe passage", next: "bandit_camp_after" },
+      { label: "Check the watchtower east", next: "watchtower_path" },
+      { label: "Continue north", next: "road_continues" },
+    ]
+  },
+
+  bandit_deal: {
+    loc: "Bandit Camp",
+    text: "Greave hands you a sealed leather pouch — small, heavy. \"River crossing. Ask for Marta. Tell her Greave sends his regards.\" He looks satisfied in a way that makes you uneasy. The road north is open.",
+    gives: ["Sealed Message"],
+    writesFlag: "bandit_deal_taken",
+    choices: [
+      { label: "Search the camp while you have passage", next: "bandit_camp_after" },
+      { label: "Check the watchtower east", next: "watchtower_path" },
+      { label: "Continue north", next: "road_continues" },
+    ]
+  },
+
+  bandit_camp_after: {
+    loc: "Bandit Camp",
+    text: "Bedrolls, food stores, a locked chest. On a rough table — a note: \"Forest route confirmed viable. River shipment delayed — spirits causing problems at the ford. Use north path until further notice.\" Someone is moving serious cargo through these trees.",
+    choices: [
+      { label: "Check the watchtower east", next: "watchtower_path" },
+      { label: "Continue north", next: "road_continues" },
+    ]
+  },
+
+  watchtower_path: {
+    loc: "Bandit Road — Eastern Branch",
+    text: "A track branches east into older trees. Through the canopy — the top of a stone watchtower, military construction, long abandoned. The bandits haven't touched it. Something about it makes them uncomfortable.",
+    choices: [
+      { label: "Investigate the tower", next: "watchtower_climb" },
+      { label: "Leave it — continue north", next: "road_continues" },
+    ]
+  },
+
+  watchtower_climb: {
+    loc: "Ruined Watchtower",
+    text: "The stairs hold your weight but only just. The inside is dry and protected. Someone was here recently: a bedroll, a cold fire pit, and beside it — a leather-bound journal and a long torch, its head wrapped in oil-soaked cloth.",
+    gives: ["Ancient Torch"],
+    choices: [
+      { label: "Read the journal", next: "watchtower_top" },
+    ]
+  },
+
+  watchtower_top: {
+    loc: "Ruined Watchtower — Top",
+    text: "A scout's journal. Practical at first — patrol notes, bandit movements — then something else: \"The thing at the forest's heart is getting worse. Whatever it is, it was not always like this. The corruption comes from outside — the water changed first, then the trees near the river, then inward. Something upstream.\" Final entry: \"Do not go in without fire.\" From the top, through a gap in the canopy, you can see the river. There is smoke above it.",
+    choices: [
+      { label: "Return to the road and continue north", next: "road_continues" },
+    ]
+  },
+
+  road_continues: {
+    loc: "Bandit Road — Northern Stretch",
+    text: "The road narrows as the trees grow older. No birds. The silence has weight. Then — a low sound from the treeline, and the unmistakable attempt of someone trying not to make noise.",
+    choices: [
+      { label: "Investigate carefully", next: "merchant_injured" },
+      { label: "Press on", next: "deep_forest" },
+    ]
+  },
+
+  // ── MERCHANT RANDOM ENCOUNTER (2) ─────────────────────────────────────────
+
+  merchant_injured: {
+    loc: "Bandit Road — Northern Stretch",
+    text: "It's the merchant from the treeline. He's against a root, one hand pressed to his side, gripping a broken wheel spoke. \"Bandits. Hit me on the east road. Took everything.\" He looks between relief and embarrassment. \"I should have listened to myself.\"",
+    choices: [
+      { label: "Help him — bandage the wound", next: "merchant_help" },
+      { label: "You have nothing to spare — wish him luck", next: "deep_forest" },
+    ]
+  },
+
+  merchant_help: {
+    loc: "Bandit Road — Northern Stretch",
+    text: "You get him patched up. It takes time. When it's done he grips your arm. \"I won't forget this. I'm heading to the river — trading post on the far bank. If you make it there, find me. I'll make it worth your while.\" He means it. You press on.",
+    writesFlag: "forest_merchant_helped",
+    choices: [
+      { label: "Continue into the deep forest", next: "deep_forest" },
+    ]
+  },
+
+  // ── PATH B — OLD TRAIL (18) ───────────────────────────────────────────────
+
+  old_trail: {
+    loc: "Old Trail",
+    text: "The east trail is narrow and old — roots break the surface every few yards, branches catch at your shoulders. You're a hundred yards in before you notice the tracks. Wolf prints, fresh, running parallel to the path. More than one. They're keeping pace.",
+    choices: [
+      { label: "Stop and face whatever is following", next: "wolf_territory" },
+      { label: "Move faster — don't let them dictate pace", next: "wolf_territory" },
+    ]
+  },
+
+  wolf_territory: {
+    loc: "Old Trail — Wolf Territory",
+    text: "Three wolves step onto the path. A fourth circles behind. They're not starving — eyes clear, movements deliberate. One has a wound on its flank blackened at the edges. Not natural.",
+    choices: [
+      { label: "Fight", next: "wolf_fight", combat: "wolf_pack" },
+      { label: "Back against a tree — make yourself large, don't run", next: "wolf_avoid" },
+    ]
+  },
+
+  wolf_fight: {
+    loc: "Old Trail",
+    text: "The lead wolf lunges—",
+    combat: "wolf_pack", onWin: "wolf_won",
+  },
+
+  wolf_won: {
+    loc: "Old Trail",
+    text: "The survivors scatter. You look at the lead wolf's wound again — the blackening is not from injury. Whatever is at the heart of this forest has already touched its animals. The trail continues east.",
+    gives: ["Wolf Pelt"],
+    choices: [
+      { label: "Continue east", next: "bear_encounter" },
+    ]
+  },
+
+  wolf_avoid: {
+    loc: "Old Trail",
+    text: "You hold still. Every instinct says run. The wolves watch you for a long moment — the lead wolf's head tilts, almost curious — then they fade back into the trees. That was not normal behaviour. The trail east is clear.",
+    choices: [
+      { label: "Continue east", next: "bear_encounter" },
+    ]
+  },
+
+  bear_encounter: {
+    loc: "Old Trail — Bear Territory",
+    text: "Claw marks high on the trunks. Fresh scat. Then the bear — massive, head low, blocking the trail. Unlike the wolves, its eyes are ordinary. Just a bear defending its ground.",
+    choices: [
+      { label: "Fight — you need this path", next: "bear_fight", combat: "forest_bear" },
+      { label: "Back off slowly and find a way around through the undergrowth", next: "bear_around" },
+    ]
+  },
+
+  bear_fight: {
+    loc: "Old Trail",
+    text: "The bear charges with no warning—",
+    combat: "forest_bear", onWin: "bear_won",
+  },
+
+  bear_won: {
+    loc: "Old Trail",
+    text: "The bear breaks and crashes off into the trees. You're bleeding from a place you'll find later. Trail is clear.",
+    choices: [
+      { label: "Continue east", next: "treant_blocking" },
+    ]
+  },
+
+  bear_around: {
+    loc: "Old Trail",
+    text: "You push through the undergrowth in a wide arc. Time-consuming, scratchy, but the bear doesn't follow. You find the trail again on the other side.",
+    hpCost: 8,
+    choices: [
+      { label: "Continue east", next: "treant_blocking" },
+    ]
+  },
+
+  treant_blocking: {
+    loc: "Old Trail — Corrupted Treant",
+    text: "The trail ends at a former clearing. A treant blocks the way — ancient bark split open and dark, movement wrong, a groan from deep underground when it turns toward you. Whatever it was, it isn't that anymore.",
+    choices: [
+      { label: "Fight — the path is blocked", next: "treant_fight", combat: "corrupted_treant" },
+    ]
+  },
+
+  treant_fight: {
+    loc: "Old Trail",
+    text: "Its branches come down like hammers—",
+    combat: "corrupted_treant", onWin: "treant_won",
+  },
+
+  treant_won: {
+    loc: "Old Trail",
+    text: "The treant staggers and goes still. Its bark cracks open at the base — and for a moment, before it falls, you see the inside: blackened, hollow, burned from within. The clearing ahead is open.",
+    choices: [
+      { label: "Spot a faint path branching north — investigate", next: "hermit_trail" },
+      { label: "Continue east toward the deep forest", next: "water_spirit_pool" },
+    ]
+  },
+
+  hermit_trail: {
+    loc: "Old Trail — Faint Path",
+    text: "Barely a path — a gap between the roots where someone has walked many times. It leads north into denser forest. Easy to miss. You almost did.",
+    choices: [
+      { label: "Follow it north", next: "hermit_clearing" },
+      { label: "Leave it and continue east", next: "water_spirit_pool" },
+    ]
+  },
+
+  hermit_clearing: {
+    loc: "Hermit's Clearing",
+    text: "A small clearing, almost perfectly round, with a low shelter built against a fallen oak. A fire burns — small, smokeless. An old man sits beside it, watching you approach without surprise. \"I heard you in the wolf territory. You fought them — or they let you pass. Either way, interesting.\"",
+    choices: [
+      { label: "Ask about the forest", next: "hermit_talk" },
+    ]
+  },
+
+  hermit_talk: {
+    loc: "Hermit's Clearing",
+    text: "He listens more than he speaks. \"The Treant Warden guards the path to the Ancient Grove. You won't pass without a Grove Sigil — the forest's mark of passage.\" He reaches into his coat and produces a small stone carved with a leaf pattern. \"Take it. You're heading there regardless — I can see it on you.\"",
+    gives: ["Grove Sigil"],
+    choices: [
+      { label: "Ask what he knows about the corruption", next: "hermit_lore" },
+      { label: "Thank him and return to the trail", next: "water_spirit_pool" },
+    ]
+  },
+
+  hermit_lore: {
+    loc: "Hermit's Clearing",
+    text: "He stares into the fire. \"I've lived here forty years. What's at the Ancient Heart — it was the forest's guardian once. Patient. Just. Something changed it from outside. The animals knew first, then the trees near the water.\" He looks up. \"The corruption travels in the water. Follow it upstream and you'll find your answer. But reach the Grove first — the Spirit will want to see who you are before you face the Heart.\"",
+    choices: [
+      { label: "Thank him and return to the trail", next: "water_spirit_pool" },
+    ]
+  },
+
+  water_spirit_pool: {
+    loc: "Old Trail — Spirit Pool",
+    text: "The trail widens at a pool fed by a spring. The water is the clearest you've seen in this forest — untouched by the corruption somehow. Something flickers beneath the surface. Not a fish.",
+    choices: [
+      { label: "Kneel and drink — it looks clean", next: "pool_respect" },
+      { label: "Cup some water and pour it back as an offering", next: "pool_respect" },
+      { label: "It's just water — keep moving east", next: "deep_forest" },
+    ]
+  },
+
+  pool_respect: {
+    loc: "Old Trail — Spirit Pool",
+    text: "The water is cold and clean. As you drink, the flickering beneath the surface brightens — a shape, almost human, almost not — then fades. The clearing feels warmer after. The path east leads to where the two trails converge.",
+    writesFlag: "respected_pool",
+    choices: [
+      { label: "Continue into the deep forest", next: "deep_forest" },
+    ]
+  },
+
+  // ── DEEP FOREST CONVERGENCE (8) ───────────────────────────────────────────
+
+  deep_forest: {
+    loc: "Deep Forest",
+    text: "The two paths merge — though you can't see clearly where one ends and the other begins. The trees here are older than anything you've passed. Trunks as wide as rooms. No birds. Silence with weight. North, the forest grows darker still.",
+    choices: [
+      { label: "Investigate the ruins visible through the trees", next: "ancient_ruins" },
+      { label: "Look for footprints — someone else has been here", next: "random_footprints" },
+      { label: "Press deeper north", next: "deep_forest_continue" },
+    ]
+  },
+
+  ancient_ruins: {
+    loc: "Deep Forest — Ancient Ruins",
+    text: "Stone walls, no roof, older than the castle — whatever built this is long gone. Inside: fresh tracks, a hidden cache behind a loose stone, and stone tablets carved in an old script.",
+    choices: [
+      { label: "Examine the hidden cache", next: "smuggler_cache" },
+      { label: "Read the stone tablets", next: "ruins_lore" },
+    ]
+  },
+
+  ruins_lore: {
+    loc: "Deep Forest — Ancient Ruins",
+    text: "The tablets are carved in an old script, but some you can read. The forest and the river were considered the same living thing — the same spirit, different expressions. Priests came here to make passage between the two. The tablets end mid-sentence. Whoever carved them never returned.",
+    choices: [
+      { label: "Examine the hidden cache", next: "smuggler_cache" },
+      { label: "Return north", next: "deep_forest_continue" },
+    ]
+  },
+
+  smuggler_cache: {
+    loc: "Deep Forest — Hidden Cache",
+    text: "Supplies wrapped in oilcloth, a coil of rope, a locked box. And a note: \"River route compromised. Spirits at the ford making crossing impossible for the third week. Reroute all shipments through forest until situation resolved. Burn this.\" You tuck the note away.",
+    gives: ["Smuggler's Note"],
+    choices: [
+      { label: "Continue north", next: "deep_forest_continue" },
+    ]
+  },
+
+  random_footprints: {
+    loc: "Deep Forest",
+    text: "Small booted feet, moving carefully, stopping and starting. They circle the ruins twice then head north. Whoever made them knew this forest.",
+    choices: [
+      { label: "Follow the tracks north", next: "goblin_scout_encounter" },
+      { label: "Leave them and press on", next: "deep_forest_continue" },
+    ]
+  },
+
+  goblin_scout_encounter: {
+    loc: "Deep Forest — Northern Clearing",
+    text: "You find a scout crouched behind a root — knife drawn when he hears you, then frozen when he sees your face. He lowers the knife slowly. \"The dungeon human. Chief talked about you.\" A long pause. \"Something bad in the deep forest. Worse every week. Chief sent me to see. I have seen enough. I am going back now.\"",
+    choices: [
+      { label: "Ask what he's seen", next: "goblin_intel" },
+      { label: "Let him go", next: "deep_forest_continue" },
+    ]
+  },
+
+  goblin_intel: {
+    loc: "Deep Forest — Northern Clearing",
+    text: "\"Big shadow thing. Makes the small animals go wrong. Trees near the old heart are dead.\" He glances north. \"The Warden is still there — big tree man. He will not let you through without the old mark.\" He's already backing away into the undergrowth before he finishes the sentence.",
+    choices: [
+      { label: "Head north to the Treant Warden", next: "deep_forest_continue" },
+    ]
+  },
+
+  deep_forest_continue: {
+    loc: "Deep Forest",
+    text: "Darker ahead. What little light reached here no longer does. The ground is softer, the roots slick. The smell shifts from earth and wood to something colder, older. Through the trees north — a shape. Massive, still, watching.",
+    choices: [
+      { label: "Approach the shape", next: "treant_warden_approach" },
+    ]
+  },
+
+  // ── TREANT WARDEN GATE (4) ────────────────────────────────────────────────
+
+  treant_warden_approach: {
+    loc: "Treant Warden's Gate",
+    text: "It is a treant — but different from the one on the old trail. Ancient, intact, its bark the colour of deep shadow. It stands across the only clear path north. Its eyes — knots in the wood — focus on you with unmistakable intelligence.",
+    choices: [
+      { label: "Show the Grove Sigil", next: "treant_warden_pass", requires: "Grove Sigil" },
+      { label: "Ask it about the corruption", next: "treant_warden_lore" },
+      { label: "Try to pass without the Sigil", next: "treant_warden_blocked" },
+    ]
+  },
+
+  treant_warden_lore: {
+    loc: "Treant Warden's Gate",
+    text: "It speaks in the sound of wind through branches, but you understand it. \"The Ancient Heart was pure. Then the water changed. What comes from the river poisons us.\" A long pause. \"The river is wrong. We feel it even here.\" It looks at you with something that might be hope, if hope were made of old wood and patience.",
+    choices: [
+      { label: "Show the Grove Sigil", next: "treant_warden_pass", requires: "Grove Sigil" },
+      { label: "You have no Sigil — you must find the hermit", next: "treant_warden_blocked" },
+    ]
+  },
+
+  treant_warden_pass: {
+    loc: "Treant Warden's Gate",
+    text: "The Warden's gaze moves to the Sigil. A long moment. Then it steps aside — a movement that takes thirty seconds and shakes the ground. \"The forest remembers those who carry its mark. Be careful with what you find at the Heart. It was not always what it has become.\" The Ancient Grove lies ahead.",
+    choices: [
+      { label: "Enter the Ancient Grove", next: "grove_approach" },
+    ]
+  },
+
+  treant_warden_blocked: {
+    loc: "Treant Warden's Gate",
+    text: "The Warden does not speak. It simply does not move. The path is completely blocked. You are not passing without the Grove Sigil. Somewhere on the eastern trail, a hermit has one.",
+    choices: [
+      { label: "Return east to find the Hermit's Clearing", next: "hermit_trail" },
+    ]
+  },
+
+  // ── ANCIENT GROVE (9) ─────────────────────────────────────────────────────
+
+  grove_approach: {
+    loc: "Ancient Grove — Entrance",
+    text: "The corruption ends at the grove's edge as though it cannot cross. The trees here are vast and still. The air is clean — the first clean air since the forest edge. There is light here that has no source.",
+    choices: [
+      { label: "Enter the grove", next: "ancient_grove" },
+    ]
+  },
+
+  ancient_grove: {
+    loc: "Ancient Grove",
+    text: "A deep pool at the centre, perfectly still. The canopy so high it disappears. Whatever this place was — whatever it still is — it is very old and not entirely of this world. At the base of the oldest tree, something grows that the corruption hasn't reached.",
+    choices: [
+      { label: "Approach the pool", next: "grove_pool" },
+      { label: "Examine the trees and undergrowth", next: "grove_hidden_room" },
+      { label: "Read the stone tablets at the grove's edge", next: "grove_lore" },
+    ]
+  },
+
+  grove_pool: {
+    loc: "Ancient Grove — Sacred Pool",
+    text: "The pool is deep and clear. At the bottom — smooth stone carved with the same leaf pattern as the Grove Sigil. As you lean close, the surface shivers. Then she is simply there: a figure made of water and light, watching you with eyes that have no colour.",
+    choices: [
+      { label: "Speak — you come in peace", next: "spirit_welcoming" },
+    ]
+  },
+
+  spirit_welcoming: {
+    loc: "Ancient Grove — Forest Spirit",
+    text: "She studies you for a long moment. \"You carry the old mark. You have walked the deep trails.\" Her voice is the sound of running water. \"The Ancient Heart has been corrupted. The water did this — something upstream, beyond the forest's edge. I cannot reach it.\" She extends her hand. \"You will fight what the Heart has become. Take this.\"",
+    gives: ["Forest Blessing"],
+    choices: [
+      { label: "Ask what you are about to face", next: "spirit_wisdom" },
+      { label: "Look for the rare plant the sorcerer described", next: "grove_ingredient" },
+      { label: "Read the grove's lore tablets", next: "grove_lore" },
+    ]
+  },
+
+  spirit_cold: {
+    loc: "Ancient Grove — Forest Spirit",
+    text: "She appears — but her expression is guarded. \"You carry the old mark, but I do not know you.\" She does not extend her hand. \"The Heart has been corrupted. Find it and end it. That is all I ask.\" No blessing. No warmth. She fades back into the pool.",
+    choices: [
+      { label: "Look for the rare plant", next: "grove_ingredient" },
+      { label: "Read the grove's lore tablets", next: "grove_lore" },
+      { label: "Head north to find the Shadow Beast's territory", next: "shadow_tracks" },
+    ]
+  },
+
+  spirit_wisdom: {
+    loc: "Ancient Grove — Forest Spirit",
+    text: "\"The Heart was the guardian — patient, ancient, fair. The corruption twisted it, but did not change its nature entirely. It is still there, underneath, buried. If you can reach it before the darkness answers for it — it may hear you. It is still there.\" A pause. \"Go to the Heart. But be ready to fight regardless.\"",
+    choices: [
+      { label: "Look for the rare plant the sorcerer described", next: "grove_ingredient" },
+      { label: "Read the grove's lore tablets", next: "grove_lore" },
+    ]
+  },
+
+  grove_ingredient: {
+    loc: "Ancient Grove",
+    text: "Growing at the base of the oldest tree: a pale blue flower with silver edges, perfectly formed despite everything around it. You've seen a sketch of it somewhere — in a castle library, perhaps, or described carefully by someone who needed it. Moonwort. Rare beyond reckoning.",
+    gives: ["Moonwort"],
+    choices: [
+      { label: "Explore the hidden places of the grove", next: "grove_hidden_room" },
+      { label: "Read the grove's lore tablets", next: "grove_lore" },
+    ]
+  },
+
+  grove_hidden_room: {
+    loc: "Ancient Grove — Hidden Hollow",
+    text: "One tree at the grove's edge sounds hollow when you press the bark. A section swings inward: a small dry space, protected. Inside — supplies placed long ago by someone who expected to return. They didn't.",
+    gives: ["Forest Potion", "Health Potion"],
+    choices: [
+      { label: "Approach the pool", next: "grove_pool" },
+      { label: "Read the grove's lore tablets", next: "grove_lore" },
+    ]
+  },
+
+  grove_lore: {
+    loc: "Ancient Grove — Stone Tablets",
+    text: "The tablets are carefully carved. \"The Forest and the River are one living thing. What flows through one flows through the other. Poison the river and you poison the forest. This has always been true.\" Below that, a different hand, more recent: \"It began with the water. Three seasons ago. The Heart felt it first.\"",
+    choices: [
+      { label: "Head north — find the Shadow Beast's territory", next: "shadow_tracks" },
+    ]
+  },
+
+  // ── SUB-BOSS — SHADOW BEAST (6) ───────────────────────────────────────────
+
+  shadow_tracks: {
+    loc: "Northern Grove — Beast Territory",
+    text: "The clean feeling of the grove ends sharply. Tracks in the ground — large, clawed, belonging to nothing you recognise. They circle a central area repeatedly, as though whatever made them was patrolling. Or waiting.",
+    choices: [
+      { label: "Move carefully — try to spot it first", next: "shadow_lair" },
+      { label: "Press forward — let it come to you", next: "shadow_open" },
+    ]
+  },
+
+  shadow_lair: {
+    loc: "Shadow Beast's Lair",
+    text: "A hollow between three massive roots — bones at the edges, ground black and dead in a circle around it. The beast is not there. You have a horrible feeling you know where it is.",
+    choices: [
+      { label: "Set an ambush — wait for it to return", next: "shadow_ambush" },
+      { label: "Back away and face it in the open", next: "shadow_open" },
+    ]
+  },
+
+  shadow_ambush: {
+    loc: "Shadow Beast's Lair",
+    text: "You position behind a root, weapon ready. It returns in silence — you didn't hear it at all. It steps into the hollow, head down. You strike before it turns.",
+    bonusAtk: 15, combat: "shadow_beast", onWin: "shadow_beast_won",
+  },
+
+  shadow_open: {
+    loc: "Northern Grove",
+    text: "It finds you before you find it. A sound — not quite a growl, not quite breathing — and then it steps from between the trees. Large, low to the ground, its fur absorbing the light around it. Its eyes have the same black edges you saw in the wolf's wound, but much larger. The corruption runs deep in this one.",
+    combat: "shadow_beast", onWin: "shadow_beast_won",
+  },
+
+  shadow_beast_won: {
+    loc: "Northern Grove",
+    text: "The beast goes still. As it dies the blackness at the edges of its wounds fades, and for a moment it looks like what it was before — simply a very large animal. Whatever it was before the corruption took it. The Forest Spirit's voice, impossibly close: \"It was a guardian once. Like the Heart.\" The path north is open.",
+    gives: ["Beast Fang"],
+    choices: [
+      { label: "Head north to the Ancient Heart", next: "ancient_heart_approach" },
+    ]
+  },
+
+  shadow_aftermath: {
+    loc: "Northern Grove — Path North",
+    text: "The dead trees give way to something stranger — alive but wrong, branches twisted inward, roots pulling up from the ground as if trying to leave. The corruption is thicker here than anywhere. Whatever is at the Ancient Heart, you are very close.",
+    choices: [
+      { label: "Continue north", next: "ancient_heart_approach" },
+    ]
+  },
+
+  // ── FINAL APPROACH + BOSS (10) ────────────────────────────────────────────
+
+  ancient_heart_approach: {
+    loc: "Path to the Ancient Heart",
+    text: "The dead trees give way to trees that are alive but wrong — branches twisted inward, roots pulling from the ground. The path ahead is deliberate, as if whatever waits at the end wants you to come. The air smells of cold water and something burning.",
+    choices: [
+      { label: "Light the Ancient Torch before going further", next: "entity_fire_prep", requires: "Ancient Torch" },
+      { label: "Invoke the Forest Blessing", next: "entity_blessed_prep", requires: "Forest Blessing" },
+      { label: "Continue to the Ancient Heart", next: "ancient_heart" },
+    ]
+  },
+
+  entity_fire_prep: {
+    loc: "Path to the Ancient Heart",
+    text: "You light the Ancient Torch from a struck stone. The flame takes immediately — bright and steady, unchanged by the dark around it. The air recoils slightly. Whatever waits ahead does not like fire.",
+    bonusAtk: 20,
+    choices: [
+      { label: "Invoke the Forest Blessing as well", next: "entity_both_prep", requires: "Forest Blessing" },
+      { label: "Enter the Ancient Heart", next: "ancient_heart" },
+    ]
+  },
+
+  entity_blessed_prep: {
+    loc: "Path to the Ancient Heart",
+    text: "You invoke the Forest Blessing. A warmth settles over you — the Spirit's gift, carried from the grove. The corruption in the air thins slightly, as if it recognises the mark and retreats.",
+    bonusDef: 15,
+    choices: [
+      { label: "Light the Ancient Torch as well", next: "entity_both_prep", requires: "Ancient Torch" },
+      { label: "Enter the Ancient Heart", next: "ancient_heart" },
+    ]
+  },
+
+  entity_both_prep: {
+    loc: "Path to the Ancient Heart",
+    text: "Torch lit, Blessing invoked. Fire in one hand, the Spirit's warmth at your back. You are as prepared as you are going to be.",
+    bonusAtk: 20, bonusDef: 15,
+    choices: [
+      { label: "Enter the Ancient Heart", next: "ancient_heart" },
+    ]
+  },
+
+  ancient_heart: {
+    loc: "The Ancient Heart",
+    text: "The clearing is vast — ground black, trees at the perimeter dead husks. At the centre: the Ancient Entity. A tree and not a tree, its form shifting at the edges. Where the Shadow Beast was simply corrupted, this is something that has been fighting corruption and losing for a very long time. Its attention turns toward you with a slowness that suggests age beyond reckoning.",
+    choices: [
+      { label: "Call out to it — it may still hear you", next: "entity_talk" },
+      { label: "It is too far gone — prepare to fight", next: "entity_demand" },
+    ]
+  },
+
+  entity_demand: {
+    loc: "The Ancient Heart",
+    text: "It speaks — or something in it speaks. A voice like a falling tree in a long-dead forest. \"Leave. This. Place.\" Behind those words, barely audible, something older. Fighting to be heard.",
+    choices: [
+      { label: "\"I know what happened to you — the river.\"", next: "entity_talk" },
+      { label: "Fight — there is nothing left to save", next: "ancient_entity_fight", combat: "ancient_entity" },
+    ]
+  },
+
+  entity_talk: {
+    loc: "The Ancient Heart",
+    text: "A stillness. The darkness pulls back, just slightly. When it speaks again the voice is different — older, clearer, barely there. \"You... know.\" A long silence. \"The water. Something upstream. Three seasons ago it began. I tried to hold it. I—\" The darkness surges back. The old voice breaks through one last time: \"The river. Find the source. End it.\" Then it is gone, buried again. Only the corrupted thing remains. It raises what were once its branches.",
+    writesFlag: "ancient_entity_talked",
+    choices: [
+      { label: "Fight — you have what you came for", next: "ancient_entity_fight", combat: "ancient_entity" },
+    ]
+  },
+
+  ancient_entity_fight: {
+    loc: "The Ancient Heart",
+    text: "The Ancient Entity attacks with everything the corruption has given it—",
+    combat: "ancient_entity", onWin: "ancient_entity_won",
+  },
+
+  ancient_entity_won: {
+    loc: "The Ancient Heart",
+    text: "As the entity falls, the blackness drains from it slowly — not disappearing but retreating, as if pulled by something upstream. The forest does not immediately recover. The trees at the edge of the clearing are no longer dead. Just dormant. Waiting. The Spirit's voice, faint and distant: \"Find the river. What is upstream is the source of all of this.\" Through the canopy to the east, for the first time, you can hear running water.",
+    choices: [
+      { label: "Press on toward the river", next: "victory" },
+    ]
+  },
+
+  // ── ENDINGS ───────────────────────────────────────────────────────────────
+
+  victory: {
+    loc: "Forest Edge — Eastern River Path",
+    ending: "victory",
+    text: "You emerge from the northern forest onto a high bank overlooking a wide, dark river. The water is wrong — too still, too dark for a river this size. Upstream, above the treeline, there is smoke. The forest behind you is quiet. Not dead. Waiting. Whatever is poisoning the river — whatever poisoned the forest through it — that is where this ends.",
+    choices: [],
+  },
+
+  death: {
+    loc: "The Forest",
+    ending: "death",
+    text: "The forest takes you. It was always going to.",
+    choices: [],
+  },
+
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+let G = {};
+
+function freshState(cross) {
+  if (cross) {
+    return {
+      phase: "play",
+      charClass: cross.charClass,
+      hp: cross.hp, maxHp: cross.maxHp,
+      mp: cross.mp, maxMp: cross.maxMp,
+      gold: cross.gold, xp: cross.xp, level: cross.level,
+      inventory: (cross.inventory || []).filter(n => n !== "Shadow Crown"),
+      location: "Forest Edge", nodeId: "forest_edge",
+      bonusAtk: 0, bonusDef: 0, combat: null, clearedCombats: [],
+    };
+  }
+  return {
+    phase: "no_save",
+    charClass: null, hp:0, maxHp:0, mp:0, maxMp:0,
+    gold:0, xp:0, level:1, inventory:[],
+    location:"—", nodeId:"forest_edge",
+    bonusAtk:0, bonusDef:0, combat:null, clearedCombats:[],
+  };
+}
+
+function roll(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function calcAtk() { let b = CLASSES[G.charClass].atk; G.inventory.forEach(n => { if (ITEMS[n]?.type==="weapon") b += ITEMS[n].bonus; }); return b; }
+function calcDef() { let b = CLASSES[G.charClass].def + (G.bonusDef||0); G.inventory.forEach(n => { if (ITEMS[n]?.type==="armor") b += ITEMS[n].bonus; }); return b; }
+
+// ── WORLD FLAGS ───────────────────────────────────────────────────────────────
+
+function getFlags() {
+  try { return JSON.parse(localStorage.getItem("world_flags") || "{}"); } catch(e) { return {}; }
+}
+function setFlag(key, val) {
+  try {
+    const f = getFlags(); f[key] = val;
+    localStorage.setItem("world_flags", JSON.stringify(f));
+  } catch(e) {}
+}
+
+// Called from applyNode to handle flag-conditional extras per node
+function processFlagExtras(nodeId) {
+  const flags = getFlags();
+  if (nodeId === "hermit_clearing" && flags.prisoner_freed && !G.inventory.includes("Healing Herb")) {
+    G.inventory.push("Healing Herb");
+    addMsg("ev", "The prisoner from the castle is sheltering here with the hermit. She recognises you immediately and presses a healing herb into your hand. \"I wondered if you'd make it this far.\"");
+    setFlag("prisoner_found_forest", true);
+  }
+  if (nodeId === "grove_ingredient" && flags.sorcerer_spared) {
+    addMsg("ev", "The Court Sorcerer described this exact plant — Moonwort, he called it. Rare beyond reckoning. He'll want to know you found it.");
+    setFlag("sorcerer_ingredient_found", true);
+  }
+  if (nodeId === "grove_pool" && !flags.respected_pool) {
+    // Reroute to the cold spirit encounter
+    setTimeout(() => {
+      const node = STORY["grove_pool"];
+      if (node && G.nodeId === "grove_pool") {
+        // Override the next choice destination
+      }
+    }, 0);
+  }
+}
+
+// ── SAVE / LOAD ───────────────────────────────────────────────────────────────
+
+function saveGame() {
+  if (!G.charClass || G.phase === "no_save") return;
+  try {
+    const data = {
+      phase: G.phase === "combat" ? "play" : G.phase,
+      charClass: G.charClass,
+      hp: G.hp, maxHp: G.maxHp, mp: G.mp, maxMp: G.maxMp,
+      gold: G.gold, xp: G.xp, level: G.level,
+      inventory: G.inventory, location: G.location,
+      nodeId: G.phase === "combat" ? (STORY[G.nodeId]?.onWin || G.nodeId) : G.nodeId,
+      clearedCombats: G.clearedCombats,
+    };
+    localStorage.setItem("level_3_save", JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadForestSave() {
+  try {
+    const raw = localStorage.getItem("level_3_save");
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (!d.charClass || !CLASSES[d.charClass]) return false;
+    Object.assign(G, d);
+    G.combat = null; G.bonusAtk = 0; G.bonusDef = 0;
+    G.clearedCombats = d.clearedCombats || [];
+    return true;
+  } catch(e) { return false; }
+}
+
+function loadCrossLevel() {
+  try {
+    const raw = localStorage.getItem("castle_crosslevel");
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d.charClass || !CLASSES[d.charClass]) return null;
+    return d;
+  } catch(e) { return null; }
+}
+
+function clearSave() {
+  try { localStorage.removeItem("level_3_save"); } catch(e) {}
+}
+
+function writeForestCrossLevel() {
+  try {
+    const data = {
+      charClass: G.charClass,
+      hp: Math.max(Math.floor(G.maxHp * 0.5), G.hp),
+      maxHp: G.maxHp, mp: G.mp, maxMp: G.maxMp,
+      gold: G.gold, xp: G.xp, level: G.level,
+      inventory: G.inventory,
+    };
+    localStorage.setItem("forest_crosslevel", JSON.stringify(data));
+    try { localStorage.removeItem("level_4_save"); } catch(e) {}
+  } catch(e) {}
+}
+
+// ── LOG ───────────────────────────────────────────────────────────────────────
+
+function addMsg(cls, text) {
+  const log = document.getElementById("log");
+  const div = document.createElement("div");
+  div.className = "mg " + cls;
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+
+function updateSidebar() {
+  document.getElementById("s-class").textContent = G.charClass || "???";
+  document.getElementById("s-level").textContent = G.level;
+  document.getElementById("s-xp").textContent    = G.xp;
+  document.getElementById("s-hp").textContent    = G.hp + " / " + G.maxHp;
+  document.getElementById("s-gold").textContent  = G.gold;
+  document.getElementById("s-loc").textContent   = G.location;
+  document.getElementById("s-atk").textContent   = G.charClass ? calcAtk() : "—";
+  document.getElementById("s-def").textContent   = G.charClass ? calcDef() : "—";
+
+  const hpPct = G.maxHp > 0 ? Math.round(G.hp / G.maxHp * 100) : 100;
+  const hpBar = document.getElementById("hp-bar");
+  hpBar.style.width = hpPct + "%";
+  hpBar.style.background = hpPct > 50 ? "#b03030" : hpPct > 25 ? "#b07030" : "#dd2020";
+
+  const mpRow = document.getElementById("mp-row");
+  if (G.maxMp > 0) {
+    mpRow.classList.remove("hidden");
+    document.getElementById("s-mp").textContent = G.mp + " / " + G.maxMp;
+    document.getElementById("mp-bar").style.width = Math.round(G.mp / G.maxMp * 100) + "%";
+  } else { mpRow.classList.add("hidden"); }
+
+  const invEl = document.getElementById("s-inv");
+  invEl.innerHTML = "";
+  if (G.inventory.length === 0) {
+    invEl.innerHTML = '<div class="inv-item" style="color:#243818">empty</div>';
+  } else {
+    G.inventory.forEach(name => {
+      const div = document.createElement("div");
+      div.className = "inv-item";
+      const span = document.createElement("span");
+      span.style.paddingLeft = "4px";
+      span.textContent = name;
+      div.appendChild(span);
+      if (ITEMS[name]?.type === "consumable") {
+        const btn = document.createElement("button");
+        btn.className = "ubtn";
+        btn.textContent = "use";
+        btn.onclick = () => useItem(name);
+        div.appendChild(btn);
+      }
+      invEl.appendChild(div);
+    });
+  }
+
+  document.getElementById("m-class").textContent = G.charClass || "???";
+  document.getElementById("m-hp").textContent    = "HP " + G.hp + "/" + G.maxHp;
+  document.getElementById("m-gold").textContent  = G.gold + "g";
+  document.getElementById("m-loc").textContent   = G.location;
+  document.getElementById("m-level").textContent = G.level;
+  document.getElementById("m-xp").textContent    = G.xp;
+  document.getElementById("m-atk").textContent   = G.charClass ? calcAtk() : "—";
+  document.getElementById("m-def").textContent   = G.charClass ? calcDef() : "—";
+  const mhpBar = document.getElementById("m-hpbar");
+  if (mhpBar) { mhpBar.style.width = hpPct + "%"; mhpBar.style.background = hpPct > 50 ? "#b03030" : hpPct > 25 ? "#b07030" : "#dd2020"; }
+  document.getElementById("m-inv").innerHTML = invEl.innerHTML;
+
+  saveGame();
+}
+
+function toggleMobileStats() {
+  document.getElementById("stats-expanded").classList.toggle("open");
+  document.getElementById("m-arrow").classList.toggle("open");
+}
+
+// ── APPLY NODE ────────────────────────────────────────────────────────────────
+
+function applyNode(nodeId) {
+  const node = STORY[nodeId];
+  if (!node) return;
+  G.nodeId = nodeId;
+  G.location = node.loc || G.location;
+  G.bonusAtk = node.bonusAtk || 0;
+  G.bonusDef = node.bonusDef || 0;
+
+  if (node.gives) {
+    node.gives.forEach(it => {
+      if (!G.inventory.includes(it)) { G.inventory.push(it); addMsg("ev", "Obtained: " + it); }
+    });
+  }
+  if (node.goldGain) { G.gold += node.goldGain; addMsg("ev", "Found " + node.goldGain + " gold!"); }
+  if (node.hpCost)   { G.hp = clamp(G.hp - node.hpCost, 0, G.maxHp); addMsg("dn", "Lost " + node.hpCost + " HP!"); }
+  if (node.hpGain)   { const g2 = Math.min(node.hpGain, G.maxHp - G.hp); G.hp += g2; addMsg("ev", "Recovered " + g2 + " HP."); }
+  if (node.writesFlag) { setFlag(node.writesFlag, true); }
+
+  processFlagExtras(nodeId);
+
+  // Spirit pool routing: cold spirit if pool not respected
+  if (nodeId === "grove_pool") {
+    const flags = getFlags();
+    if (!flags.respected_pool) {
+      addMsg("gm", node.text);
+      G.phase = "play";
+      updateSidebar();
+      // Override: go to cold spirit
+      const coldNode = STORY["spirit_cold"];
+      G.nodeId = "spirit_cold";
+      G.location = coldNode.loc;
+      addMsg("gm", coldNode.text);
+      if (coldNode.ending) G.phase = "ended";
+      updateSidebar();
+      renderChoices();
+      return;
+    }
+  }
+
+  addMsg("gm", node.text);
+
+  if (node.combat && (!node.choices || node.choices.length === 0)) {
+    G.phase = "combat";
+    G.combat = { enemyId: node.combat, enemy: Object.assign({}, ENEMIES[node.combat]), onWin: node.onWin, onLose: node.onLose };
+  }
+  if (node.ending) { G.phase = "ended"; }
+  updateSidebar();
+  renderChoices();
+}
+
+// ── CHOICES ───────────────────────────────────────────────────────────────────
+
+function renderChoices() {
+  const cw = document.getElementById("choices");
+  cw.innerHTML = "";
+
+  if (G.phase === "no_save") {
+    const t = document.createElement("div"); t.className = "sel-t"; t.textContent = "No Save Found"; cw.appendChild(t);
+    const s = document.createElement("div"); s.className = "sel-s";
+    s.textContent = "Complete the Castle of Echoes first to continue here."; cw.appendChild(s);
+    const btn = document.createElement("button"); btn.className = "cbtn";
+    btn.textContent = "← Return to the Castle"; btn.onclick = () => { window.location.href = "../castle/index.html"; };
+    cw.appendChild(btn);
+    return;
+  }
+
+  if (G.phase === "play") {
+    const node = STORY[G.nodeId];
+    if (!node?.choices?.length) return;
+    const lbl = document.createElement("div"); lbl.className = "clbl"; lbl.textContent = "What do you do?"; cw.appendChild(lbl);
+    node.choices.forEach(ch => {
+      const locked = ch.requires && !G.inventory.includes(ch.requires);
+      const poor   = ch.goldCost && G.gold < ch.goldCost;
+      const btn = document.createElement("button");
+      btn.className = "cbtn"; btn.disabled = locked || poor;
+      let label = ch.label;
+      if (locked) label += " [need: " + ch.requires + "]";
+      if (poor)   label += " [need " + ch.goldCost + " gold]";
+      btn.textContent = label;
+      if (!locked && !poor) btn.onclick = () => chooseOption(ch);
+      cw.appendChild(btn);
+    });
+    return;
+  }
+
+  if (G.phase === "combat") { renderCombat(); return; }
+  if (G.phase === "ended")  { renderEnding();  return; }
+}
+
+function renderCombat() {
+  const cw = document.getElementById("choices");
+  const { enemy } = G.combat;
+  const hpPct = Math.round(enemy.hp / enemy.maxHp * 100);
+  const phPct = G.maxHp > 0 ? Math.round(G.hp / G.maxHp * 100) : 100;
+  const phClr = phPct > 50 ? "#b03030" : phPct > 25 ? "#b07030" : "#dd2020";
+  cw.innerHTML = `
+    <div class="cbt-name">⚔ ${enemy.name}</div>
+    <div class="cbt-br">
+      <div class="cbt-bg"><div class="cbt-fill" style="width:${hpPct}%;background:#b03030"></div></div>
+      <span class="cbt-txt" style="color:#dd5555">${enemy.hp}/${enemy.maxHp}</span>
+    </div>
+    <div class="cbt-br">
+      <div class="cbt-bg"><div class="cbt-fill" style="width:${phPct}%;background:${phClr}"></div></div>
+      <span class="cbt-txt" style="color:#dd5555">${G.hp}/${G.maxHp}</span>
+    </div>
+    <div class="cbt-acts" id="cbt-acts"></div>`;
+  const acts = document.getElementById("cbt-acts");
+  const mkBtn = (cls, label, fn, disabled) => {
+    const b = document.createElement("button"); b.className = "abtn " + cls;
+    b.textContent = label; b.disabled = !!disabled;
+    if (!disabled) b.onclick = fn; acts.appendChild(b);
+  };
+  mkBtn("a", "⚔ Attack", () => combatAction("attack"));
+  if (G.charClass === "Mage") mkBtn("s", G.mp >= 15 ? "⚡ Spell (15 MP)" : "⚡ Spell (low MP)", () => combatAction("spell"), G.mp < 15);
+  G.inventory.filter(n => ITEMS[n]?.type === "consumable").forEach(n => {
+    mkBtn("i", "🧪 " + n, () => useItem(n));
+  });
+  mkBtn("f", "↩ Flee", () => combatAction("flee"));
+}
+
+function renderEnding() {
+  const cw = document.getElementById("choices");
+  const node = STORY[G.nodeId];
+  const win = node?.ending === "victory";
+  const title = document.createElement("div");
+  title.className = win ? "end-v" : "end-d";
+  title.textContent = win ? "✦ THE FOREST OF ECHOES HAS FALLEN" : "☠ YOU HAVE FALLEN";
+  cw.appendChild(title);
+  const stats = document.createElement("div");
+  stats.className = "end-stats";
+  stats.textContent = "Final: Level " + G.level + " · " + G.gold + " gold · " + G.xp + " XP";
+  cw.appendChild(stats);
+
+  if (win) {
+    writeForestCrossLevel();
+    const congrats = document.createElement("div");
+    congrats.style.cssText = "font-size:12px;color:#4a6828;margin-top:6px;line-height:1.6;";
+    congrats.textContent = "Three levels deep. The dragon, the shadow king, the ancient guardian. Not many get this far.";
+    cw.appendChild(congrats);
+
+    const riverBtn = document.createElement("button");
+    riverBtn.className = "rbtn";
+    riverBtn.textContent = "→ Continue to the River of Echoes";
+    riverBtn.onclick = () => { window.location.href = "../river/index.html"; };
+    cw.appendChild(riverBtn);
+  }
+
+  const btn = document.createElement("button");
+  btn.className = "rbtn";
+  btn.style.marginTop = "4px";
+  btn.textContent = win ? "↩ Play Again from the Forest" : "↩ Try Again";
+  btn.onclick = () => {
+    clearSave();
+    document.getElementById("log").innerHTML = "";
+    const cross = loadCrossLevel();
+    if (cross) {
+      G = freshState(cross);
+      updateSidebar();
+      addMsg("ev", "You stand at the forest edge once more.");
+      addMsg("sy", "══════════════════════════════");
+      applyNode("forest_edge");
+    } else {
+      G = freshState(null);
+      updateSidebar();
+      addMsg("dn", "No castle save found. Return to Level 2 first.");
+      renderChoices();
+    }
+  };
+  cw.appendChild(btn);
+
+  const backBtn = document.createElement("button");
+  backBtn.className = "rbtn";
+  backBtn.style.marginTop = "4px";
+  backBtn.textContent = "← Back to the Castle";
+  backBtn.onclick = () => { try { localStorage.removeItem("castle_save"); } catch(e) {} window.location.href = "../castle/index.html"; };
+  cw.appendChild(backBtn);
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+
+function chooseOption(ch) {
+  if (ch.requires && !G.inventory.includes(ch.requires)) return;
+  if (ch.goldCost && G.gold < ch.goldCost) { addMsg("dn", "Not enough gold (need " + ch.goldCost + ")."); return; }
+  if (ch.goldCost) { G.gold -= ch.goldCost; addMsg("dn", "Paid " + ch.goldCost + " gold."); }
+
+  if (ch.combat) {
+    if (G.clearedCombats.includes(ch.next)) {
+      addMsg("sy", "[This area is already cleared.]");
+      applyNode(STORY[ch.next]?.onWin || ch.next);
+      return;
+    }
+    const node = STORY[ch.next];
+    G.nodeId = ch.next; G.location = node?.loc || G.location;
+    G.bonusAtk = node?.bonusAtk || 0; G.bonusDef = node?.bonusDef || 0;
+    if (node?.writesFlag) setFlag(node.writesFlag, true);
+    addMsg("gm", node?.text || "You enter combat!");
+    G.phase = "combat";
+    G.combat = { enemyId: ch.combat, enemy: Object.assign({}, ENEMIES[ch.combat]), onWin: node?.onWin, onLose: node?.onLose };
+    updateSidebar(); renderChoices(); return;
+  }
+  applyNode(ch.next);
+}
+
+function combatAction(action) {
+  const { enemy, onWin, onLose } = G.combat;
+  const pAtk = calcAtk() + (G.bonusAtk || 0);
+  const pDef = calcDef();
+
+  if (action === "attack") {
+    let dmg = Math.max(1, pAtk - enemy.def + roll(-3, 5));
+    const crit = G.charClass === "Rogue" && Math.random() < 0.3;
+    if (crit) dmg = Math.round(dmg * 1.8);
+    enemy.hp = Math.max(0, enemy.hp - dmg);
+    addMsg("lcbt", "You hit " + enemy.name + " for " + dmg + (crit?" (CRIT!)":"") + " dmg. [" + enemy.hp + "/" + enemy.maxHp + " HP]");
+  } else if (action === "spell") {
+    if (G.mp < 15) return;
+    let dmg = Math.max(1, pAtk + roll(5,15) - Math.floor(enemy.def/2));
+    enemy.hp = Math.max(0, enemy.hp - dmg);
+    G.mp = Math.max(0, G.mp - 15);
+    addMsg("lcbt", "⚡ Spell hits " + enemy.name + " for " + dmg + " dmg! [" + enemy.hp + "/" + enemy.maxHp + " HP]");
+  } else if (action === "flee") {
+    if (Math.random() < 0.45) {
+      addMsg("ev", "You fall back into the deep forest!");
+      G.phase = "play"; G.combat = null; G.bonusAtk = 0; G.bonusDef = 0;
+      updateSidebar(); applyNode("deep_forest"); return;
+    } else { addMsg("dn", "You can't get away!"); }
+  }
+
+  if (enemy.hp <= 0) {
+    const def = ENEMIES[G.combat.enemyId];
+    addMsg("ev", enemy.name + " is defeated!");
+    G.xp += def.xp; G.gold += def.gold;
+    addMsg("ev", "+" + def.xp + " XP, +" + def.gold + " gold");
+    if (def.loot && !G.inventory.includes(def.loot)) { G.inventory.push(def.loot); addMsg("ev", "Obtained: " + def.loot); }
+    if (G.xp >= G.level * 60) { G.level++; G.maxHp += 15; G.hp = Math.min(G.hp + 15, G.maxHp); addMsg("ev", "★ LEVEL UP! Now level " + G.level + "."); }
+    if (!G.clearedCombats.includes(G.nodeId)) G.clearedCombats.push(G.nodeId);
+    G.phase = "play"; G.combat = null;
+    updateSidebar(); applyNode(onWin); return;
+  }
+
+  const eDmg = Math.max(0, enemy.atk - pDef + roll(-2, 4));
+  G.hp = Math.max(0, G.hp - eDmg);
+  G.combat.enemy = enemy;
+  addMsg("dn", enemy.name + " hits you for " + eDmg + " dmg! [" + G.hp + "/" + G.maxHp + " HP]");
+
+  if (G.hp <= 0) {
+    G.phase = "play"; G.combat = null;
+    updateSidebar(); applyNode(onLose || "death"); return;
+  }
+  updateSidebar(); renderChoices();
+}
+
+function useItem(name) {
+  const it = ITEMS[name];
+  if (!it || it.type !== "consumable") return;
+  G.inventory = G.inventory.filter(i => i !== name);
+  if (it.effect === "hp") { const g2 = Math.min(it.val, G.maxHp - G.hp); G.hp += g2; addMsg("ev", "Used " + name + ": +" + g2 + " HP."); }
+  if (it.effect === "mp") { const g2 = Math.min(it.val, G.maxMp - G.mp); G.mp += g2; addMsg("ev", "Used " + name + ": +" + g2 + " MP."); }
+  updateSidebar();
+  if (G.phase === "combat") renderChoices();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+G = freshState(null);
+
+if (loadForestSave()) {
+  updateSidebar();
+  const node = STORY[G.nodeId];
+  addMsg("ev", "↩ Welcome back, " + G.charClass + ". The forest remembers you.");
+  addMsg("sy", "══════════════════════════════");
+  if (node) addMsg("gm", node.text);
+  renderChoices();
+} else {
+  const cross = loadCrossLevel();
+  if (cross) {
+    G = freshState(cross);
+    updateSidebar();
+    addMsg("ev", "You emerge from the shadow of the castle into open air — and stop.");
+    addMsg("ev", cross.charClass + " · Level " + cross.level + " · " + cross.gold + " gold carried over");
+    addMsg("sy", "══════════════════════════════");
+    applyNode("forest_edge");
+  } else {
+    updateSidebar();
+    addMsg("dn", "No castle save found.");
+    renderChoices();
+  }
+}
+</script>
+</body>
+</html>
