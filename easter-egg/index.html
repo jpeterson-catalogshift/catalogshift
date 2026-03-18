@@ -590,7 +590,46 @@ function freshState() {
     nodeId: "start",
     bonusAtk: 0, bonusDef: 0,
     combat: null,
+    clearedCombats: [],
   };
+}
+
+// ── SAVE / LOAD ───────────────────────────────────────────────────────────────
+
+function saveGame() {
+  if (G.phase === "select") return;
+  try {
+    const data = {
+      phase: G.phase === "combat" ? "play" : G.phase,
+      charClass: G.charClass,
+      hp: G.hp, maxHp: G.maxHp,
+      mp: G.mp, maxMp: G.maxMp,
+      gold: G.gold, xp: G.xp, level: G.level,
+      inventory: G.inventory,
+      location: G.location,
+      nodeId: G.phase === "combat" ? (STORY[G.nodeId]?.onWin || G.nodeId) : G.nodeId,
+      clearedCombats: G.clearedCombats,
+    };
+    localStorage.setItem("dungeon_save", JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem("dungeon_save");
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (!d.charClass || !CLASSES[d.charClass]) return false;
+    Object.assign(G, d);
+    G.combat = null;
+    G.bonusAtk = 0; G.bonusDef = 0;
+    G.clearedCombats = d.clearedCombats || [];
+    return true;
+  } catch(e) { return false; }
+}
+
+function clearSave() {
+  try { localStorage.removeItem("dungeon_save"); } catch(e) {}
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -674,6 +713,7 @@ function updateSidebar() {
   mhpBar.style.background = hpPct > 50 ? "#b03030" : hpPct > 25 ? "#b07030" : "#dd2020";
   const mInv = document.getElementById("m-inv");
   mInv.innerHTML = invEl.innerHTML;
+  saveGame();
 }
 
 function toggleMobileStats() {
@@ -832,10 +872,33 @@ function renderEnding() {
   stats.className = "end-stats";
   stats.textContent = "Final: Level " + G.level + " · " + G.gold + " gold · " + G.xp + " XP";
   cw.appendChild(stats);
+
+  if (win) {
+    // save cross-level data for castle
+    try {
+      localStorage.setItem("dungeon_crosslevel", JSON.stringify({
+        charClass: G.charClass,
+        hp: Math.max(G.hp, Math.floor(G.maxHp * 0.5)),
+        maxHp: G.maxHp,
+        mp: G.mp, maxMp: G.maxMp,
+        gold: G.gold, xp: G.xp, level: G.level,
+        inventory: G.inventory,
+      }));
+    } catch(e) {}
+    const castleBtn = document.createElement("button");
+    castleBtn.className = "rbtn";
+    castleBtn.style.borderColor = "#e8c87a";
+    castleBtn.style.color = "#e8c87a";
+    castleBtn.textContent = "→ Enter the Castle of Echoes";
+    castleBtn.onclick = () => { window.location.href = "castle/index.html"; };
+    cw.appendChild(castleBtn);
+  }
+
   const btn = document.createElement("button");
   btn.className = "rbtn";
-  btn.textContent = "↩ Play Again";
+  btn.textContent = win ? "↩ Play Again (new game)" : "↩ Try Again";
   btn.onclick = () => {
+    clearSave();
     document.getElementById("log").innerHTML = "";
     G = freshState();
     updateSidebar();
@@ -867,6 +930,13 @@ function chooseOption(ch) {
   if (ch.goldCost) { G.gold -= ch.goldCost; addMsg("dn", "Paid " + ch.goldCost + " gold."); }
 
   if (ch.combat) {
+    // skip combat if already cleared
+    if (G.clearedCombats.includes(ch.next)) {
+      const node = STORY[ch.next];
+      addMsg("sy", "[This area is already cleared.]");
+      applyNode(node?.onWin || ch.next);
+      return;
+    }
     const node = STORY[ch.next];
     G.nodeId   = ch.next;
     G.location = node?.loc || G.location;
@@ -925,6 +995,7 @@ function combatAction(action) {
       G.level++; G.maxHp += 15; G.hp = Math.min(G.hp + 15, G.maxHp);
       addMsg("ev", "★ LEVEL UP! Now level " + G.level + ".");
     }
+    if (!G.clearedCombats.includes(G.nodeId)) G.clearedCombats.push(G.nodeId);
     G.phase = "play"; G.combat = null;
     updateSidebar();
     applyNode(onWin);
@@ -961,10 +1032,19 @@ function useItem(name) {
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
 G = freshState();
-addMsg("ev", "Welcome, adventurer. The Dungeon of Echoes awaits.");
-addMsg("sy", "══════════════════════════════");
-renderChoices();
-updateSidebar();
+if (loadGame()) {
+  updateSidebar();
+  const node = STORY[G.nodeId];
+  addMsg("ev", "↩ Welcome back, " + G.charClass + ". Your progress has been restored.");
+  addMsg("sy", "══════════════════════════════");
+  if (node) addMsg("gm", node.text);
+  renderChoices();
+} else {
+  addMsg("ev", "Welcome, adventurer. The Dungeon of Echoes awaits.");
+  addMsg("sy", "══════════════════════════════");
+  renderChoices();
+  updateSidebar();
+}
 </script>
 </body>
 </html>
