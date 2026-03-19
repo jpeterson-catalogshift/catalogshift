@@ -141,7 +141,7 @@ body {
 
 .s-label {
   font-size: 10px;
-  color: var(--text-faint);
+  color: #7070a0;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -193,7 +193,7 @@ body {
 }
 .s-inv-empty {
   font-size: 11px;
-  color: var(--text-faint);
+  color: var(--text-dim);
   padding-left: 2px;
 }
 
@@ -220,7 +220,7 @@ body {
 
 .node-label {
   font-size: 10px;
-  color: var(--text-muted);
+  color: #9090b8;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -267,7 +267,7 @@ body {
 .choice-btn {
   background: #0e0e1e;
   border: 1px solid #1e1e38;
-  color: var(--text-dim);
+  color: #d0d0ee;
   padding: 7px 12px;
   text-align: left;
   font-family: inherit;
