@@ -1,0 +1,32 @@
+{
+  "warrior": {
+    "id": "warrior",
+    "label": "Warrior",
+    "hp": 120,
+    "mp": 0,
+    "atk": 18,
+    "def": 8,
+    "special": null,
+    "description": "Tough and powerful"
+  },
+  "mage": {
+    "id": "mage",
+    "label": "Mage",
+    "hp": 60,
+    "mp": 80,
+    "atk": 24,
+    "def": 3,
+    "special": { "type": "spell", "mpCost": 15 },
+    "description": "Fragile but devastating"
+  },
+  "rogue": {
+    "id": "rogue",
+    "label": "Rogue",
+    "hp": 85,
+    "mp": 0,
+    "atk": 20,
+    "def": 5,
+    "special": { "type": "crit", "chance": 0.3, "multiplier": 1.8 },
+    "description": "Fast with high crit chance"
+  }
+}

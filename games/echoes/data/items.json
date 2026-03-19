@@ -1,0 +1,110 @@
+{
+  "known": {
+    "health_potion": {
+      "id": "health_potion",
+      "label": "Health Potion",
+      "type": "consumable",
+      "effect": "heal",
+      "value": 40,
+      "isKeyItem": false,
+      "persistent": false,
+      "description": "A red vial. Restores 40 HP."
+    },
+    "mana_potion": {
+      "id": "mana_potion",
+      "label": "Mana Potion",
+      "type": "consumable",
+      "effect": "restore_mp",
+      "value": 40,
+      "isKeyItem": false,
+      "persistent": false,
+      "description": "A blue vial. Restores 40 MP."
+    },
+    "iron_sword": {
+      "id": "iron_sword",
+      "label": "Iron Sword",
+      "type": "weapon",
+      "slotType": "weapon",
+      "atkBonus": 5,
+      "isKeyItem": false,
+      "persistent": false,
+      "description": "A dependable iron blade. Nothing fancy."
+    },
+    "shadow_dagger": {
+      "id": "shadow_dagger",
+      "label": "Shadow Dagger",
+      "type": "weapon",
+      "slotType": "weapon",
+      "atkBonus": 8,
+      "isKeyItem": false,
+      "persistent": false,
+      "description": "Light and fast. Preferred by those who strike first."
+    },
+    "staff_embers": {
+      "id": "staff_embers",
+      "label": "Staff of Embers",
+      "type": "weapon",
+      "slotType": "weapon",
+      "atkBonus": 10,
+      "isKeyItem": false,
+      "persistent": false,
+      "description": "Warm to the touch. Channels fire well."
+    },
+    "iron_shield": {
+      "id": "iron_shield",
+      "label": "Iron Shield",
+      "type": "armor",
+      "slotType": "armor",
+      "defBonus": 5,
+      "isKeyItem": false,
+      "persistent": false,
+      "description": "Heavy. Reassuring. Takes a hit."
+    },
+    "leather_vest": {
+      "id": "leather_vest",
+      "label": "Leather Vest",
+      "type": "armor",
+      "slotType": "armor",
+      "defBonus": 3,
+      "isKeyItem": false,
+      "persistent": false,
+      "description": "Worn but reliable. Better than nothing."
+    },
+    "rusty_key": {
+      "id": "rusty_key",
+      "label": "Rusty Key",
+      "type": "key",
+      "isKeyItem": true,
+      "persistent": false,
+      "description": "An old key. Opens something in the dungeon."
+    },
+    "dungeon_map": {
+      "id": "dungeon_map",
+      "label": "Dungeon Map",
+      "type": "key",
+      "isKeyItem": true,
+      "persistent": true,
+      "description": "A rough map of the dungeon. Keep it."
+    },
+    "ancient_tome": {
+      "id": "ancient_tome",
+      "label": "Ancient Tome",
+      "type": "key",
+      "isKeyItem": true,
+      "persistent": true,
+      "riddleHint": true,
+      "description": "Dense text. Contains the answer to something."
+    },
+    "dragon_scale": {
+      "id": "dragon_scale",
+      "label": "Dragon Scale",
+      "type": "trophy",
+      "isKeyItem": false,
+      "persistent": true,
+      "description": "Proof you faced the Elder Dragon. Heavy and warm."
+    }
+  },
+  "unknown": {},
+  "resolved": {},
+  "containers": {}
+}

@@ -1,0 +1,514 @@
+{
+  "id": "level1",
+  "name": "Dungeon of Echoes",
+  "saveKey": "dungeon_save",
+  "crossLevelKey": "dungeon_crosslevel",
+  "nextLevelPath": "/games/echoes/castle/",
+  "clearSaveOnExit": "castle_save",
+  "startNode": "start",
+  "fleeNode": "lower_dungeon",
+
+  "mechanics": {
+    "riddleDoor": {
+      "nodeId": "rune_door",
+      "question": "I have cities but no houses, mountains but no trees, water but no fish. What am I?",
+      "answer": "A Map",
+      "hintItem": "ancient_tome",
+      "rewardNode": "rune_reward",
+      "guessNode": "rune_guess",
+      "failNode": "rune_fail",
+      "failHpCost": 25
+    },
+    "sneakAttack": {
+      "nodeId": "dragon_sneak",
+      "bonusAtk": 30
+    },
+    "floodMechanic": {
+      "nodeId": "dragon_flood",
+      "bonusDef": 5
+    },
+    "goblinBribe": {
+      "nodeId": "chief_bribe",
+      "goldCost": 25,
+      "rewardNode": "armory"
+    }
+  },
+
+  "nodes": [
+    {
+      "id": "start",
+      "label": "Dungeon Entrance",
+      "description": "Cold air breathes from the stone archway ahead. Torchlight flickers across ancient carvings — warnings, perhaps, or invitations. A narrow corridor splits in two: left leads toward distant clashing sounds, right toward an eerie green glow. A wooden chest sits half-open near the entrance.",
+      "exits": ["goblin_corridor", "chapel_approach", "entrance_chest"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Go left toward the clashing sounds", "next": "goblin_corridor" },
+        { "label": "Go right toward the green glow", "next": "chapel_approach" },
+        { "label": "Examine the chest", "next": "entrance_chest" }
+      ]
+    },
+    {
+      "id": "entrance_chest",
+      "label": "Dungeon Entrance",
+      "description": "You pry open the chest. Inside: a Health Potion and a crumpled Dungeon Map. The map shows several chambers — one marked with a skull and the word 'HOARD'.",
+      "exits": ["goblin_corridor", "chapel_approach"],
+      "chest": ["health_potion", "dungeon_map"],
+      "encounter": null,
+      "choices": [
+        { "label": "Go left toward the clashing sounds", "next": "goblin_corridor" },
+        { "label": "Go right toward the green glow", "next": "chapel_approach" }
+      ]
+    },
+    {
+      "id": "goblin_corridor",
+      "label": "Goblin Corridor",
+      "description": "The corridor opens into a dank passage strewn with bones. Three goblins argue loudly over a pile of loot — they haven't noticed you. A door at the far end is bolted with a heavy iron lock.",
+      "exits": ["goblin_fight", "goblin_sneak", "start"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Ambush the goblins!", "next": "goblin_fight" },
+        { "label": "Sneak past them toward the locked door", "next": "goblin_sneak" },
+        { "label": "Retreat to the entrance", "next": "start" }
+      ]
+    },
+    {
+      "id": "goblin_sneak",
+      "label": "Goblin Corridor",
+      "description": "You inch past the squabbling goblins — your foot catches a bone. It skitters. The goblins freeze... then go back to arguing. You reach the locked door, but it won't budge without a key.",
+      "exits": ["goblin_fight", "start"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Defeat the goblins to find a key", "next": "goblin_fight" },
+        { "label": "Head back and try the other path", "next": "start" }
+      ]
+    },
+    {
+      "id": "goblin_fight",
+      "label": "Goblin Corridor",
+      "description": "With a war cry, you leap into battle!",
+      "exits": [],
+      "chest": [],
+      "encounter": {
+        "id": "goblin",
+        "label": "Goblin Scout",
+        "hp": 30,
+        "atk": 8,
+        "def": 2,
+        "xp": 20,
+        "gold": 8,
+        "loot": null,
+        "onWin": "goblin_won",
+        "onLose": "death"
+      },
+      "choices": []
+    },
+    {
+      "id": "goblin_won",
+      "label": "Goblin Corridor",
+      "description": "The goblins lie defeated. Rummaging through their scraps you find a battered Iron Sword leaning against the wall.",
+      "exits": ["chief_room", "chapel_approach"],
+      "chest": ["iron_sword"],
+      "encounter": null,
+      "choices": [
+        { "label": "Press deeper — find the Goblin Chief", "next": "chief_room" },
+        { "label": "Take the other path (right corridor)", "next": "chapel_approach" }
+      ]
+    },
+    {
+      "id": "chief_room",
+      "label": "Chief's Chamber",
+      "description": "Beyond a curtain of hanging bones crouches a massive goblin — the Chief. He wears a crown of finger bones and grins, revealing three gold teeth.",
+      "exits": ["chief_fight", "chief_bribe", "goblin_won"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Fight the Goblin Chief", "next": "chief_fight" },
+        { "label": "Offer him gold to pass (costs 25 gold)", "next": "chief_bribe" },
+        { "label": "Retreat to the corridor", "next": "goblin_won" }
+      ]
+    },
+    {
+      "id": "chief_bribe",
+      "label": "Chief's Chamber",
+      "description": "You toss coins at his feet. He grunts and jerks his thumb toward the far door.",
+      "exits": ["armory", "chief_fight"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Pay 25 gold and proceed", "next": "armory", "goldCost": 25 },
+        { "label": "Fight instead", "next": "chief_fight" }
+      ]
+    },
+    {
+      "id": "chief_fight",
+      "label": "Chief's Chamber",
+      "description": "The Chief bellows and charges!",
+      "exits": [],
+      "chest": [],
+      "encounter": {
+        "id": "goblin_chief",
+        "label": "Goblin Chief",
+        "hp": 55,
+        "atk": 14,
+        "def": 4,
+        "xp": 45,
+        "gold": 20,
+        "loot": "rusty_key",
+        "onWin": "chief_won",
+        "onLose": "death"
+      },
+      "choices": []
+    },
+    {
+      "id": "chief_won",
+      "label": "Chief's Chamber",
+      "description": "The Chief crashes down. A Rusty Key drops from his belt.",
+      "exits": ["armory"],
+      "chest": ["rusty_key"],
+      "encounter": null,
+      "choices": [
+        { "label": "Enter the armory beyond", "next": "armory" }
+      ]
+    },
+    {
+      "id": "armory",
+      "label": "Old Armory",
+      "description": "In a locked cabinet — opened with the rusty key — you find a Leather Vest and a Health Potion. A trapdoor leads downward. A passage also connects to the chapel wing.",
+      "exits": ["lower_dungeon", "chapel_approach"],
+      "chest": ["leather_vest", "health_potion"],
+      "encounter": null,
+      "choices": [
+        { "label": "Take the trapdoor to the lower dungeon", "next": "lower_dungeon" },
+        { "label": "Head to the chapel wing", "next": "chapel_approach" }
+      ]
+    },
+    {
+      "id": "chapel_approach",
+      "label": "Shadow Passage",
+      "description": "The green glow intensifies. Strange symbols pulse on the walls. You hear chanting. Two skeletal warriors stand guard at an iron gate.",
+      "exits": ["skeleton_fight", "symbols", "start"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Fight the skeletons", "next": "skeleton_fight" },
+        { "label": "Examine the glowing symbols", "next": "symbols" },
+        { "label": "Turn back to the entrance", "next": "start" }
+      ]
+    },
+    {
+      "id": "symbols",
+      "label": "Shadow Passage",
+      "description": "The symbols form a crude map. A hidden panel slides open revealing a Mana Potion and the Staff of Embers, crackling with orange heat.",
+      "exits": ["skeleton_fight", "start"],
+      "chest": ["mana_potion", "staff_embers"],
+      "encounter": null,
+      "choices": [
+        { "label": "Fight the skeletons and enter the chapel", "next": "skeleton_fight" },
+        { "label": "Head back to the entrance", "next": "start" }
+      ]
+    },
+    {
+      "id": "skeleton_fight",
+      "label": "Shadow Passage",
+      "description": "The skeletons rattle to life, raising rusted blades!",
+      "exits": [],
+      "chest": [],
+      "encounter": {
+        "id": "skeleton",
+        "label": "Skeleton Warrior",
+        "hp": 45,
+        "atk": 12,
+        "def": 6,
+        "xp": 35,
+        "gold": 5,
+        "loot": "health_potion",
+        "onWin": "chapel",
+        "onLose": "death"
+      },
+      "choices": []
+    },
+    {
+      "id": "chapel",
+      "label": "Dark Chapel",
+      "description": "Inside, candles burn in purple flame around a stone altar. A robed cultist rises — his eyes are solid black. 'You should not be here,' he whispers.",
+      "exits": ["cultist_fight", "cultist_talk", "cultist_steal"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Attack the cultist", "next": "cultist_fight" },
+        { "label": "Demand he stand aside", "next": "cultist_talk" },
+        { "label": "Grab the Ancient Tome and run", "next": "cultist_steal" }
+      ]
+    },
+    {
+      "id": "cultist_talk",
+      "label": "Dark Chapel",
+      "description": "He points to a gauntlet of fire traps. 'Survive that, and I will open the way.'",
+      "exits": ["gauntlet", "cultist_fight"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Accept — run the gauntlet", "next": "gauntlet" },
+        { "label": "Attack instead", "next": "cultist_fight" }
+      ]
+    },
+    {
+      "id": "cultist_steal",
+      "label": "Dark Chapel",
+      "description": "You snatch the tome and sprint for the door. A bolt of dark energy catches you for 15 damage. The tome pulses warmly in your hands.",
+      "exits": ["lower_dungeon"],
+      "chest": ["ancient_tome"],
+      "hpCost": 15,
+      "encounter": null,
+      "choices": [
+        { "label": "Continue into the dungeon depths", "next": "lower_dungeon" }
+      ]
+    },
+    {
+      "id": "cultist_fight",
+      "label": "Dark Chapel",
+      "description": "Dark energy crackles around his hands!",
+      "exits": [],
+      "chest": [],
+      "encounter": {
+        "id": "cultist",
+        "label": "Dark Cultist",
+        "hp": 40,
+        "atk": 16,
+        "def": 2,
+        "xp": 40,
+        "gold": 15,
+        "loot": "ancient_tome",
+        "onWin": "cultist_won",
+        "onLose": "death"
+      },
+      "choices": []
+    },
+    {
+      "id": "cultist_won",
+      "label": "Dark Chapel",
+      "description": "The cultist crumples. The candles extinguish. On the altar: the Ancient Tome. A door behind the altar swings open, revealing stairs descending into darkness.",
+      "exits": ["lower_dungeon", "goblin_corridor"],
+      "chest": ["ancient_tome"],
+      "encounter": null,
+      "choices": [
+        { "label": "Descend the stairs into the depths", "next": "lower_dungeon" },
+        { "label": "Head back to the goblin wing", "next": "goblin_corridor" }
+      ]
+    },
+    {
+      "id": "gauntlet",
+      "label": "Fire Gauntlet",
+      "description": "You sprint through jets of flame — one catches your leg for 20 damage. You make it through. The cultist opens the passage without a word.",
+      "exits": ["lower_dungeon"],
+      "chest": [],
+      "hpCost": 20,
+      "encounter": null,
+      "choices": [
+        { "label": "Descend into the dungeon depths", "next": "lower_dungeon" }
+      ]
+    },
+    {
+      "id": "lower_dungeon",
+      "label": "Lower Dungeon",
+      "description": "The air changes — heavier, older. Three paths: a door marked with runes, a collapsed tunnel partially cleared by someone recently, and a vast hall radiating heat like an oven.",
+      "exits": ["rune_door", "secret_vault", "dragon_approach"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Study the rune door", "next": "rune_door" },
+        { "label": "Crawl through the collapsed tunnel", "next": "secret_vault" },
+        { "label": "Approach the vast, hot hall", "next": "dragon_approach" }
+      ]
+    },
+    {
+      "id": "rune_door",
+      "label": "Rune Chamber",
+      "description": "The runes glow as you approach: 'I have cities but no houses, mountains but no trees, water but no fish. What am I?' The Ancient Tome has the answer in its margin.",
+      "exits": ["rune_reward", "rune_guess", "rune_fail", "lower_dungeon"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Answer: A Map (requires Ancient Tome)", "next": "rune_reward", "requires": "ancient_tome" },
+        { "label": "Answer: A Map (take a guess)", "next": "rune_guess" },
+        { "label": "Force the door open", "next": "rune_fail" },
+        { "label": "Leave and try another path", "next": "lower_dungeon" }
+      ]
+    },
+    {
+      "id": "rune_guess",
+      "label": "Rune Chamber",
+      "description": "You guess 'A Map' — a flash of blue light and the door grinds open. Lucky. Or clever.",
+      "exits": ["rune_reward"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Enter", "next": "rune_reward" }
+      ]
+    },
+    {
+      "id": "rune_fail",
+      "label": "Rune Chamber",
+      "description": "You throw yourself at the door. The runes flare and blast you back for 25 damage. The door stays sealed.",
+      "exits": ["rune_door", "lower_dungeon"],
+      "chest": [],
+      "hpCost": 25,
+      "encounter": null,
+      "choices": [
+        { "label": "Try to solve the riddle", "next": "rune_door" },
+        { "label": "Leave and try another path", "next": "lower_dungeon" }
+      ]
+    },
+    {
+      "id": "rune_reward",
+      "label": "Rune Chamber",
+      "description": "The runes fade. Inside: a perfectly preserved treasury. A Stone Golem stirs — its guardian duty awakened.",
+      "exits": ["golem_fight", "lower_dungeon"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Fight the Stone Golem", "next": "golem_fight" },
+        { "label": "Retreat and leave the treasure", "next": "lower_dungeon" }
+      ]
+    },
+    {
+      "id": "golem_fight",
+      "label": "Rune Chamber",
+      "description": "The golem's eyes glow red as it lumbers forward!",
+      "exits": [],
+      "chest": [],
+      "encounter": {
+        "id": "golem",
+        "label": "Stone Golem",
+        "hp": 80,
+        "atk": 18,
+        "def": 12,
+        "xp": 60,
+        "gold": 30,
+        "loot": "iron_shield",
+        "onWin": "golem_won",
+        "onLose": "death"
+      },
+      "choices": []
+    },
+    {
+      "id": "golem_won",
+      "label": "Rune Chamber",
+      "description": "The golem shatters. Behind it: a chest with gold, a Shadow Dagger, and a Health Potion.",
+      "exits": ["dragon_approach", "secret_vault"],
+      "chest": ["shadow_dagger", "health_potion"],
+      "goldGain": 50,
+      "encounter": null,
+      "choices": [
+        { "label": "Head to the dragon's hall", "next": "dragon_approach" },
+        { "label": "Check the collapsed tunnel first", "next": "secret_vault" }
+      ]
+    },
+    {
+      "id": "secret_vault",
+      "label": "Hidden Vault",
+      "description": "A skeleton clutches a satchel: two Health Potions and 30 gold. A note reads: 'DON'T WAKE IT. Leave the gold. RUN.'",
+      "exits": ["dragon_approach", "rune_door"],
+      "chest": ["health_potion", "health_potion"],
+      "goldGain": 30,
+      "encounter": null,
+      "choices": [
+        { "label": "Head to the dragon's hall", "next": "dragon_approach" },
+        { "label": "Study the rune door", "next": "rune_door" }
+      ]
+    },
+    {
+      "id": "dragon_approach",
+      "label": "The Dragon's Hall",
+      "description": "Massive iron doors hang bent from their hinges. At the center of a cathedral of stone, coiled atop a mountain of gold and bones, sleeps the Elder Dragon. Its scales are midnight black. Each breath sends scorched air washing over you. This is the end.",
+      "exits": ["dragon_sneak", "dragon_demand", "dragon_flood", "lower_dungeon"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Strike while it sleeps! (bonus first hit)", "next": "dragon_sneak" },
+        { "label": "Wake it and demand it yield", "next": "dragon_demand" },
+        { "label": "Flood the hall to weaken its fire", "next": "dragon_flood" },
+        { "label": "Retreat — you are not ready", "next": "lower_dungeon" }
+      ]
+    },
+    {
+      "id": "dragon_sneak",
+      "label": "The Dragon's Hall",
+      "description": "You strike hard before its eyes open — 30 bonus damage lands true. Now it's truly furious.",
+      "exits": ["dragon_fight"],
+      "chest": [],
+      "bonusAtk": 30,
+      "encounter": null,
+      "choices": [
+        { "label": "Fight!", "next": "dragon_fight" }
+      ]
+    },
+    {
+      "id": "dragon_demand",
+      "label": "The Dragon's Hall",
+      "description": "'Yield?' it rumbles, amused. 'Courage alone will not save you.' Fire builds in its throat.",
+      "exits": ["dragon_fight"],
+      "chest": [],
+      "encounter": null,
+      "choices": [
+        { "label": "Fight!", "next": "dragon_fight" }
+      ]
+    },
+    {
+      "id": "dragon_flood",
+      "label": "The Dragon's Hall",
+      "description": "You crank an ancient water mechanism. The hall floods — the dragon's fire sputters. It lunges in fury!",
+      "exits": ["dragon_fight"],
+      "chest": [],
+      "bonusDef": 5,
+      "encounter": null,
+      "choices": [
+        { "label": "Fight the weakened dragon!", "next": "dragon_fight" }
+      ]
+    },
+    {
+      "id": "dragon_fight",
+      "label": "The Dragon's Hall",
+      "description": "The Elder Dragon is upon you!",
+      "exits": [],
+      "chest": [],
+      "encounter": {
+        "id": "dragon",
+        "label": "Elder Dragon",
+        "hp": 150,
+        "atk": 28,
+        "def": 8,
+        "xp": 200,
+        "gold": 100,
+        "loot": "dragon_scale",
+        "onWin": "victory",
+        "onLose": "death"
+      },
+      "choices": []
+    },
+    {
+      "id": "victory",
+      "label": "The Dragon's Hall",
+      "description": "The Elder Dragon crashes down, shaking the mountain. Silence falls — broken only by settling coins and trickling water. Light pours through cracks in the ceiling as if the dungeon itself exhales. You have conquered the Dungeon of Echoes. Few ever will again.",
+      "exits": [],
+      "chest": ["dragon_scale"],
+      "goldGain": 100,
+      "ending": "victory",
+      "encounter": null,
+      "choices": []
+    },
+    {
+      "id": "death",
+      "label": "The Dungeon",
+      "description": "Darkness closes in. The dungeon has claimed you, as it has countless others before. Your name joins the long list of those who dared and fell. The torches flicker out, one by one.",
+      "exits": [],
+      "chest": [],
+      "ending": "death",
+      "encounter": null,
+      "choices": []
+    }
+  ]
+}
