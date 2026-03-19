@@ -138,10 +138,11 @@ const EchoesEngine = (() => {
       xp:             0,
       gold:           0,
       currentNode:    _level.startNode,
-      clearedCombats: [],
-      clearedChests:  [],
-      usedAbilities:  [],
-      flags:          {}
+      clearedCombats:   [],
+      clearedChests:    [],
+      clearedGoldGains: [],
+      usedAbilities:    [],
+      flags:            {}
     };
 
     _bonusAtk = 0;
@@ -171,24 +172,27 @@ const EchoesEngine = (() => {
   }
 
   // DEV ONLY — skips a combat encounter, awarding XP/gold/loot as if won.
+  // Rewards only fire on first clear — same guard as clearedChests.
   // Phase 3 replaces this with the real combat loop.
   function _devSkipCombat(node) {
     if (!node.encounter) return;
 
     if (!_state.clearedCombats.includes(node.id)) {
       _state.clearedCombats.push(node.id);
-    }
-    _state.xp   += node.encounter.xp;
-    _state.gold += node.encounter.gold;
-    _pendingMessages.push(`[DEV] Combat skipped: +${node.encounter.xp} XP, +${node.encounter.gold}g`);
+      _state.xp   += node.encounter.xp;
+      _state.gold += node.encounter.gold;
+      _pendingMessages.push(`[DEV] Combat skipped: +${node.encounter.xp} XP, +${node.encounter.gold}g`);
 
-    if (node.encounter.loot) {
-      const item = inventory.lookupItem(node.encounter.loot);
-      if (item) {
-        _session.bag.items.push(node.encounter.loot);
-        _pendingMessages.push(`Obtained: ${item.label}`);
-        session.save();
+      if (node.encounter.loot) {
+        const item = inventory.lookupItem(node.encounter.loot);
+        if (item) {
+          _session.bag.items.push(node.encounter.loot);
+          _pendingMessages.push(`Obtained: ${item.label}`);
+          session.save();
+        }
       }
+    } else {
+      _pendingMessages.push(`[DEV] Already cleared — no rewards`);
     }
 
     navigateNode(node.encounter.onWin);
@@ -220,10 +224,12 @@ const EchoesEngine = (() => {
       }
     }
 
-    // Apply gold gain
-    if (node.goldGain) {
+    // Apply gold gain — only on first visit (tracked by clearedGoldGains)
+    if (node.goldGain && !(_state.clearedGoldGains || []).includes(node.id)) {
       _state.gold += node.goldGain;
       _pendingMessages.push(`+${node.goldGain} gold`);
+      _state.clearedGoldGains = _state.clearedGoldGains || [];
+      _state.clearedGoldGains.push(node.id);
     }
 
     // Process chest items — only on first visit (tracked by clearedChests)
