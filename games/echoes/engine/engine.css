@@ -220,7 +220,7 @@ body {
 
 .node-label {
   font-size: 10px;
-  color: #9090b8;
+  color: var(--text-bright);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
