@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Games</title>
+  <link rel="stylesheet" href="/games/styles.css">
+</head>
+<body>
+  <header>
+    <h1 id="site-title"></h1>
+    <p id="site-tagline"></p>
+  </header>
+  <div id="game-grid"></div>
+
+  <script>
+    fetch('/games/content.json')
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('site-title').textContent = data.site.title;
+        document.getElementById('site-tagline').textContent = data.site.tagline;
+
+        const grid = document.getElementById('game-grid');
+        data.games.forEach(game => {
+          const isLive = game.status === 'live';
+          const card = document.createElement(isLive ? 'a' : 'div');
+          card.className = 'game-card ' + (isLive ? 'live' : 'coming-soon');
+          if (isLive) card.href = game.path;
+          card.innerHTML = `<h2>${game.title}</h2><p>${game.description}</p><span class="card-label">${game.label}</span>`;
+          grid.appendChild(card);
+        });
+      });
+  </script>
+</body>
+</html>

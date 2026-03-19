@@ -1,0 +1,28 @@
+{
+  "site": {
+    "title": "Games",
+    "tagline": "Small games. Hidden in plain sight."
+  },
+  "games": [
+    {
+      "id": "echoes",
+      "title": "Echoes RPG",
+      "description": "A text-based RPG. Choose your class, explore the dungeon, survive.",
+      "path": "/games/echoes/",
+      "status": "live",
+      "engine": "echoes_v2",
+      "type": "rpg",
+      "label": "Play now"
+    },
+    {
+      "id": "new-game",
+      "title": "???",
+      "description": "Something new is coming.",
+      "path": null,
+      "status": "coming_soon",
+      "engine": null,
+      "type": "unknown",
+      "label": "Coming soon"
+    }
+  ]
+}
