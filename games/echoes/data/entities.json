@@ -1,0 +1,74 @@
+{
+  "goblin_scout": {
+    "id": "goblin_scout",
+    "label": "Goblin Scout",
+    "hp": 30,
+    "atk": 8,
+    "def": 2,
+    "xp": 20,
+    "gold": 8,
+    "loot": [],
+    "type": "enemy",
+    "description": "A wiry goblin with quick hands and a rusty blade. It eyes you hungrily."
+  },
+  "goblin_chief": {
+    "id": "goblin_chief",
+    "label": "Goblin Chief",
+    "hp": 55,
+    "atk": 14,
+    "def": 4,
+    "xp": 45,
+    "gold": 20,
+    "loot": ["rusty_key"],
+    "type": "enemy",
+    "description": "A massive goblin in a crown of finger bones. Three gold teeth glint as he bellows."
+  },
+  "skeleton": {
+    "id": "skeleton",
+    "label": "Skeleton Warrior",
+    "hp": 45,
+    "atk": 12,
+    "def": 6,
+    "xp": 35,
+    "gold": 5,
+    "loot": ["health_potion"],
+    "type": "enemy",
+    "description": "A rattling skeleton in rusted armor, moving with grim and purposeful silence."
+  },
+  "dark_cultist": {
+    "id": "dark_cultist",
+    "label": "Dark Cultist",
+    "hp": 40,
+    "atk": 16,
+    "def": 2,
+    "xp": 40,
+    "gold": 15,
+    "loot": ["ancient_tome"],
+    "type": "enemy",
+    "description": "A robed figure with solid black eyes. Dark energy crackles at his fingertips."
+  },
+  "stone_golem": {
+    "id": "stone_golem",
+    "label": "Stone Golem",
+    "hp": 80,
+    "atk": 18,
+    "def": 12,
+    "xp": 60,
+    "gold": 30,
+    "loot": ["iron_shield"],
+    "type": "enemy",
+    "description": "An ancient stone guardian, eyes glowing red. Every step shakes the floor."
+  },
+  "elder_dragon": {
+    "id": "elder_dragon",
+    "label": "Elder Dragon",
+    "hp": 150,
+    "atk": 28,
+    "def": 8,
+    "xp": 200,
+    "gold": 100,
+    "loot": ["dragon_scale"],
+    "type": "boss",
+    "description": "Midnight-black scales coiled atop a mountain of gold and bones. Each breath scorches the air. This is what the dungeon was built to protect."
+  }
+}
