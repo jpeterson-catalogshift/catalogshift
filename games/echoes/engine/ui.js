@@ -156,7 +156,7 @@ const EchoesUI = (() => {
       const currentNode = state.currentNode
         ? EchoesEngine.getLevel()?.nodes.find(n => n.id === state.currentNode)
         : null;
-      const locLabel = currentNode ? currentNode.label : '—';
+      const locLabel = currentNode ? currentNode.label : '\u2014';
 
       mobileBar.innerHTML = `
         <span class="mb-class">${label}</span>
@@ -196,8 +196,100 @@ const EchoesUI = (() => {
   }
 
 
+  // ── renderCombat ────────────────────────────────────────────────────────────
+  // Renders the active combat screen. Shows enemy HP bar, combat log, and
+  // action buttons (Attack + any usable consumables in bag).
+  // Called by the engine at combat start and after each turn.
+
+  function renderCombat(combat, entity, state, classDef) {
+    _ensureGameLayout();
+
+    const gameBody = document.getElementById('game-body');
+    let screen = document.getElementById('game-screen');
+    if (!screen) {
+      screen = document.createElement('div');
+      screen.id = 'game-screen';
+      gameBody.appendChild(screen);
+    }
+    screen.innerHTML = '';
+
+    // ── Log area ─────────────────────────────────────────────────────────────
+    const logArea = document.createElement('div');
+    logArea.className = 'node-log-area';
+
+    // Enemy header
+    const labelEl = document.createElement('div');
+    labelEl.className = 'node-label';
+    labelEl.textContent = `\u2694 ${entity.label}`;
+    logArea.appendChild(labelEl);
+
+    // Enemy HP bar
+    const hpPct    = combat.enemyMaxHp > 0
+      ? Math.round(combat.enemyHp / combat.enemyMaxHp * 100)
+      : 0;
+    const enemyHpEl = document.createElement('div');
+    enemyHpEl.className = 's-panel enemy-hp';
+    enemyHpEl.innerHTML = `
+      <div class="s-bar-wrap"><div class="s-bar-fill" style="width:${hpPct}%;background:#8b1a1a"></div></div>
+      <div class="s-row"><span class="s-key">Enemy HP</span><span class="s-hp">${combat.enemyHp} / ${combat.enemyMaxHp}</span></div>
+    `;
+    logArea.appendChild(enemyHpEl);
+
+    // Entity description
+    const descEl = document.createElement('div');
+    descEl.className = 'node-description';
+    descEl.textContent = entity.description;
+    logArea.appendChild(descEl);
+
+    // Combat log
+    const logEl = document.createElement('div');
+    logEl.id = 'node-log';
+    logEl.className = 'node-log';
+    combat.log.forEach(msg => _addLog(logEl, msg, 'log-event'));
+    logArea.appendChild(logEl);
+
+    screen.appendChild(logArea);
+
+    // ── Actions ───────────────────────────────────────────────────────────────
+    const choicesEl = document.createElement('div');
+    choicesEl.className = 'choices-area';
+
+    const attackBtn = document.createElement('button');
+    attackBtn.className = 'choice-btn choice-primary';
+    attackBtn.textContent = '\u2694 Attack';
+    attackBtn.onclick = () => EchoesEngine.combatAction('attack');
+    choicesEl.appendChild(attackBtn);
+
+    // Use-item buttons — one per unique consumable type in bag
+    const session = EchoesEngine.getSession();
+    if (session && session.bag.items.length > 0) {
+      const shown = new Set();
+      session.bag.items.forEach(itemId => {
+        if (shown.has(itemId)) return;
+        const item = EchoesEngine.inventory.lookupItem(itemId);
+        if (!item) return;
+        if (item.effect !== 'heal' && item.effect !== 'restore_mp') return;
+        shown.add(itemId);
+
+        const useBtn = document.createElement('button');
+        useBtn.className = 'choice-btn';
+        useBtn.textContent = `Use ${item.label}`;
+        useBtn.onclick = () => EchoesEngine.combatAction('useItem', itemId);
+        choicesEl.appendChild(useBtn);
+      });
+    }
+
+    screen.appendChild(choicesEl);
+
+    // Scroll combat log to bottom
+    requestAnimationFrame(() => { logEl.scrollTop = logEl.scrollHeight; });
+  }
+
+
   // ── renderNode ──────────────────────────────────────────────────────────────
   // Renders node content into #game-screen inside .game-body.
+  // Encounter nodes are handled by the engine before renderNode is called —
+  // this function is only reached for non-encounter nodes.
 
   function renderNode(node, state, session, messages = []) {
     _ensureGameLayout();
@@ -258,27 +350,6 @@ const EchoesUI = (() => {
     // Death ending
     if (node.ending === 'death') {
       _renderDeath(choicesEl);
-      return;
-    }
-
-    // Combat node — Phase 3 placeholder
-    if (node.encounter) {
-      const enc = node.encounter;
-      const encEl = document.createElement('div');
-      encEl.className = 'encounter-placeholder';
-      encEl.innerHTML = `\u2694 <b>${enc.label}</b> &nbsp;&middot;&nbsp; HP: ${enc.hp} &nbsp;&middot;&nbsp; ATK: ${enc.atk} &nbsp;&middot;&nbsp; DEF: ${enc.def}`;
-      choicesEl.appendChild(encEl);
-
-      const note = document.createElement('div');
-      note.className = 'encounter-note';
-      note.textContent = 'Combat system arrives in Phase 3.';
-      choicesEl.appendChild(note);
-
-      const skipBtn = document.createElement('button');
-      skipBtn.className = 'choice-btn choice-dev';
-      skipBtn.textContent = `[DEV] Skip \u2014 fight ${enc.label} \u2192 victory`;
-      skipBtn.onclick = () => EchoesEngine.devSkipCombat(node);
-      choicesEl.appendChild(skipBtn);
       return;
     }
 
@@ -416,6 +487,6 @@ const EchoesUI = (() => {
   }
 
 
-  return { renderClassSelect, renderStats, renderNode, showMessage };
+  return { renderClassSelect, renderStats, renderNode, renderCombat, showMessage };
 
 })();

@@ -1,0 +1,12 @@
+[
+  { "level": 1, "xpRequired": 0 },
+  { "level": 2, "xpRequired": 30 },
+  { "level": 3, "xpRequired": 80 },
+  { "level": 4, "xpRequired": 150 },
+  { "level": 5, "xpRequired": 250 },
+  { "level": 6, "xpRequired": 380 },
+  { "level": 7, "xpRequired": 550 },
+  { "level": 8, "xpRequired": 750 },
+  { "level": 9, "xpRequired": 1000 },
+  { "level": 10, "xpRequired": 1300 }
+]

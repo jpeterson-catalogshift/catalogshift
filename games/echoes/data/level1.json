@@ -93,14 +93,7 @@
       "exits": [],
       "chest": [],
       "encounter": {
-        "id": "goblin",
-        "label": "Goblin Scout",
-        "hp": 30,
-        "atk": 8,
-        "def": 2,
-        "xp": 20,
-        "gold": 8,
-        "loot": null,
+        "entityId": "goblin_scout",
         "onWin": "goblin_won",
         "onLose": "death"
       },
@@ -152,14 +145,7 @@
       "exits": [],
       "chest": [],
       "encounter": {
-        "id": "goblin_chief",
-        "label": "Goblin Chief",
-        "hp": 55,
-        "atk": 14,
-        "def": 4,
-        "xp": 45,
-        "gold": 20,
-        "loot": "rusty_key",
+        "entityId": "goblin_chief",
         "onWin": "chief_won",
         "onLose": "death"
       },
@@ -170,7 +156,7 @@
       "label": "Chief's Chamber",
       "description": "The Chief crashes down. A Rusty Key drops from his belt.",
       "exits": ["armory", "goblin_won"],
-      "chest": ["rusty_key"],
+      "chest": [],
       "encounter": null,
       "choices": [
         { "label": "Enter the armory beyond", "next": "armory" },
@@ -221,14 +207,7 @@
       "exits": [],
       "chest": [],
       "encounter": {
-        "id": "skeleton",
-        "label": "Skeleton Warrior",
-        "hp": 45,
-        "atk": 12,
-        "def": 6,
-        "xp": 35,
-        "gold": 5,
-        "loot": "health_potion",
+        "entityId": "skeleton",
         "onWin": "chapel",
         "onLose": "death"
       },
@@ -280,14 +259,7 @@
       "exits": [],
       "chest": [],
       "encounter": {
-        "id": "cultist",
-        "label": "Dark Cultist",
-        "hp": 40,
-        "atk": 16,
-        "def": 2,
-        "xp": 40,
-        "gold": 15,
-        "loot": "ancient_tome",
+        "entityId": "dark_cultist",
         "onWin": "cultist_won",
         "onLose": "death"
       },
@@ -298,7 +270,7 @@
       "label": "Dark Chapel",
       "description": "The cultist crumples. The candles extinguish. On the altar: the Ancient Tome. A door behind the altar swings open, revealing stairs descending into darkness.",
       "exits": ["lower_dungeon", "goblin_corridor"],
-      "chest": ["ancient_tome"],
+      "chest": [],
       "encounter": null,
       "choices": [
         { "label": "Descend the stairs into the depths", "next": "lower_dungeon" },
@@ -390,14 +362,7 @@
       "exits": [],
       "chest": [],
       "encounter": {
-        "id": "golem",
-        "label": "Stone Golem",
-        "hp": 80,
-        "atk": 18,
-        "def": 12,
-        "xp": 60,
-        "gold": 30,
-        "loot": "iron_shield",
+        "entityId": "stone_golem",
         "onWin": "golem_won",
         "onLose": "death"
       },
@@ -486,14 +451,7 @@
       "exits": [],
       "chest": [],
       "encounter": {
-        "id": "dragon",
-        "label": "Elder Dragon",
-        "hp": 150,
-        "atk": 28,
-        "def": 8,
-        "xp": 200,
-        "gold": 100,
-        "loot": "dragon_scale",
+        "entityId": "elder_dragon",
         "onWin": "victory",
         "onLose": "death"
       },
@@ -504,8 +462,7 @@
       "label": "The Dragon's Hall",
       "description": "The Elder Dragon crashes down, shaking the mountain. Silence falls — broken only by settling coins and trickling water. Light pours through cracks in the ceiling as if the dungeon itself exhales. You have conquered the Dungeon of Echoes. Few ever will again.",
       "exits": [],
-      "chest": ["dragon_scale"],
-      "goldGain": 100,
+      "chest": [],
       "ending": "victory",
       "encounter": null,
       "choices": []
