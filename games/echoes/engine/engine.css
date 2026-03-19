@@ -1,20 +1,29 @@
 /* ── Echoes RPG — Engine Styles ─────────────────────────────────────────────
    Shared styles for all levels. Portal-level styles live in /games/styles.css.
+   Desktop: 184px left sidebar + main content.
+   Mobile (≤600px): collapsible top bar, sidebar hidden.
    ──────────────────────────────────────────────────────────────────────────── */
 
 :root {
   --bg:           #06060c;
   --panel:        #0c0c18;
-  --border:       #1a1a2a;
+  --panel-alt:    #0b0b16;
+  --border:       #181828;
+  --border-light: #1e1e32;
   --text:         #c8b88a;
-  --text-muted:   #44445a;
+  --text-dim:     #7a7a98;
+  --text-muted:   #585878;
+  --text-faint:   #303050;
   --text-bright:  #e8c87a;
   --btn-bg:       #0f0f1e;
   --btn-hover:    #181828;
-  --btn-border:   #2a2a3a;
+  --btn-border:   #242438;
+  --hp-color:     #dd5555;
+  --mp-color:     #6090e0;
+  --gold-color:   #d8b040;
+  --event-color:  #d8b040;
+  --warn-color:   #b07030;
   --green:        #5a9a5a;
-  --red:          #c03030;
-  --gold:         #c8a840;
 }
 
 *, *::before, *::after {
@@ -31,122 +40,253 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 32px 16px;
+  padding: 24px 16px;
 }
 
 /* ── Game root ────────────────────────────────────────────────────────────── */
 
 #game-root {
   width: 100%;
-  max-width: 720px;
+  max-width: 860px;
   display: flex;
   flex-direction: column;
+  background: #09090f;
+  border: 1px solid #1c1c2c;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
 }
 
-/* ── Stats bar ────────────────────────────────────────────────────────────── */
+/* ── Mobile stats bar (hidden on desktop) ─────────────────────────────────── */
 
-.stats-bar {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 6px 6px 0 0;
-  padding: 8px 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  font-size: 0.82rem;
-  color: var(--text-muted);
+.mobile-stats {
+  display: none;
+  background: var(--panel-alt);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
 
-.stats-bar .stat b {
+.mobile-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mobile-bar:active { background: #0e0e1e; }
+
+.mb-class { font-size: 15px; color: var(--text-bright); }
+.mb-hp    { font-size: 12px; color: var(--hp-color); }
+.mb-gold  { font-size: 12px; color: var(--gold-color); }
+.mb-loc   { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+.mb-arrow { font-size: 11px; color: var(--text-faint); transition: transform .2s; }
+.mb-arrow.open { transform: rotate(180deg); }
+
+.mobile-bar-hp {
+  height: 3px;
+  background: #141424;
+  flex: 1;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.mobile-bar-hp-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--hp-color);
+  transition: width .4s;
+}
+
+.mobile-expanded {
+  padding: 0 12px 10px;
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.mobile-expanded.open { display: grid; }
+
+/* ── Game body (sidebar + main) ───────────────────────────────────────────── */
+
+.game-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 560px;
+}
+
+/* ── Desktop sidebar ──────────────────────────────────────────────────────── */
+
+.stats-sidebar {
+  width: 184px;
+  min-width: 184px;
+  background: var(--panel-alt);
+  border-right: 1px solid var(--border);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  overflow-y: auto;
+}
+
+.stats-sidebar::-webkit-scrollbar { width: 2px; }
+.stats-sidebar::-webkit-scrollbar-thumb { background: #202038; }
+
+/* Shared panel styles */
+.s-panel {
+  border: 1px solid var(--border-light);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.s-label {
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.s-value {
+  font-size: 18px;
   color: var(--text-bright);
 }
 
-/* ── Game screen ──────────────────────────────────────────────────────────── */
-
-.game-screen {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 6px 6px;
-  padding: 24px;
+.s-row {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 460px;
+  justify-content: space-between;
+  font-size: 11px;
+  margin: 2px 0;
 }
 
-/* ── Node content ─────────────────────────────────────────────────────────── */
+.s-key { color: var(--text-muted); }
+.s-val { color: var(--text); }
+.s-hp  { color: var(--hp-color); }
+.s-mp  { color: var(--mp-color); }
+.s-gd  { color: var(--gold-color); }
+
+.s-bar-wrap {
+  height: 5px;
+  background: #141424;
+  border-radius: 3px;
+  margin: 3px 0;
+  overflow: hidden;
+}
+.s-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .4s;
+}
+
+.s-inv-item {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin: 2px 0;
+  padding-left: 9px;
+  position: relative;
+}
+.s-inv-item::before {
+  content: ">";
+  position: absolute;
+  left: 0;
+  color: var(--text-faint);
+}
+.s-inv-empty {
+  font-size: 11px;
+  color: var(--text-faint);
+  padding-left: 2px;
+}
+
+/* ── Main content area ────────────────────────────────────────────────────── */
+
+#game-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.node-log-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.node-log-area::-webkit-scrollbar { width: 3px; }
+.node-log-area::-webkit-scrollbar-thumb { background: #202038; border-radius: 2px; }
 
 .node-label {
-  font-size: 0.72rem;
+  font-size: 10px;
+  color: var(--text-muted);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-muted);
 }
 
 .node-description {
-  font-size: 0.93rem;
+  font-size: 13px;
   line-height: 1.7;
   color: var(--text);
 }
-
-/* ── Log ──────────────────────────────────────────────────────────────────── */
 
 .node-log {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  margin-top: 4px;
 }
 
 .log-entry {
-  font-size: 0.78rem;
+  font-size: 12px;
 }
 
-.log-event {
-  color: var(--green);
-}
+.log-event   { color: var(--event-color); }
+.log-event::before { content: "\BB  "; }
+.log-warning { color: var(--warn-color); }
+.log-warning::before { content: "\BB  "; }
+.log-dev     { color: var(--text-faint); font-style: italic; }
 
-.log-warning {
-  color: #b07030;
-}
-
-.log-dev {
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-/* ── Choices ──────────────────────────────────────────────────────────────── */
+/* ── Choices panel ────────────────────────────────────────────────────────── */
 
 .choices-area {
+  border-top: 1px solid var(--border);
+  padding: 10px 14px;
+  background: var(--panel-alt);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: auto;
+  gap: 6px;
+  flex-shrink: 0;
+  max-height: 260px;
+  overflow-y: auto;
 }
 
+.choices-area::-webkit-scrollbar { width: 2px; }
+
 .choice-btn {
-  background: var(--btn-bg);
-  border: 1px solid var(--btn-border);
-  color: var(--text);
-  padding: 10px 16px;
+  background: #0e0e1e;
+  border: 1px solid #1e1e38;
+  color: var(--text-dim);
+  padding: 7px 12px;
   text-align: left;
   font-family: inherit;
-  font-size: 0.88rem;
+  font-size: 12px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.15s, border-color 0.15s;
+  border-radius: 3px;
+  transition: border-color .15s, color .15s;
   width: 100%;
+  min-height: 32px;
 }
 
 .choice-btn:hover:not(:disabled) {
-  background: var(--btn-hover);
-  border-color: #3a3a5a;
+  border-color: #6060a0;
+  color: #a0a0e0;
 }
 
 .choice-btn:disabled,
 .choice-disabled {
-  opacity: 0.32;
+  opacity: 0.3;
   cursor: default;
 }
 
@@ -156,37 +296,51 @@ body {
 }
 
 .choice-btn.choice-dev {
-  border-color: #222230;
-  color: var(--text-muted);
-  font-size: 0.75rem;
+  border-color: #1a1a2a;
+  color: var(--text-faint);
+  font-size: 11px;
 }
 
-/* ── Encounter placeholder (Phase 3) ─────────────────────────────────────── */
+/* ── Encounter placeholder ────────────────────────────────────────────────── */
 
 .encounter-placeholder {
-  font-size: 0.88rem;
-  color: var(--red);
-  padding: 10px 0 8px;
-  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: #c03030;
+  padding: 10px 0 6px;
 }
 
 .encounter-note {
-  font-size: 0.75rem;
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+
+/* ── Endings ──────────────────────────────────────────────────────────────── */
+
+.ending-title {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  padding: 6px 0 4px;
+}
+
+.ending-victory { color: var(--text-bright); }
+.ending-death   { color: #c03030; }
+
+.ending-stats {
+  font-size: 11px;
   color: var(--text-muted);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 /* ── Class selection screen ───────────────────────────────────────────────── */
 
 .class-select {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 6px;
   padding: 48px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  min-height: 400px;
 }
 
 .class-select h1 {
@@ -220,7 +374,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background .15s, border-color .15s;
 }
 
 .class-card:hover {
@@ -228,40 +382,29 @@ body {
   border-color: var(--text-bright);
 }
 
-.class-label {
-  font-size: 1.05rem;
-  color: var(--text-bright);
-}
+.class-label { font-size: 1.05rem; color: var(--text-bright); }
+.class-stats { font-size: 0.72rem; color: var(--text-muted); line-height: 1.6; }
+.class-desc  { font-size: 0.82rem; color: var(--text); }
 
-.class-stats {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
+/* ── Mobile breakpoint ────────────────────────────────────────────────────── */
 
-.class-desc {
-  font-size: 0.82rem;
-  color: var(--text);
-}
+@media (max-width: 600px) {
+  body { padding: 0; }
 
-/* ── Endings ──────────────────────────────────────────────────────────────── */
+  #game-root {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    min-height: 100vh;
+  }
 
-.ending-title {
-  font-size: 0.95rem;
-  letter-spacing: 0.06em;
-  padding: 8px 0;
-}
+  .stats-sidebar { display: none; }
+  .mobile-stats  { display: block; }
 
-.ending-victory {
-  color: var(--text-bright);
-}
+  .game-body { flex-direction: column; min-height: unset; }
 
-.ending-death {
-  color: var(--red);
-}
+  .class-cards { flex-direction: column; align-items: stretch; }
+  .class-card  { width: 100%; }
 
-.ending-stats {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 4px;
+  .choices-area { max-height: 220px; }
 }
