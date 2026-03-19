@@ -4,11 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Echoes RPG</title>
-  <!-- Placeholder — will be replaced by Echoes RPG v2.0 engine shell in Phase 2 -->
+  <link rel="stylesheet" href="/games/echoes/engine/engine.css">
 </head>
 <body>
-  <p>Echoes RPG</p>
-  <p>Coming soon</p>
-  <a href="/games/">Back to Games</a>
+  <div id="game-root"></div>
+  <script src="/games/echoes/engine/engine.js"></script>
+  <script src="/games/echoes/engine/ui.js"></script>
+  <script>
+    EchoesEngine.load('/games/echoes/data/level1.json');
+  </script>
 </body>
 </html>

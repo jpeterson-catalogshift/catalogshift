@@ -1,0 +1,267 @@
+/* ── Echoes RPG — Engine Styles ─────────────────────────────────────────────
+   Shared styles for all levels. Portal-level styles live in /games/styles.css.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --bg:           #06060c;
+  --panel:        #0c0c18;
+  --border:       #1a1a2a;
+  --text:         #c8b88a;
+  --text-muted:   #44445a;
+  --text-bright:  #e8c87a;
+  --btn-bg:       #0f0f1e;
+  --btn-hover:    #181828;
+  --btn-border:   #2a2a3a;
+  --green:        #5a9a5a;
+  --red:          #c03030;
+  --gold:         #c8a840;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+/* ── Game root ────────────────────────────────────────────────────────────── */
+
+#game-root {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Stats bar ────────────────────────────────────────────────────────────── */
+
+.stats-bar {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px 6px 0 0;
+  padding: 8px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.stats-bar .stat b {
+  color: var(--text-bright);
+}
+
+/* ── Game screen ──────────────────────────────────────────────────────────── */
+
+.game-screen {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 460px;
+}
+
+/* ── Node content ─────────────────────────────────────────────────────────── */
+
+.node-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.node-description {
+  font-size: 0.93rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* ── Log ──────────────────────────────────────────────────────────────────── */
+
+.node-log {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.log-entry {
+  font-size: 0.78rem;
+}
+
+.log-event {
+  color: var(--green);
+}
+
+.log-warning {
+  color: #b07030;
+}
+
+.log-dev {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Choices ──────────────────────────────────────────────────────────────── */
+
+.choices-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.choice-btn {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--text);
+  padding: 10px 16px;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s, border-color 0.15s;
+  width: 100%;
+}
+
+.choice-btn:hover:not(:disabled) {
+  background: var(--btn-hover);
+  border-color: #3a3a5a;
+}
+
+.choice-btn:disabled,
+.choice-disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.choice-btn.choice-primary {
+  border-color: var(--text-bright);
+  color: var(--text-bright);
+}
+
+.choice-btn.choice-dev {
+  border-color: #222230;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* ── Encounter placeholder (Phase 3) ─────────────────────────────────────── */
+
+.encounter-placeholder {
+  font-size: 0.88rem;
+  color: var(--red);
+  padding: 10px 0 8px;
+  border-top: 1px solid var(--border);
+}
+
+.encounter-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* ── Class selection screen ───────────────────────────────────────────────── */
+
+.class-select {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.class-select h1 {
+  font-size: 2rem;
+  color: var(--text-bright);
+  letter-spacing: 0.12em;
+  font-weight: normal;
+}
+
+.class-select-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.class-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.class-card {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 6px;
+  padding: 20px 18px;
+  width: 196px;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.class-card:hover {
+  background: var(--btn-hover);
+  border-color: var(--text-bright);
+}
+
+.class-label {
+  font-size: 1.05rem;
+  color: var(--text-bright);
+}
+
+.class-stats {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.class-desc {
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+/* ── Endings ──────────────────────────────────────────────────────────────── */
+
+.ending-title {
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  padding: 8px 0;
+}
+
+.ending-victory {
+  color: var(--text-bright);
+}
+
+.ending-death {
+  color: var(--red);
+}
+
+.ending-stats {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
