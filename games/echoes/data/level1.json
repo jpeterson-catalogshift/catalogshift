@@ -52,12 +52,13 @@
       "id": "entrance_chest",
       "label": "Dungeon Entrance",
       "description": "You pry open the chest. Inside: a Health Potion and a crumpled Dungeon Map. The map shows several chambers — one marked with a skull and the word 'HOARD'.",
-      "exits": ["goblin_corridor", "chapel_approach"],
+      "exits": ["goblin_corridor", "chapel_approach", "start"],
       "chest": ["health_potion", "dungeon_map"],
       "encounter": null,
       "choices": [
         { "label": "Go left toward the clashing sounds", "next": "goblin_corridor" },
-        { "label": "Go right toward the green glow", "next": "chapel_approach" }
+        { "label": "Go right toward the green glow", "next": "chapel_approach" },
+        { "label": "Return to the entrance", "next": "start" }
       ]
     },
     {
@@ -109,12 +110,13 @@
       "id": "goblin_won",
       "label": "Goblin Corridor",
       "description": "The goblins lie defeated. Rummaging through their scraps you find a battered Iron Sword leaning against the wall.",
-      "exits": ["chief_room", "chapel_approach"],
+      "exits": ["chief_room", "chapel_approach", "start"],
       "chest": ["iron_sword"],
       "encounter": null,
       "choices": [
         { "label": "Press deeper — find the Goblin Chief", "next": "chief_room" },
-        { "label": "Take the other path (right corridor)", "next": "chapel_approach" }
+        { "label": "Take the other path (right corridor)", "next": "chapel_approach" },
+        { "label": "Return to the entrance", "next": "start" }
       ]
     },
     {
@@ -134,12 +136,13 @@
       "id": "chief_bribe",
       "label": "Chief's Chamber",
       "description": "You toss coins at his feet. He grunts and jerks his thumb toward the far door.",
-      "exits": ["armory", "chief_fight"],
+      "exits": ["armory", "chief_fight", "chief_room"],
       "chest": [],
       "encounter": null,
       "choices": [
         { "label": "Pay 25 gold and proceed", "next": "armory", "goldCost": 25 },
-        { "label": "Fight instead", "next": "chief_fight" }
+        { "label": "Fight instead", "next": "chief_fight" },
+        { "label": "On second thought, wait", "next": "chief_room" }
       ]
     },
     {
@@ -166,11 +169,12 @@
       "id": "chief_won",
       "label": "Chief's Chamber",
       "description": "The Chief crashes down. A Rusty Key drops from his belt.",
-      "exits": ["armory"],
+      "exits": ["armory", "goblin_won"],
       "chest": ["rusty_key"],
       "encounter": null,
       "choices": [
-        { "label": "Enter the armory beyond", "next": "armory" }
+        { "label": "Enter the armory beyond", "next": "armory" },
+        { "label": "Return through the goblin corridor", "next": "goblin_won" }
       ]
     },
     {
@@ -234,25 +238,27 @@
       "id": "chapel",
       "label": "Dark Chapel",
       "description": "Inside, candles burn in purple flame around a stone altar. A robed cultist rises — his eyes are solid black. 'You should not be here,' he whispers.",
-      "exits": ["cultist_fight", "cultist_talk", "cultist_steal"],
+      "exits": ["cultist_fight", "cultist_talk", "cultist_steal", "chapel_approach"],
       "chest": [],
       "encounter": null,
       "choices": [
         { "label": "Attack the cultist", "next": "cultist_fight" },
         { "label": "Demand he stand aside", "next": "cultist_talk" },
-        { "label": "Grab the Ancient Tome and run", "next": "cultist_steal" }
+        { "label": "Grab the Ancient Tome and run", "next": "cultist_steal" },
+        { "label": "Back away from the cultist", "next": "chapel_approach" }
       ]
     },
     {
       "id": "cultist_talk",
       "label": "Dark Chapel",
       "description": "He points to a gauntlet of fire traps. 'Survive that, and I will open the way.'",
-      "exits": ["gauntlet", "cultist_fight"],
+      "exits": ["gauntlet", "cultist_fight", "chapel"],
       "chest": [],
       "encounter": null,
       "choices": [
         { "label": "Accept — run the gauntlet", "next": "gauntlet" },
-        { "label": "Attack instead", "next": "cultist_fight" }
+        { "label": "Attack instead", "next": "cultist_fight" },
+        { "label": "Walk away", "next": "chapel" }
       ]
     },
     {
@@ -315,13 +321,14 @@
       "id": "lower_dungeon",
       "label": "Lower Dungeon",
       "description": "The air changes — heavier, older. Three paths: a door marked with runes, a collapsed tunnel partially cleared by someone recently, and a vast hall radiating heat like an oven.",
-      "exits": ["rune_door", "secret_vault", "dragon_approach"],
+      "exits": ["rune_door", "secret_vault", "dragon_approach", "gauntlet"],
       "chest": [],
       "encounter": null,
       "choices": [
         { "label": "Study the rune door", "next": "rune_door" },
         { "label": "Crawl through the collapsed tunnel", "next": "secret_vault" },
-        { "label": "Approach the vast, hot hall", "next": "dragon_approach" }
+        { "label": "Approach the vast, hot hall", "next": "dragon_approach" },
+        { "label": "Return through the gauntlet", "next": "gauntlet" }
       ]
     },
     {
@@ -400,13 +407,14 @@
       "id": "golem_won",
       "label": "Rune Chamber",
       "description": "The golem shatters. Behind it: a chest with gold, a Shadow Dagger, and a Health Potion.",
-      "exits": ["dragon_approach", "secret_vault"],
+      "exits": ["dragon_approach", "secret_vault", "lower_dungeon"],
       "chest": ["shadow_dagger", "health_potion"],
       "goldGain": 50,
       "encounter": null,
       "choices": [
         { "label": "Head to the dragon's hall", "next": "dragon_approach" },
-        { "label": "Check the collapsed tunnel first", "next": "secret_vault" }
+        { "label": "Check the collapsed tunnel first", "next": "secret_vault" },
+        { "label": "Return to the lower dungeon", "next": "lower_dungeon" }
       ]
     },
     {
