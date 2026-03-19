@@ -332,8 +332,10 @@
       "chest": [],
       "encounter": null,
       "choices": [
-        { "label": "Answer: A Map (requires Ancient Tome)", "next": "rune_reward", "requires": "ancient_tome" },
-        { "label": "Answer: A Map (take a guess)", "next": "rune_guess" },
+        { "label": "Consult the Ancient Tome and answer", "next": "rune_reward", "requires": "ancient_tome" },
+        { "label": "Answer: 'A Map'", "next": "rune_guess" },
+        { "label": "Answer: 'A Kingdom'", "next": "rune_fail" },
+        { "label": "Answer: 'Myself, obviously.'", "next": "rune_fail" },
         { "label": "Force the door open", "next": "rune_fail" },
         { "label": "Leave and try another path", "next": "lower_dungeon" }
       ]
