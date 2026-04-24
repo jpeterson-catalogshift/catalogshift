@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatalogShift Portal — Level 3 — Present</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-page: #F7FBF9; --bg-sidebar: #1E3D33; --bg-card: #EAF3EE; --bg-surface: #FFFFFF;
+      --text-primary: #1A2E28; --text-muted: #4A7A6B; --text-dim: #89B5A8;
+      --accent: #3A8C6E; --accent-light: #DDF0E8; --accent-border: #A8D9C5;
+      --block-bg: #FFF7ED; --block-border: #FED7AA; --block-text: #9A3412;
+      --clear-bg: #D4EDE7; --clear-border: #89C5B2; --clear-text: #1E3D33;
+      --border: #C8DDD8; --sidebar-w: 224px;
+    }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; overflow: hidden; }
+    .shell { display: grid; grid-template-columns: var(--sidebar-w) 1fr; grid-template-rows: 52px 1fr; grid-template-areas: "topbar topbar" "sidebar main"; height: 100vh; }
+    .topbar { grid-area: topbar; background: var(--bg-page); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { font-family: 'Newsreader', serif; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #1E3D33; }
+    .topbar-divider { width: 1px; height: 16px; background: var(--border); }
+    .topbar-store { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+    .topbar-right { display: flex; align-items: center; gap: 4px; }
+    .topbar-btn { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border: none; background: transparent; font-family: 'Inter', sans-serif; }
+    .topbar-btn:hover { background: var(--bg-card); }
+    .topbar-btn svg { width: 16px; height: 16px; stroke-width: 1.75; }
+    .topbar-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--accent); color: white; font-size: 9.5px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 100px; padding: 0 4px; }
+    .topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 6px; }
+    .debug-toggle { padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px dashed #ccc; background: transparent; color: var(--text-dim); font-family: 'Inter', sans-serif; }
+    .debug-toggle.active { border-color: red; color: red; background: #fff0f0; }
+    .debug * { outline: 1px solid rgba(255,0,0,0.25) !important; }
+    .topbar-account { display: flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; border: 1px solid var(--border); background: var(--bg-surface); }
+    .account-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-light); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); }
+    .sidebar { grid-area: sidebar; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .brand { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .brand-name { font-family: 'Newsreader', serif; font-size: 19px; font-weight: 600; letter-spacing: -0.025em; color: #D4EDE7; }
+    .brand-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6BAF9A; margin-top: 1px; }
+    .nav { padding: 10px 8px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 10px 10px; border-radius: 6px; font-size: 13.5px; font-weight: 500; color: #C4DDD8; cursor: pointer; margin-bottom: 4px; border-left: 2px solid transparent; }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: #EAF5F1; }
+    .nav-item.active { background: rgba(255,255,255,0.12); color: #D4EDE7; font-weight: 600; border-left-color: #6BCBA8; }
+    .nav-item svg { width: 16px; height: 16px; stroke-width: 1.75; color: #89B5A8; flex-shrink: 0; }
+    .nav-item.active svg { color: #D4EDE7; }
+    .main { grid-area: main; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
+
+    /* Level nav strip */
+    .level-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 32px; border-bottom: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
+    .level-nav-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); cursor: pointer; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-page); }
+    .level-nav-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+    .level-nav-btn svg { width: 14px; height: 14px; stroke-width: 2; }
+    .level-nav-current { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .level-nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+
+    /* Page header */
+    .page-header { padding: 20px 32px 18px; border-bottom: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: var(--accent); }
+
+    .level-header { display: flex; align-items: flex-start; gap: 16px; }
+    .level-header-text { flex: 1; }
+    .level-badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .level-num-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+    .blocking-badge { display: inline-flex; padding: 2px 9px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; background: var(--block-border); color: var(--block-text); }
+    .level-title { font-family: 'Newsreader', serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 6px; }
+    .level-gatekeeper { font-size: 13px; color: var(--text-muted); max-width: 560px; line-height: 1.5; }
+
+    .level-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .stat-big { font-family: 'Newsreader', serif; font-size: 32px; font-weight: 600; letter-spacing: -0.03em; color: var(--block-text); line-height: 1; }
+    .stat-label { font-size: 11.5px; color: var(--text-muted); }
+
+    /* Content */
+    .content-area { flex: 1; overflow-y: auto; padding: 24px 32px; display: flex; flex-direction: column; gap: 28px; }
+
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; }
+
+    /* Blocking signals */
+    .signal-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .signal-card { background: var(--bg-surface); border: 1px solid var(--border); border-left: 3px solid var(--block-border); border-radius: 8px; padding: 14px 16px; cursor: pointer; }
+    .signal-card:hover { border-color: var(--block-border); }
+    .signal-card-name { font-size: 12px; font-weight: 700; color: var(--block-text); letter-spacing: 0.03em; margin-bottom: 6px; }
+    .signal-card-count { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em; line-height: 1; margin-bottom: 4px; }
+    .signal-card-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.4; }
+
+    /* Product mini-list */
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .mini-table th { padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); background: var(--bg-page); border-bottom: 1.5px solid var(--border); }
+    .mini-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .mini-table tbody tr { cursor: pointer; }
+    .mini-table tbody tr:hover td { background: var(--bg-card); }
+    .mini-table tbody tr:last-child td { border-bottom: none; }
+    .product-name { font-weight: 500; color: var(--text-primary); }
+    .signal-flag { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; color: var(--block-text); }
+    .signal-flag svg { width: 12px; height: 12px; stroke-width: 2; }
+    .view-link { font-size: 12px; font-weight: 600; color: var(--accent); cursor: pointer; }
+    .view-link:hover { text-decoration: underline; }
+
+    /* Move up box */
+    .move-up-box { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+    .move-up-title { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .move-up-title svg { width: 16px; height: 16px; stroke-width: 1.75; color: var(--accent); }
+    .move-up-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+    .move-up-actions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .action-chip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid var(--accent-border); border-radius: 6px; font-size: 12.5px; font-weight: 500; color: var(--accent); background: var(--accent-light); cursor: pointer; }
+    .action-chip:hover { background: var(--accent); color: white; }
+    .action-chip svg { width: 13px; height: 13px; stroke-width: 1.75; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar" id="shell-topbar"></header>
+  <nav class="sidebar" id="shell-sidebar"></nav>
+  <main class="main">
+
+    <!-- Level prev/next nav -->
+    <div class="level-nav">
+      <button class="level-nav-btn" onclick="location.href='portal_maturity.html'">
+        <i data-lucide="chevron-left"></i> Level 2 — Portable
+      </button>
+      <span class="level-nav-current">Level 3 of 5</span>
+      <button class="level-nav-btn">
+        Level 4 — Converting <i data-lucide="chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>›</span>
+        <a href="portal_maturity.html">Maturity Insights</a><span>›</span>
+        <span>Level 3 — Present</span>
+      </div>
+      <div class="level-header">
+        <div class="level-header-text">
+          <div class="level-badge-row">
+            <span class="level-num-label">Level 3</span>
+            <span class="blocking-badge">Blocking</span>
+          </div>
+          <div class="level-title">Present</div>
+          <div class="level-gatekeeper">Products must be findable in search, AI discovery, and channel browsing. Descriptions must contain readable text — not markup. Field values must be machine-interpretable. Product type must match description content.</div>
+        </div>
+        <div class="level-stats">
+          <div class="stat-big">297</div>
+          <div class="stat-label">products at this level</div>
+          <div style="font-size:11.5px; color: var(--block-text); font-weight:600; margin-top: 4px;">76% of catalog blocked here</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- What is blocking -->
+      <div>
+        <div class="section-label">What is blocking — signals keeping products at Level 3</div>
+        <div class="signal-cards">
+          <div class="signal-card">
+            <div class="signal-card-name">content_integrity</div>
+            <div class="signal-card-count">312</div>
+            <div class="signal-card-desc">HTML artifacts or unreadable markup in description fields</div>
+          </div>
+          <div class="signal-card">
+            <div class="signal-card-name">value_interpretability</div>
+            <div class="signal-card-count">94</div>
+            <div class="signal-card-desc">Encoded or unresolvable field values — season codes, internal IDs</div>
+          </div>
+          <div class="signal-card">
+            <div class="signal-card-name">content_type_mismatch</div>
+            <div class="signal-card-count">47</div>
+            <div class="signal-card-desc">Product type field conflicts with description content</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products at this level (preview) -->
+      <div>
+        <div class="section-label" style="display:flex; align-items:center; justify-content:space-between;">
+          Products stuck at Level 3
+          <a class="view-link" href="portal_maturity_products.html">View all 297 →</a>
+        </div>
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th style="width:40%">Product</th>
+              <th style="width:16%">Type</th>
+              <th style="width:28%">Blocking signal</th>
+              <th style="width:16%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="location.href='portal_product.html'">
+              <td><div class="product-name">Alpine Trekking Pole Set</div></td>
+              <td style="font-size:12.5px;color:var(--text-muted)">Accessories</td>
+              <td><span class="signal-flag"><i data-lucide="alert-triangle"></i>content_integrity</span></td>
+              <td><span class="view-link">View product</span></td>
+            </tr>
+            <tr onclick="location.href='portal_product.html'">
+              <td><div class="product-name">Trail Runner Pro X2</div></td>
+              <td style="font-size:12.5px;color:var(--text-muted)">Footwear</td>
+              <td><span class="signal-flag"><i data-lucide="alert-triangle"></i>content_integrity</span></td>
+              <td><span class="view-link">View product</span></td>
+            </tr>
+            <tr onclick="location.href='portal_product.html'">
+              <td><div class="product-name">Headlamp 500 Lumen</div></td>
+              <td style="font-size:12.5px;color:var(--text-muted)">Accessories</td>
+              <td><span class="signal-flag"><i data-lucide="alert-triangle"></i>value_interpretability</span></td>
+              <td><span class="view-link">View product</span></td>
+            </tr>
+            <tr onclick="location.href='portal_product.html'">
+              <td><div class="product-name">Climbing Harness Arc</div></td>
+              <td style="font-size:12.5px;color:var(--text-muted)">Safety</td>
+              <td><span class="signal-flag"><i data-lucide="alert-triangle"></i>content_type_mismatch</span></td>
+              <td><span class="view-link">View product</span></td>
+            </tr>
+            <tr onclick="location.href='portal_product.html'">
+              <td><div class="product-name">Summit Shell Jacket — Mountain Series</div></td>
+              <td style="font-size:12.5px;color:var(--text-muted)">Outerwear</td>
+              <td><span class="signal-flag"><i data-lucide="alert-triangle"></i>content_integrity</span></td>
+              <td><span class="view-link">View product</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- What it takes to move up -->
+      <div class="move-up-box">
+        <div class="move-up-title"><i data-lucide="arrow-up-circle"></i>What it takes to reach Level 4 — Converting</div>
+        <div class="move-up-desc">Level 4 requires structured attribute data. Conversion-critical fields — color, size, material — must be present as structured values, not embedded in descriptions. AI systems and channel feeds must be able to extract and use them without inference. Products clearing Level 4 are actively returnable in faceted search and attribute-filtered results.</div>
+        <div class="move-up-actions">
+          <div class="action-chip"><i data-lucide="package"></i>Review Content Integrity products</div>
+          <div class="action-chip"><i data-lucide="link-2"></i>Map encoded field values</div>
+          <div class="action-chip"><i data-lucide="tag"></i>Fix product type mismatches</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script>const PAGE = 'maturity';</script>
+<script src="shell.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

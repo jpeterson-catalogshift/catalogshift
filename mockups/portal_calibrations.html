@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatalogShift Portal — Calibrations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-page: #F7FBF9; --bg-sidebar: #1E3D33; --bg-card: #EAF3EE; --bg-surface: #FFFFFF;
+      --text-primary: #1A2E28; --text-muted: #4A7A6B; --text-dim: #89B5A8;
+      --accent: #3A8C6E; --accent-light: #DDF0E8; --accent-border: #A8D9C5;
+      --block-bg: #FFF7ED; --block-border: #FED7AA; --block-text: #9A3412;
+      --border: #C8DDD8; --sidebar-w: 224px;
+    }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; overflow: hidden; }
+    .shell { display: grid; grid-template-columns: var(--sidebar-w) 1fr; grid-template-rows: 52px 1fr; grid-template-areas: "topbar topbar" "sidebar main"; height: 100vh; }
+    .topbar { grid-area: topbar; background: var(--bg-page); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { font-family: 'Newsreader', serif; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #1E3D33; }
+    .topbar-divider { width: 1px; height: 16px; background: var(--border); }
+    .topbar-store { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+    .topbar-right { display: flex; align-items: center; gap: 4px; }
+    .topbar-btn { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border: none; background: transparent; font-family: 'Inter', sans-serif; }
+    .topbar-btn:hover { background: var(--bg-card); }
+    .topbar-btn svg { width: 16px; height: 16px; stroke-width: 1.75; }
+    .topbar-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--accent); color: white; font-size: 9.5px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 100px; padding: 0 4px; }
+    .topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 6px; }
+    .topbar-account { display: flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; border: 1px solid var(--border); background: var(--bg-surface); }
+    .account-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-light); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); }
+    .sidebar { grid-area: sidebar; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .brand { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .brand-name { font-family: 'Newsreader', serif; font-size: 19px; font-weight: 600; letter-spacing: -0.025em; color: #D4EDE7; }
+    .brand-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6BAF9A; margin-top: 1px; }
+    .nav { padding: 10px 8px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 10px 10px; border-radius: 6px; font-size: 13.5px; font-weight: 500; color: #C4DDD8; cursor: pointer; margin-bottom: 4px; border-left: 2px solid transparent; }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: #EAF5F1; }
+    .nav-item.active { background: rgba(255,255,255,0.12); color: #D4EDE7; font-weight: 600; border-left-color: #6BCBA8; }
+    .nav-item svg { width: 16px; height: 16px; stroke-width: 1.75; color: #89B5A8; flex-shrink: 0; }
+    .nav-item.active svg { color: #D4EDE7; }
+    .main { grid-area: main; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
+
+    .page-header { padding: 20px 32px 18px; border-bottom: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .page-title { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); }
+    .page-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; max-width: 560px; line-height: 1.5; }
+
+    /* Landing page layout */
+    .landing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 32px; flex: 1; overflow-y: auto; align-content: start; }
+    .cal-panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .cal-panel-header { padding: 16px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .cal-panel-header svg { width: 15px; height: 15px; stroke-width: 1.75; color: var(--text-muted); flex-shrink: 0; }
+    .cal-panel-title { font-family: 'Newsreader', serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
+    .cal-panel-body { padding: 16px 20px; }
+    .cal-panel-footer { padding: 12px 20px; border-top: 1px solid var(--border); background: var(--bg-page); }
+
+    /* Signal calibrations stats */
+    .cal-stat-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .cal-stat-row:last-child { border-bottom: none; }
+    .cal-stat-label { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-muted); }
+    .cal-stat-count { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: 'Newsreader', serif; letter-spacing: -0.01em; }
+    .actor-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-system { background: var(--text-dim); }
+    .dot-catalogshift { background: var(--accent); }
+    .dot-team { background: #7C3AED; }
+
+    /* Field calibrations counts */
+    .field-counts { display: flex; gap: 16px; }
+    .field-count-block { flex: 1; text-align: center; padding: 16px 0; background: var(--bg-page); border-radius: 8px; border: 1px solid var(--border); }
+    .field-count-num { font-family: 'Newsreader', serif; font-size: 30px; font-weight: 600; color: var(--text-primary); line-height: 1; }
+    .field-count-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); margin-top: 5px; }
+    .field-count-block.unmapped .field-count-num { color: var(--block-text); }
+    .field-count-block.unmapped { border-color: var(--block-border); background: var(--block-bg); }
+    .field-panel-note { font-size: 12px; color: var(--text-dim); margin-top: 12px; line-height: 1.5; }
+
+    /* CTA link */
+    .btn-view { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--accent); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; padding: 0; }
+    .btn-view:hover { text-decoration: underline; }
+    .btn-view svg { width: 14px; height: 14px; stroke-width: 2; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar" id="shell-topbar"></header>
+  <nav class="sidebar" id="shell-sidebar"></nav>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>Calibrations</span></div>
+      <div class="page-title">Calibrations</div>
+      <div class="page-sub">Manage how your catalog signals and fields are tuned for accuracy. Signal calibrations keep your findings report focused on genuine issues. Field calibrations map your source fields to CatalogShift's standard vocabulary.</div>
+    </div>
+
+    <div class="landing-grid">
+
+      <!-- Signal Calibrations panel -->
+      <div class="cal-panel">
+        <div class="cal-panel-header">
+          <i data-lucide="zap"></i>
+          <div class="cal-panel-title">Signal Calibrations</div>
+        </div>
+        <div class="cal-panel-body">
+          <div class="cal-stat-row">
+            <span class="cal-stat-label"><span class="actor-dot dot-system"></span>Managed by System</span>
+            <span class="cal-stat-count">4,290</span>
+          </div>
+          <div class="cal-stat-row">
+            <span class="cal-stat-label"><span class="actor-dot dot-catalogshift"></span>Managed by CatalogShift</span>
+            <span class="cal-stat-count">14,447</span>
+          </div>
+          <div class="cal-stat-row">
+            <span class="cal-stat-label"><span class="actor-dot dot-team"></span>Managed by Your Team</span>
+            <span class="cal-stat-count">12</span>
+          </div>
+        </div>
+        <div class="cal-panel-footer">
+          <button class="btn-view" onclick="location.href='portal_calibrations_signals.html'">
+            View Signal Calibrations <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Field Calibrations panel -->
+      <div class="cal-panel">
+        <div class="cal-panel-header">
+          <i data-lucide="git-branch"></i>
+          <div class="cal-panel-title">Field Calibrations</div>
+        </div>
+        <div class="cal-panel-body">
+          <div class="field-counts">
+            <div class="field-count-block">
+              <div class="field-count-num">3</div>
+              <div class="field-count-label">Mapped</div>
+            </div>
+            <div class="field-count-block unmapped">
+              <div class="field-count-num">3</div>
+              <div class="field-count-label">Unmapped</div>
+            </div>
+          </div>
+          <div class="field-panel-note">3 source fields have not been mapped to a defined field. Mapping them improves signal accuracy and maturity scoring.</div>
+        </div>
+        <div class="cal-panel-footer">
+          <button class="btn-view" onclick="location.href='portal_calibrations_field.html'">
+            View Field Calibrations <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+<script>const PAGE = 'calibrations';</script>
+<script src="shell.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

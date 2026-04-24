@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatalogShift Portal — Signal Groups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-page: #F7FBF9; --bg-sidebar: #1E3D33; --bg-card: #EAF3EE; --bg-surface: #FFFFFF;
+      --text-primary: #1A2E28; --text-muted: #4A7A6B; --text-dim: #89B5A8;
+      --accent: #3A8C6E; --accent-light: #DDF0E8; --accent-border: #A8D9C5;
+      --block-bg: #FFF7ED; --block-border: #FED7AA; --block-text: #9A3412;
+      --clear-bg: #D4EDE7; --clear-border: #89C5B2; --clear-text: #1E3D33;
+      --border: #C8DDD8; --sidebar-w: 224px;
+    }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; overflow: hidden; }
+    .shell { display: grid; grid-template-columns: var(--sidebar-w) 1fr; grid-template-rows: 52px 1fr; grid-template-areas: "topbar topbar" "sidebar main"; height: 100vh; }
+    .topbar { grid-area: topbar; background: var(--bg-page); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { font-family: 'Newsreader', serif; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #1E3D33; }
+    .topbar-divider { width: 1px; height: 16px; background: var(--border); }
+    .topbar-store { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+    .topbar-right { display: flex; align-items: center; gap: 4px; }
+    .topbar-btn { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border: none; background: transparent; font-family: 'Inter', sans-serif; }
+    .topbar-btn:hover { background: var(--bg-card); }
+    .topbar-btn svg { width: 16px; height: 16px; stroke-width: 1.75; }
+    .topbar-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--accent); color: white; font-size: 9.5px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 100px; padding: 0 4px; }
+    .topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 6px; }
+    .debug-toggle { padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px dashed #ccc; background: transparent; color: var(--text-dim); font-family: 'Inter', sans-serif; }
+    .debug-toggle.active { border-color: red; color: red; background: #fff0f0; }
+    .debug * { outline: 1px solid rgba(255,0,0,0.25) !important; }
+    .topbar-account { display: flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; border: 1px solid var(--border); background: var(--bg-surface); }
+    .account-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-light); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); }
+    .sidebar { grid-area: sidebar; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .brand { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .brand-name { font-family: 'Newsreader', serif; font-size: 19px; font-weight: 600; letter-spacing: -0.025em; color: #D4EDE7; }
+    .brand-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6BAF9A; margin-top: 1px; }
+    .nav { padding: 10px 8px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 10px 10px; border-radius: 6px; font-size: 13.5px; font-weight: 500; color: #C4DDD8; cursor: pointer; margin-bottom: 4px; border-left: 2px solid transparent; }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: #EAF5F1; }
+    .nav-item.active { background: rgba(255,255,255,0.12); color: #D4EDE7; font-weight: 600; border-left-color: #6BCBA8; }
+    .nav-item svg { width: 16px; height: 16px; stroke-width: 1.75; color: #89B5A8; flex-shrink: 0; }
+    .nav-item.active svg { color: #D4EDE7; }
+    .main { grid-area: main; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
+
+    .page-header { padding: 20px 32px 18px; border-bottom: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .page-title { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); }
+    .page-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+
+    .content-area { flex: 1; overflow-y: auto; padding: 28px 32px; display: flex; flex-direction: column; gap: 12px; }
+
+    .signal-group-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .sgc-header {
+      display: flex;
+      align-items: center;
+      padding: 18px 22px;
+      gap: 20px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+    }
+    .sgc-header:hover { background: var(--bg-card); }
+
+    .sgc-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sgc-icon svg { width: 20px; height: 20px; stroke-width: 1.75; }
+
+    .icon-content { background: var(--block-bg); border: 1px solid var(--block-border); }
+    .icon-content svg { color: var(--block-text); }
+    .icon-structural { background: #FEF3C7; border: 1px solid #FDE68A; }
+    .icon-structural svg { color: #92400E; }
+    .icon-value { background: #EDE9FE; border: 1px solid #DDD6FE; }
+    .icon-value svg { color: #5B21B6; }
+    .icon-brand { background: var(--accent-light); border: 1px solid var(--accent-border); }
+    .icon-brand svg { color: var(--accent); }
+
+    .sgc-info { flex: 1; }
+    .sgc-name { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+    .sgc-desc { font-size: 12.5px; color: var(--text-muted); }
+
+    .sgc-stats { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    .sgc-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .sgc-stat-value { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1; }
+    .sgc-stat-label { font-size: 10.5px; color: var(--text-dim); }
+
+    .sgc-bar-wrap { height: 6px; background: var(--bg-card); border-radius: 3px; margin: 0 22px 14px; }
+    .sgc-bar { height: 6px; border-radius: 3px; }
+    .bar-content { background: var(--block-text); }
+    .bar-structural { background: #D97706; }
+    .bar-value { background: #7C3AED; }
+    .bar-brand { background: var(--accent); }
+
+    .sgc-signals { padding: 14px 22px; }
+    .signal-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+    .signal-row:last-child { border-bottom: none; }
+    .signal-id { font-weight: 600; color: var(--text-primary); flex: 1; }
+    .signal-products { color: var(--text-muted); width: 80px; text-align: right; }
+    .signal-pct { color: var(--text-dim); width: 50px; text-align: right; font-size: 11.5px; }
+    .drill-link { font-size: 12px; font-weight: 600; color: var(--accent); cursor: pointer; }
+    .drill-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar" id="shell-topbar"></header>
+  <nav class="sidebar" id="shell-sidebar"></nav>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>›</span>
+        <a href="portal_maturity.html">Maturity Insights</a><span>›</span>
+        <span>Signal Groups</span>
+      </div>
+      <div class="page-title">Signal Group Breakdown</div>
+      <div class="page-sub">Findings by signal class — Alpine Gear Collective · Apr 24, 2026</div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- Content Integrity -->
+      <div class="signal-group-card">
+        <div class="sgc-header">
+          <div class="sgc-icon icon-content"><i data-lucide="file-warning"></i></div>
+          <div class="sgc-info">
+            <div class="sgc-name">Content Integrity</div>
+            <div class="sgc-desc">Descriptions that cannot be read by AI or feed parsers — HTML artifacts, markup noise, script injection</div>
+          </div>
+          <div class="sgc-stats">
+            <div class="sgc-stat">
+              <div class="sgc-stat-value">312</div>
+              <div class="sgc-stat-label">products affected</div>
+            </div>
+            <div class="sgc-stat">
+              <div class="sgc-stat-value" style="color:var(--block-text)">25%</div>
+              <div class="sgc-stat-label">of catalog</div>
+            </div>
+          </div>
+        </div>
+        <div class="sgc-bar-wrap"><div class="sgc-bar bar-content" style="width:25%"></div></div>
+        <div class="sgc-signals">
+          <div class="signal-row">
+            <span class="signal-id">html_to_text_ratio</span>
+            <span class="signal-products">189 products</span>
+            <span class="signal-pct">15%</span>
+            <a class="drill-link" href="portal_maturity_products.html">View →</a>
+          </div>
+          <div class="signal-row">
+            <span class="signal-id">html_script_injection</span>
+            <span class="signal-products">123 products</span>
+            <span class="signal-pct">10%</span>
+            <a class="drill-link" href="portal_maturity_products.html">View →</a>
+          </div>
+          <div class="signal-row">
+            <span class="signal-id">platform_artifact</span>
+            <span class="signal-products">12 products</span>
+            <span class="signal-pct">1%</span>
+            <a class="drill-link" href="portal_maturity_products.html">View →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Structural Coherence -->
+      <div class="signal-group-card">
+        <div class="sgc-header">
+          <div class="sgc-icon icon-structural"><i data-lucide="git-branch"></i></div>
+          <div class="sgc-info">
+            <div class="sgc-name">Structural Coherence</div>
+            <div class="sgc-desc">Pricing errors, field conflicts, and mismatched product structure that break channel feeds</div>
+          </div>
+          <div class="sgc-stats">
+            <div class="sgc-stat">
+              <div class="sgc-stat-value">189</div>
+              <div class="sgc-stat-label">products affected</div>
+            </div>
+            <div class="sgc-stat">
+              <div class="sgc-stat-value" style="color:#D97706">15%</div>
+              <div class="sgc-stat-label">of catalog</div>
+            </div>
+          </div>
+        </div>
+        <div class="sgc-bar-wrap"><div class="sgc-bar bar-structural" style="width:15%"></div></div>
+        <div class="sgc-signals">
+          <div class="signal-row">
+            <span class="signal-id">content_type_mismatch</span>
+            <span class="signal-products">94 products</span>
+            <span class="signal-pct">8%</span>
+            <a class="drill-link" href="portal_maturity_products.html">View →</a>
+          </div>
+          <div class="signal-row">
+            <span class="signal-id">inverted_pricing</span>
+            <span class="signal-products">83 products</span>
+            <span class="signal-pct">7%</span>
+            <a class="drill-link" href="portal_maturity_products.html">View →</a>
+          </div>
+          <div class="signal-row">
+            <span class="signal-id">zero_price_active_variant</span>
+            <span class="signal-products">12 products</span>
+            <span class="signal-pct">1%</span>
+            <a class="drill-link" href="portal_maturity_products.html">View →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Value Interpretability -->
+      <div class="signal-group-card">
+        <div class="sgc-header">
+          <div class="sgc-icon icon-value"><i data-lucide="binary"></i></div>
+          <div class="sgc-info">
+            <div class="sgc-name">Value Interpretability</div>
+            <div class="sgc-desc">Field values that cannot be understood by downstream systems — encoded IDs, internal codes, foreign keys</div>
+          </div>
+          <div class="sgc-stats">
+            <div class="sgc-stat">
+              <div class="sgc-stat-value">94</div>
+              <div class="sgc-stat-label">products affected</div>
+            </div>
+            <div class="sgc-stat">
+              <div class="sgc-stat-value" style="color:#5B21B6">8%</div>
+              <div class="sgc-stat-label">of catalog</div>
+            </div>
+          </div>
+        </div>
+        <div class="sgc-bar-wrap"><div class="sgc-bar bar-value" style="width:8%"></div></div>
+        <div class="sgc-signals">
+          <div class="signal-row">
+            <span class="signal-id">description_null</span>
+            <span class="signal-products">94 products</span>
+            <span class="signal-pct">8%</span>
+            <a class="drill-link" href="portal_maturity_products.html">View →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brand Integrity -->
+      <div class="signal-group-card">
+        <div class="sgc-header">
+          <div class="sgc-icon icon-brand"><i data-lucide="shield-check"></i></div>
+          <div class="sgc-info">
+            <div class="sgc-name">Brand Integrity</div>
+            <div class="sgc-desc">Brand and vendor consistency — placeholder names, default titles, unbranded products</div>
+          </div>
+          <div class="sgc-stats">
+            <div class="sgc-stat">
+              <div class="sgc-stat-value">0</div>
+              <div class="sgc-stat-label">products affected</div>
+            </div>
+            <div class="sgc-stat">
+              <div class="sgc-stat-value" style="color:var(--accent)">0%</div>
+              <div class="sgc-stat-label">of catalog</div>
+            </div>
+          </div>
+        </div>
+        <div class="sgc-bar-wrap"><div class="sgc-bar bar-brand" style="width:0%"></div></div>
+        <div class="sgc-signals">
+          <div class="signal-row" style="color:var(--text-dim); font-style:italic; font-size:12.5px;">
+            No brand integrity signals fired on this run.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script>const PAGE = 'maturity';</script>
+<script src="shell.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

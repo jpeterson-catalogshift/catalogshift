@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatalogShift Portal — Pipeline Runs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-page: #F7FBF9; --bg-sidebar: #1E3D33; --bg-card: #EAF3EE; --bg-surface: #FFFFFF;
+      --text-primary: #1A2E28; --text-muted: #4A7A6B; --text-dim: #89B5A8;
+      --accent: #3A8C6E; --accent-light: #DDF0E8; --accent-border: #A8D9C5;
+      --block-bg: #FFF7ED; --block-border: #FED7AA; --block-text: #9A3412;
+      --clear-bg: #D4EDE7; --clear-border: #89C5B2; --clear-text: #1E3D33;
+      --border: #C8DDD8; --sidebar-w: 224px;
+    }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; overflow: hidden; }
+    .shell { display: grid; grid-template-columns: var(--sidebar-w) 1fr; grid-template-rows: 52px 1fr; grid-template-areas: "topbar topbar" "sidebar main"; height: 100vh; }
+    .topbar { grid-area: topbar; background: var(--bg-page); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { font-family: 'Newsreader', serif; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #1E3D33; }
+    .topbar-divider { width: 1px; height: 16px; background: var(--border); }
+    .topbar-store { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+    .topbar-right { display: flex; align-items: center; gap: 4px; }
+    .topbar-btn { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border: none; background: transparent; font-family: 'Inter', sans-serif; }
+    .topbar-btn:hover { background: var(--bg-card); }
+    .topbar-btn svg { width: 16px; height: 16px; stroke-width: 1.75; }
+    .topbar-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--accent); color: white; font-size: 9.5px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 100px; padding: 0 4px; }
+    .topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 6px; }
+    .debug-toggle { padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px dashed #ccc; background: transparent; color: var(--text-dim); font-family: 'Inter', sans-serif; letter-spacing: 0.03em; }
+    .debug-toggle.active { border-color: red; color: red; background: #fff0f0; }
+    .debug * { outline: 1px solid rgba(255,0,0,0.25) !important; }
+    .topbar-account { display: flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; border: 1px solid var(--border); background: var(--bg-surface); }
+    .account-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-light); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); }
+    .sidebar { grid-area: sidebar; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .brand { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .brand-name { font-family: 'Newsreader', serif; font-size: 19px; font-weight: 600; letter-spacing: -0.025em; color: #D4EDE7; }
+    .brand-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6BAF9A; margin-top: 1px; }
+    .nav { padding: 10px 8px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 10px 10px; border-radius: 6px; font-size: 13.5px; font-weight: 500; color: #C4DDD8; cursor: pointer; margin-bottom: 4px; border-left: 2px solid transparent; }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: #EAF5F1; }
+    .nav-item.active { background: rgba(255,255,255,0.12); color: #D4EDE7; font-weight: 600; border-left-color: #6BCBA8; }
+    .nav-item svg { width: 16px; height: 16px; stroke-width: 1.75; color: #89B5A8; flex-shrink: 0; }
+    .nav-item.active svg { color: #D4EDE7; }
+    .main { grid-area: main; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
+
+    /* Page styles */
+    .page-header { padding: 20px 32px 18px; border-bottom: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .page-title { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); }
+    .page-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+
+    .filter-bar { padding: 12px 32px; border-bottom: 1px solid var(--border); background: var(--bg-surface); display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .filter-select { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 500; color: var(--text-muted); background: var(--bg-page); cursor: pointer; white-space: nowrap; }
+    .filter-select:hover { border-color: var(--accent-border); color: var(--text-primary); }
+    .filter-select svg { width: 13px; height: 13px; stroke-width: 1.75; }
+
+    .date-range { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12.5px; color: var(--text-muted); background: var(--bg-page); cursor: pointer; }
+    .date-range svg { width: 13px; height: 13px; stroke-width: 1.75; }
+
+    .table-meta { padding: 10px 32px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .results-count { font-size: 12.5px; color: var(--text-muted); }
+    .results-count strong { color: var(--text-primary); font-weight: 600; }
+
+    .table-wrap { flex: 1; overflow-y: auto; padding: 0 32px 24px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th { padding: 9px 14px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); background: var(--bg-page); border-bottom: 1.5px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 2; }
+    .data-table th:hover { color: var(--text-muted); }
+    .th-inner { display: inline-flex; align-items: center; gap: 4px; }
+    .sort-ind { opacity: 0.3; } .sort-ind svg { width: 11px; height: 11px; stroke-width: 2.5; }
+    .sort-ind.on { opacity: 1; color: var(--accent); }
+    .data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .data-table tbody tr { cursor: pointer; }
+    .data-table tbody tr:hover td { background: var(--bg-card); }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    .run-date { font-weight: 500; color: var(--text-primary); }
+    .run-time { font-size: 11.5px; color: var(--text-dim); margin-top: 2px; }
+    .source-label { font-size: 12.5px; color: var(--text-muted); }
+
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 5px; font-size: 11.5px; font-weight: 600; }
+    .status-badge svg { width: 12px; height: 12px; stroke-width: 2; }
+    .s-complete { background: var(--clear-bg); color: var(--clear-text); }
+    .s-running { background: var(--accent-light); color: var(--accent); }
+    .s-issues { background: var(--block-bg); border: 1px solid var(--block-border); color: var(--block-text); }
+
+    .product-count { font-size: 12.5px; color: var(--text-muted); }
+
+    .findings-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--accent); text-decoration: none; }
+    .findings-link:hover { text-decoration: underline; }
+    .findings-link svg { width: 12px; height: 12px; stroke-width: 2; }
+    .findings-na { font-size: 12.5px; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar" id="shell-topbar"></header>
+  <nav class="sidebar" id="shell-sidebar"></nav>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>›</span><span>Pipeline Runs</span>
+      </div>
+      <div class="page-title">Pipeline Runs</div>
+      <div class="page-sub">Analysis history for Alpine Gear Collective · Shopify Public</div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-select">
+        <i data-lucide="check-circle-2"></i> Status <i data-lucide="chevron-down"></i>
+      </div>
+      <div class="filter-select">
+        <i data-lucide="cable"></i> Source <i data-lucide="chevron-down"></i>
+      </div>
+      <div class="date-range">
+        <i data-lucide="calendar"></i> Last 30 days <i data-lucide="chevron-down"></i>
+      </div>
+    </div>
+
+    <div class="table-meta">
+      <div class="results-count">Showing <strong>5</strong> runs in the last 30 days</div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:22%"><div class="th-inner">Date <span class="sort-ind on"><i data-lucide="arrow-down"></i></span></div></th>
+            <th style="width:20%"><div class="th-inner">Source <span class="sort-ind"><i data-lucide="chevrons-up-down"></i></span></div></th>
+            <th style="width:22%"><div class="th-inner">Status <span class="sort-ind"><i data-lucide="chevrons-up-down"></i></span></div></th>
+            <th style="width:16%"><div class="th-inner">Products <span class="sort-ind"><i data-lucide="chevrons-up-down"></i></span></div></th>
+            <th style="width:20%">Findings</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="run-date">Apr 24, 2026</div><div class="run-time">9:14 AM</div></td>
+            <td><span class="source-label">Shopify Public</span></td>
+            <td><span class="status-badge s-complete"><i data-lucide="check-circle-2"></i>Analysis complete</span></td>
+            <td><span class="product-count">1,240</span></td>
+            <td><a class="findings-link" href="portal_maturity.html">View findings <i data-lucide="arrow-right"></i></a></td>
+          </tr>
+          <tr>
+            <td><div class="run-date">Apr 17, 2026</div><div class="run-time">9:02 AM</div></td>
+            <td><span class="source-label">Shopify Public</span></td>
+            <td><span class="status-badge s-complete"><i data-lucide="check-circle-2"></i>Analysis complete</span></td>
+            <td><span class="product-count">1,238</span></td>
+            <td><a class="findings-link">View findings <i data-lucide="arrow-right"></i></a></td>
+          </tr>
+          <tr>
+            <td><div class="run-date">Apr 12, 2026</div><div class="run-time">2:47 PM</div></td>
+            <td><span class="source-label">File Upload — CSV</span></td>
+            <td><span class="status-badge s-issues"><i data-lucide="alert-triangle"></i>Analysis had issues</span></td>
+            <td><span class="product-count">842</span></td>
+            <td><span class="findings-na">—</span></td>
+          </tr>
+          <tr>
+            <td><div class="run-date">Apr 10, 2026</div><div class="run-time">8:55 AM</div></td>
+            <td><span class="source-label">Shopify Public</span></td>
+            <td><span class="status-badge s-complete"><i data-lucide="check-circle-2"></i>Analysis complete</span></td>
+            <td><span class="product-count">1,201</span></td>
+            <td><a class="findings-link">View findings <i data-lucide="arrow-right"></i></a></td>
+          </tr>
+          <tr>
+            <td><div class="run-date">Apr 3, 2026</div><div class="run-time">9:08 AM</div></td>
+            <td><span class="source-label">Shopify Public</span></td>
+            <td><span class="status-badge s-complete"><i data-lucide="check-circle-2"></i>Analysis complete</span></td>
+            <td><span class="product-count">1,185</span></td>
+            <td><a class="findings-link">View findings <i data-lucide="arrow-right"></i></a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+<script>const PAGE = 'pipeline';</script>
+<script src="shell.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

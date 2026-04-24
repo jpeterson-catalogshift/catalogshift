@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatalogShift Portal — Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page:        #F7FBF9;
+      --bg-sidebar:     #1E3D33;
+      --bg-card:        #EAF3EE;
+      --bg-surface:     #FFFFFF;
+      --text-primary:   #1A2E28;
+      --text-muted:     #4A7A6B;
+      --text-dim:       #89B5A8;
+      --accent:         #3A8C6E;
+      --accent-light:   #DDF0E8;
+      --accent-border:  #A8D9C5;
+      --block-bg:       #FFF7ED;
+      --block-border:   #FED7AA;
+      --block-text:     #9A3412;
+      --clear-bg:       #D4EDE7;
+      --clear-border:   #89C5B2;
+      --clear-text:     #1E3D33;
+      --border:         #C8DDD8;
+      --sidebar-w:      224px;
+    }
+
+    html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; overflow: hidden; }
+
+    /* ── Shell ── */
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: 52px 1fr;
+      grid-template-areas:
+        "topbar topbar"
+        "sidebar main";
+      height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      grid-area: topbar;
+      background: var(--bg-page);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 10;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+
+    .topbar-logo {
+      font-family: 'Newsreader', serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #1E3D33;
+    }
+
+    .topbar-divider { width: 1px; height: 16px; background: var(--border); }
+
+    .topbar-store { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+    .topbar-right { display: flex; align-items: center; gap: 4px; }
+
+    .topbar-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+    }
+
+    .topbar-btn:hover { background: var(--bg-card); color: var(--text-primary); }
+    .topbar-btn svg { width: 16px; height: 16px; stroke-width: 1.75; }
+
+    .topbar-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: white;
+      font-size: 9.5px;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 100px;
+      padding: 0 4px;
+    }
+
+    .topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 6px; }
+
+    .debug-toggle {
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px dashed #ccc;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.03em;
+    }
+    .debug-toggle:hover { border-color: #999; color: var(--text-muted); }
+    .debug-toggle.active { border-color: red; color: red; background: #fff0f0; }
+    .debug * { outline: 1px solid rgba(255,0,0,0.25) !important; }
+
+    .topbar-account {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+    }
+
+    .account-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      grid-area: sidebar;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .brand { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+    .brand-name {
+      font-family: 'Newsreader', serif;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: #D4EDE7;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6BAF9A;
+      margin-top: 1px;
+    }
+
+    .nav { padding: 10px 8px; flex: 1; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 10px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #C4DDD8;
+      cursor: pointer;
+      margin-bottom: 4px;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: #EAF5F1; }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.12);
+      color: #D4EDE7;
+      font-weight: 600;
+      border-left-color: #6BCBA8;
+    }
+
+    .nav-item svg { width: 16px; height: 16px; stroke-width: 1.75; color: #89B5A8; flex-shrink: 0; }
+    .nav-item.active svg { color: #D4EDE7; }
+
+    /* ── Main ── */
+    .main {
+      grid-area: main;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      padding: 20px 32px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
+      flex-shrink: 0;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: var(--accent); }
+
+    .page-title-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-title {
+      font-family: 'Newsreader', serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .page-stats {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .stat-sep { color: var(--text-dim); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-ghost:hover { background: var(--bg-card); border-color: var(--accent-border); color: var(--text-primary); }
+    .btn-ghost svg { width: 14px; height: 14px; stroke-width: 1.75; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      padding: 12px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .search-wrap { position: relative; flex: 0 0 240px; }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      stroke-width: 1.75;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 6px 10px 6px 30px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      outline: none;
+    }
+
+    .search-input::placeholder { color: var(--text-dim); }
+    .search-input:focus { border-color: var(--accent-border); background: white; }
+
+    .filter-divider { width: 1px; height: 20px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+
+    .filter-select {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: var(--bg-page);
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .filter-select:hover { border-color: var(--accent-border); color: var(--text-primary); }
+    .filter-select svg { width: 13px; height: 13px; stroke-width: 1.75; }
+    .filter-select .chev { color: var(--text-dim); }
+
+    .filter-select.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .filter-select.active .chev { color: var(--accent); }
+
+    .filter-bar-end { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+
+    .btn-cols {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: var(--bg-page);
+      cursor: pointer;
+    }
+
+    .btn-cols:hover { border-color: var(--accent-border); color: var(--text-primary); }
+    .btn-cols svg { width: 13px; height: 13px; stroke-width: 1.75; }
+
+    /* ── Active filter pills ── */
+    .active-filters {
+      padding: 8px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-page);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .filters-label { font-size: 11.5px; color: var(--text-dim); font-weight: 500; margin-right: 2px; }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 100px;
+      font-size: 11.5px;
+      font-weight: 500;
+      background: var(--block-bg);
+      border: 1px solid var(--block-border);
+      color: var(--block-text);
+      cursor: pointer;
+    }
+
+    .filter-pill svg { width: 11px; height: 11px; stroke-width: 2.5; }
+    .filter-pill:hover { background: var(--block-border); }
+
+    .filter-clear {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      cursor: pointer;
+      margin-left: 6px;
+    }
+
+    .filter-clear:hover { text-decoration: underline; }
+
+    /* ── Table meta ── */
+    .table-meta {
+      padding: 10px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .results-count { font-size: 12.5px; color: var(--text-muted); }
+    .results-count strong { color: var(--text-primary); font-weight: 600; }
+
+    .pagination { display: flex; align-items: center; gap: 3px; }
+
+    .page-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+    }
+
+    .page-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+    .page-btn.cur { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
+    .page-btn.off { opacity: 0.35; pointer-events: none; }
+    .page-btn svg { width: 13px; height: 13px; stroke-width: 2; }
+
+    .page-ellipsis { font-size: 12px; color: var(--text-dim); padding: 0 2px; }
+
+    .page-jump {
+      padding: 4px 7px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      outline: none;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+
+    /* ── Product table ── */
+    .table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 32px 24px;
+    }
+
+    .catalog-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .catalog-table th {
+      padding: 9px 14px;
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--bg-page);
+      border-bottom: 1.5px solid var(--border);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .catalog-table th:hover { color: var(--text-muted); }
+
+    .th-inner { display: inline-flex; align-items: center; gap: 4px; }
+
+    .sort-ind { opacity: 0.3; }
+    .sort-ind svg { width: 11px; height: 11px; stroke-width: 2.5; }
+    .sort-ind.on { opacity: 1; color: var(--accent); }
+
+    .catalog-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .catalog-table tbody tr { cursor: pointer; }
+    .catalog-table tbody tr:hover td { background: var(--bg-card); }
+    .catalog-table tbody tr:last-child td { border-bottom: none; }
+
+    .product-cell { display: flex; flex-direction: column; gap: 2px; }
+    .product-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .product-vendor { font-size: 11.5px; color: var(--text-dim); }
+
+    .type-label { font-size: 12.5px; color: var(--text-muted); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .s-active { background: var(--accent-light); color: var(--accent); }
+    .s-draft  { background: var(--bg-card); color: var(--text-dim); }
+
+    .variant-count { font-size: 12.5px; color: var(--text-muted); }
+
+    /* Finding badges */
+    .finding-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .finding-badge svg { width: 12px; height: 12px; stroke-width: 2; flex-shrink: 0; }
+
+    .fb-clean { background: var(--clear-bg); color: var(--clear-text); }
+    .fb-warn  { background: var(--block-bg); border: 1px solid var(--block-border); color: var(--block-text); }
+    .fb-crit  { background: #FEE2E2; border: 1px solid #FECACA; color: #991B1B; }
+
+    /* ── + Filter panel ── */
+    .btn-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border: 1px solid var(--accent-border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-light);
+      cursor: pointer;
+    }
+    .btn-filter:hover { background: var(--accent); color: white; }
+    .btn-filter svg { width: 13px; height: 13px; stroke-width: 1.75; }
+
+    .filter-panel {
+      display: none;
+      position: fixed;
+      top: 158px;
+      right: 32px;
+      width: 300px;
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+      z-index: 200;
+    }
+    .filter-panel.open { display: block; }
+
+    .fp-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; border-bottom: 1px solid var(--border); }
+    .fp-title { font-size: 13.5px; font-weight: 700; color: var(--text-primary); }
+    .fp-close { background: none; border: none; font-size: 16px; color: var(--text-dim); cursor: pointer; padding: 0 2px; line-height: 1; }
+    .fp-close:hover { color: var(--text-primary); }
+
+    .fp-body { padding: 4px 0; }
+
+    .fp-group { padding: 10px 16px; }
+    .fp-group-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .fp-new { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; padding: 1px 5px; border-radius: 3px; background: var(--accent-light); color: var(--accent); text-transform: uppercase; }
+
+    .fp-options { display: flex; flex-direction: column; gap: 6px; }
+    .fp-options label { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-primary); cursor: pointer; }
+    .fp-options input[type="radio"], .fp-options input[type="checkbox"] { accent-color: var(--accent); width: 13px; height: 13px; cursor: pointer; }
+    .fp-options-row { flex-direction: row; flex-wrap: wrap; gap: 8px 14px; }
+
+    .fp-select {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      outline: none;
+    }
+
+    .fp-textarea {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      outline: none;
+      resize: none;
+    }
+    .fp-textarea:focus { border-color: var(--accent-border); }
+
+    .fp-divider { height: 1px; background: var(--border); margin: 2px 0; }
+
+    .fp-footer { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); }
+    .fp-clear { flex: 1; padding: 8px; background: transparent; border: 1px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 500; color: var(--text-muted); cursor: pointer; }
+    .fp-clear:hover { border-color: var(--accent-border); color: var(--text-primary); }
+    .fp-apply { flex: 2; padding: 8px; background: var(--text-primary); border: none; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 600; color: white; cursor: pointer; }
+    .fp-apply:hover { background: #2C2420; }
+
+    .unknown-field-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 5px; font-size: 11.5px; font-weight: 600; background: #F3F4F6; border: 1px solid #D1D5DB; color: #6B7280; cursor: pointer; white-space: nowrap; }
+    .unknown-field-badge:hover { background: var(--bg-card); border-color: var(--accent-border); color: var(--accent); }
+    .unknown-field-badge svg { width: 12px; height: 12px; stroke-width: 2; flex-shrink: 0; }
+
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Topbar ── -->
+  <header class="topbar" id="shell-topbar"></header>
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" id="shell-sidebar"></nav>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>›</span>
+        <span>Catalog</span>
+      </div>
+      <div class="page-title-row">
+        <div>
+          <div class="page-title">Catalog</div>
+          <div class="page-stats">
+            <span>1,240 products</span>
+            <span class="stat-sep">·</span>
+            <span>3,847 variants</span>
+            <span class="stat-sep">·</span>
+            <span>5,210 images</span>
+            <span class="stat-sep">·</span>
+            <span>Shopify</span>
+            <span class="stat-sep">·</span>
+            <span>Last analyzed Apr 24, 2026</span>
+          </div>
+        </div>
+        <button class="btn-ghost" onclick="window.openShareModal()">
+          <i data-lucide="flag"></i>
+          Flag
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <i data-lucide="search"></i>
+        <input class="search-input" type="text" placeholder="Search products…">
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <div class="filter-select active">
+        <i data-lucide="zap"></i>
+        Signal Class: Content Integrity
+        <span class="chev"><i data-lucide="chevron-down"></i></span>
+      </div>
+
+      <div class="filter-select">
+        <i data-lucide="layers"></i>
+        Parent / Child
+        <span class="chev"><i data-lucide="chevron-down"></i></span>
+      </div>
+
+      <div class="filter-select">
+        <i data-lucide="toggle-right"></i>
+        Status
+        <span class="chev"><i data-lucide="chevron-down"></i></span>
+      </div>
+
+      <div class="filter-select">
+        <i data-lucide="tag"></i>
+        Category
+        <span class="chev"><i data-lucide="chevron-down"></i></span>
+      </div>
+
+      <div class="filter-bar-end">
+        <button class="btn-filter" id="filter-panel-btn" onclick="toggleFilterPanel()">
+          <i data-lucide="sliders-horizontal"></i>
+          + Filter
+        </button>
+        <button class="btn-cols">
+          <i data-lucide="columns"></i>
+          Columns
+        </button>
+      </div>
+    </div>
+
+    <!-- + Filter panel -->
+    <div class="filter-panel" id="filter-panel">
+      <div class="fp-header">
+        <span class="fp-title">Filters</span>
+        <button class="fp-close" onclick="toggleFilterPanel()">✕</button>
+      </div>
+      <div class="fp-body">
+
+        <div class="fp-group">
+          <div class="fp-group-label">Status</div>
+          <div class="fp-options fp-options-row">
+            <label><input type="radio" name="status" value="" checked> All</label>
+            <label><input type="radio" name="status" value="active"> Active</label>
+            <label><input type="radio" name="status" value="draft"> Draft</label>
+          </div>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">Has Signal</div>
+          <div class="fp-options fp-options-row">
+            <label><input type="radio" name="has_signal" value="" checked> All</label>
+            <label><input type="radio" name="has_signal" value="has"> Has signal</label>
+            <label><input type="radio" name="has_signal" value="clean"> Clean</label>
+          </div>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">Parent / Child</div>
+          <div class="fp-options fp-options-row">
+            <label><input type="radio" name="pc" value="" checked> All</label>
+            <label><input type="radio" name="pc" value="parent"> Parents</label>
+            <label><input type="radio" name="pc" value="variant"> Variants</label>
+          </div>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">Category</div>
+          <select class="fp-select">
+            <option value="">All categories</option>
+            <option>Footwear</option>
+            <option>Outerwear</option>
+            <option>Apparel</option>
+            <option>Accessories</option>
+            <option>Gear</option>
+            <option>Safety</option>
+          </select>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">Calibration <span class="fp-new">New</span></div>
+          <div class="fp-options">
+            <label><input type="radio" name="cal" value="" checked> No filter</label>
+            <label><input type="radio" name="cal" value="any"> Only calibrated products</label>
+            <label><input type="radio" name="cal" value="rule"> By calibration rule</label>
+          </div>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">Field Coverage</div>
+          <div class="fp-options">
+            <label><input type="radio" name="field_cov" value="" checked> All</label>
+            <label><input type="radio" name="field_cov" value="unknown"> Has unknown fields</label>
+          </div>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">Signal Class</div>
+          <div class="fp-options">
+            <label><input type="checkbox"> Content Integrity</label>
+            <label><input type="checkbox"> Structural Coherence</label>
+            <label><input type="checkbox"> Unreadable Values</label>
+            <label><input type="checkbox"> Brand Integrity</label>
+          </div>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">Maturity Level</div>
+          <div class="fp-options fp-options-row">
+            <label><input type="checkbox"> L1</label>
+            <label><input type="checkbox"> L2</label>
+            <label><input type="checkbox"> L3</label>
+            <label><input type="checkbox"> L4</label>
+            <label><input type="checkbox"> L5</label>
+          </div>
+        </div>
+
+        <div class="fp-divider"></div>
+
+        <div class="fp-group">
+          <div class="fp-group-label">SKU List</div>
+          <textarea class="fp-textarea" rows="3" placeholder="Paste SKUs, one per line…"></textarea>
+        </div>
+
+      </div>
+      <div class="fp-footer">
+        <button class="fp-clear" onclick="toggleFilterPanel()">Clear all</button>
+        <button class="fp-apply" onclick="toggleFilterPanel()">Apply filters</button>
+      </div>
+    </div>
+
+    <!-- Active filter pills -->
+    <div class="active-filters">
+      <span class="filters-label">Filtered by:</span>
+      <div class="filter-pill">
+        <i data-lucide="zap"></i>
+        Signal Class: Content Integrity
+        <i data-lucide="x"></i>
+      </div>
+      <span class="filter-clear">Clear all</span>
+    </div>
+
+    <!-- Table meta + top pagination -->
+    <div class="table-meta">
+      <div class="results-count">
+        Showing <strong>1–10</strong> of <strong>312</strong> products with Content Integrity findings
+      </div>
+      <div class="pagination">
+        <button class="page-btn off"><i data-lucide="chevron-left"></i></button>
+        <button class="page-btn cur">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <span class="page-ellipsis">…</span>
+        <button class="page-btn">32</button>
+        <button class="page-btn"><i data-lucide="chevron-right"></i></button>
+        <select class="page-jump">
+          <option>Go to page</option>
+          <option>1</option><option>2</option><option>3</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Product grid -->
+    <div class="table-wrap">
+      <table class="catalog-table">
+        <thead>
+          <tr>
+            <th style="width:38%">
+              <div class="th-inner">Product <span class="sort-ind on"><i data-lucide="arrow-up"></i></span></div>
+            </th>
+            <th style="width:14%">
+              <div class="th-inner">Type <span class="sort-ind"><i data-lucide="chevrons-up-down"></i></span></div>
+            </th>
+            <th style="width:10%">
+              <div class="th-inner">Status <span class="sort-ind"><i data-lucide="chevrons-up-down"></i></span></div>
+            </th>
+            <th style="width:10%">
+              <div class="th-inner">Variants <span class="sort-ind"><i data-lucide="chevrons-up-down"></i></span></div>
+            </th>
+            <th style="width:16%">
+              <div class="th-inner">Findings <span class="sort-ind"><i data-lucide="chevrons-up-down"></i></span></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Alpine Trekking Pole Set</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Accessories</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">2</span></td>
+            <td><span class="finding-badge fb-crit"><i data-lucide="alert-triangle"></i>3 findings</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Trail Runner Pro X2</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Footwear</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">8</span></td>
+            <td>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <span class="finding-badge fb-warn"><i data-lucide="alert-triangle"></i>2 findings</span>
+                <span class="unknown-field-badge" onclick="location.href='portal_calibrations_field.html'"><i data-lucide="help-circle"></i>Unknown: sz_grp</span>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Headlamp 500 Lumen</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Accessories</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">3</span></td>
+            <td><span class="finding-badge fb-warn"><i data-lucide="alert-triangle"></i>2 findings</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Summit Shell Jacket — Mountain Series</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Outerwear</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">6</span></td>
+            <td><span class="finding-badge fb-warn"><i data-lucide="alert-triangle"></i>1 finding</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Lightweight Down Puffer</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Outerwear</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">5</span></td>
+            <td><span class="finding-badge fb-warn"><i data-lucide="alert-triangle"></i>1 finding</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Climbing Harness Arc</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Safety</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">2</span></td>
+            <td><span class="finding-badge fb-warn"><i data-lucide="alert-triangle"></i>1 finding</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Merino Base Layer Crew</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Apparel</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">12</span></td>
+            <td><span class="finding-badge fb-clean"><i data-lucide="check"></i>Clean</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Waterproof Hiking Boot GTX</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Footwear</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">10</span></td>
+            <td><span class="finding-badge fb-clean"><i data-lucide="check"></i>Clean</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Wool Blend Beanie</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Accessories</span></td>
+            <td><span class="status-badge s-draft">Draft</span></td>
+            <td><span class="variant-count">4</span></td>
+            <td><span class="finding-badge fb-clean"><i data-lucide="check"></i>Clean</span></td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="product-cell">
+                <div class="product-title">Camp Chair Ultra</div>
+                <div class="product-vendor">Alpine Gear Collective</div>
+              </div>
+            </td>
+            <td><span class="type-label">Gear</span></td>
+            <td><span class="status-badge s-active">Active</span></td>
+            <td><span class="variant-count">1</span></td>
+            <td><span class="finding-badge fb-clean"><i data-lucide="check"></i>Clean</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+</div>
+
+<script>const PAGE = 'catalog';</script>
+<script src="shell.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+  document.querySelectorAll('.catalog-table tbody tr').forEach(function(row) {
+    row.onclick = function() { location.href = 'portal_product.html'; };
+  });
+  function toggleFilterPanel() {
+    document.getElementById('filter-panel').classList.toggle('open');
+  }
+  document.addEventListener('click', function(e) {
+    var panel = document.getElementById('filter-panel');
+    var btn = document.getElementById('filter-panel-btn');
+    if (panel && panel.classList.contains('open') && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
+      panel.classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>

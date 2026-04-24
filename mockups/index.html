@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatalogShift Portal — Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page:        #F7FBF9;
+      --bg-sidebar:     #1E3D33;
+      --bg-card:        #EAF3EE;
+      --bg-surface:     #FFFFFF;
+      --text-primary:   #1A2E28;
+      --text-muted:     #4A7A6B;
+      --text-dim:       #89B5A8;
+      --accent:         #3A8C6E;
+      --accent-light:   #DDF0E8;
+      --accent-border:  #A8D9C5;
+      --block-bg:       #FFF7ED;
+      --block-border:   #FED7AA;
+      --block-text:     #9A3412;
+      --clear-bg:       #D4EDE7;
+      --clear-border:   #89C5B2;
+      --clear-text:     #1E3D33;
+      --border:         #C8DDD8;
+      --juniper:        #3A8C6E;
+      --juniper-light:  #DDF0E8;
+      --sidebar-w:      224px;
+      --right-w:        304px;
+    }
+
+    html, body { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; }
+
+    /* ── Shell ── */
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr var(--right-w);
+      grid-template-rows: 52px 1fr;
+      grid-template-areas:
+        "topbar topbar topbar"
+        "sidebar main right";
+      height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      grid-area: topbar;
+      background: var(--bg-page);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px 0 20px;
+      z-index: 10;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-logo {
+      font-family: 'Newsreader', serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #1E3D33;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+    }
+
+    .topbar-store {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .topbar-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+    }
+
+    .topbar-btn:hover { background: var(--bg-card); color: var(--text-primary); }
+
+    .topbar-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: white;
+      font-size: 9.5px;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 100px;
+      padding: 0 4px;
+    }
+
+    .topbar-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 6px;
+    }
+
+    .debug-toggle {
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px dashed #ccc;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.03em;
+    }
+    .debug-toggle:hover { border-color: #999; color: var(--text-muted); }
+    .debug-toggle.active { border-color: red; color: red; background: #fff0f0; }
+
+    .debug * { outline: 1px solid rgba(255,0,0,0.25) !important; }
+
+    .topbar-account {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+    }
+
+    .account-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      grid-area: sidebar;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      padding: 18px 16px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-name {
+      font-family: 'Newsreader', serif;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: #D4EDE7;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6BAF9A;
+      margin-top: 1px;
+    }
+
+    .nav { padding: 10px 8px; flex: 1; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 10px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #C4DDD8;
+      cursor: pointer;
+      margin-bottom: 4px;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: #EAF5F1; }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.12);
+      color: #D4EDE7;
+      font-weight: 600;
+      border-left-color: #6BCBA8;
+    }
+
+    .nav-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.45;
+      flex-shrink: 0;
+    }
+
+    /* ── Main canvas ── */
+    .main {
+      grid-area: main;
+      overflow-y: auto;
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .store-header { display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 560px; }
+
+    .store-name {
+      font-family: 'Newsreader', serif;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .store-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .meta-sep { color: var(--text-dim); }
+
+    /* ── Pyramid section ── */
+    .pyramid-section {
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    .pyramid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tier {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-radius: 5px;
+      height: 46px;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .tier:hover { filter: brightness(0.97); }
+
+    .tier-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      width: 24px;
+    }
+
+    .tier-name {
+      font-family: 'Newsreader', serif;
+      font-size: 14.5px;
+      font-weight: 500;
+      flex: 1;
+      text-align: center;
+    }
+
+    .tier-badge {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 100px;
+      min-width: 64px;
+      text-align: center;
+    }
+
+    /* Level 5 — narrow, muted */
+    .t5 { width: 26%; background: var(--bg-card); color: var(--text-dim); border: 1px solid var(--border); }
+
+    /* Level 4 — slightly wider, muted */
+    .t4 { width: 42%; background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* Level 3 — BLOCKING */
+    .t3 { width: 60%; background: var(--block-bg); border: 1.5px solid var(--block-border); color: var(--block-text); }
+    .t3 .tier-badge { background: var(--block-border); color: var(--block-text); }
+
+    /* Level 2 — CURRENT */
+    .t2 { width: 78%; background: var(--accent-light); border: 1.5px solid var(--accent-border); color: var(--accent); }
+    .t2 .tier-badge { background: var(--accent); color: white; }
+
+    /* Level 1 — CLEARED */
+    .t1 { width: 94%; background: var(--clear-bg); border: 1px solid var(--clear-border); color: var(--clear-text); }
+    .t1 .tier-badge { background: var(--clear-border); color: var(--clear-text); }
+
+    /* ── Gating statement ── */
+    .gating {
+      text-align: center;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .gating-text {
+      font-family: 'Newsreader', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.55;
+      max-width: 480px;
+    }
+
+    .gating-number {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--block-text);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 20px;
+      border-radius: 7px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-dark { background: var(--text-primary); color: #FFFDF9; }
+    .btn-dark:hover { background: #2C2420; }
+
+    /* ── Right panel ── */
+    .right {
+      grid-area: right;
+      border-left: 1px solid var(--border);
+      background: var(--bg-page);
+      overflow-y: auto;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .count-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-dim);
+      background: var(--bg-card);
+      padding: 1px 7px;
+      border-radius: 100px;
+    }
+
+    /* Action items */
+    .action-item {
+      padding: 11px 13px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 7px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .action-item:hover { border-color: var(--accent); }
+
+    .ai-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .ai-title {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+
+    .pri {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pri-high { background: #FEE2E2; color: #991B1B; }
+    .pri-med  { background: #FEF3C7; color: #92400E; }
+    .pri-low  { background: var(--bg-card); color: var(--text-dim); }
+
+    .ai-due { font-size: 11.5px; color: var(--text-dim); }
+    .ai-due.overdue { color: #DC2626; font-weight: 500; }
+
+    .view-all {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      margin-top: 6px;
+      text-decoration: none;
+    }
+
+    /* Notifications */
+    .notif {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .notif:last-of-type { border-bottom: none; }
+
+    .notif-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .notif-body { flex: 1; }
+
+    .notif-text {
+      font-size: 12.5px;
+      color: var(--text-primary);
+      line-height: 1.45;
+    }
+
+    .notif-time {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* ── Context boxes above pyramid ── */
+    .context-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .context-box {
+      border-radius: 8px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .context-box.current {
+      background: var(--accent-light);
+      border-color: var(--accent-border);
+    }
+
+    .context-box.blocking {
+      background: var(--block-bg);
+      border-color: var(--block-border);
+    }
+
+    .context-box.requirement {
+      background: var(--bg-surface);
+    }
+
+    .ctx-eyebrow {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .context-box.current .ctx-eyebrow   { color: var(--accent); }
+    .context-box.blocking .ctx-eyebrow  { color: var(--block-text); }
+    .context-box.requirement .ctx-eyebrow { color: var(--text-dim); }
+
+    .ctx-title {
+      font-family: 'Newsreader', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .ctx-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Metric boxes ── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .metric-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .metric-value {
+      font-family: 'Newsreader', serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .metric-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+
+    /* ── Blocking signal cards ── */
+    .blocking-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .blocking-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--block-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .blocking-card:hover { border-left-color: var(--blocking-border); border-color: var(--block-border); }
+
+    .blocking-class {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--block-text);
+    }
+
+    .blocking-count {
+      font-family: 'Newsreader', serif;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .blocking-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .blocking-link {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .section-divider {
+      width: 100%;
+      max-width: 560px;
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 4px 0;
+    }
+
+    /* ── Icons ── */
+    .nav-item svg { width: 16px; height: 16px; stroke-width: 1.75; color: #89B5A8; flex-shrink: 0; }
+    .nav-item.active svg { color: #D4EDE7; }
+
+    .ai-title-row { display: flex; align-items: center; gap: 7px; }
+    .ai-title-row svg { width: 14px; height: 14px; stroke-width: 1.75; color: var(--text-dim); flex-shrink: 0; }
+
+    .notif-icon { display: flex; align-items: flex-start; padding-top: 3px; flex-shrink: 0; }
+    .notif-icon svg { width: 14px; height: 14px; stroke-width: 1.75; color: var(--text-dim); }
+
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Topbar ── -->
+  <header class="topbar" id="shell-topbar"></header>
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" id="shell-sidebar"></nav>
+
+  <!-- ── Main canvas ── -->
+  <main class="main">
+
+    <div class="store-header">
+      <div class="store-name">Alpine Gear Collective</div>
+      <div class="store-meta">
+        <span>Shopify</span>
+        <span class="meta-sep">·</span>
+        <span>Last analyzed Apr 24, 2026</span>
+        <span class="meta-sep">·</span>
+        <span>1,240 products</span>
+      </div>
+    </div>
+
+    <div class="pyramid-section">
+      <div class="section-label">Catalog Maturity Map</div>
+
+      <div class="context-row">
+        <div class="context-box current">
+          <div class="ctx-eyebrow">Current Level</div>
+          <div class="ctx-title">Level 2 — Portable</div>
+          <div class="ctx-desc">Your catalog survives transit to all active channels without rejection or corruption.</div>
+        </div>
+        <div class="context-box blocking">
+          <div class="ctx-eyebrow">Blocking Gate</div>
+          <div class="ctx-title">Level 3 — Present</div>
+          <div class="ctx-desc">Products must be findable in search, AI discovery, and channel browsing.</div>
+        </div>
+        <div class="context-box requirement">
+          <div class="ctx-eyebrow">What It Takes</div>
+          <div class="ctx-title">Semantic Density</div>
+          <div class="ctx-desc">Category-specific attributes must be present and interpretable by downstream systems.</div>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 660 430" width="100%" style="display:block; max-width:600px; margin:0 auto; cursor:pointer;">
+        <defs>
+          <clipPath id="pyramid-clip">
+            <polygon points="280,10 560,410 0,410"/>
+          </clipPath>
+        </defs>
+
+        <!-- Band fills clipped to pyramid shape -->
+        <polygon points="280,10 336,90 224,90"                  fill="#C8DDD8" clip-path="url(#pyramid-clip)"/>
+        <polygon points="224,90 336,90 392,170 168,170"         fill="#C0D8D2" clip-path="url(#pyramid-clip)"/>
+        <polygon points="168,170 392,170 448,250 112,250"       fill="#FFF7ED" clip-path="url(#pyramid-clip)"/>
+        <polygon points="112,250 448,250 504,330 56,330"        fill="#DDF0E8" clip-path="url(#pyramid-clip)"/>
+        <polygon points="56,330 504,330 560,410 0,410"          fill="#C4E8D8" clip-path="url(#pyramid-clip)"/>
+
+        <!-- Band dividers -->
+        <line x1="224" y1="90"  x2="336" y2="90"  stroke="white" stroke-width="2.5"/>
+        <line x1="168" y1="170" x2="392" y2="170" stroke="white" stroke-width="2.5"/>
+        <line x1="112" y1="250" x2="448" y2="250" stroke="white" stroke-width="2.5"/>
+        <line x1="56"  y1="330" x2="504" y2="330" stroke="white" stroke-width="2.5"/>
+
+        <!-- Pyramid outline -->
+        <polygon points="280,10 559,409 1,409" fill="none" stroke="#89B5A8" stroke-width="1.5"/>
+
+        <!-- ── Level labels inside pyramid ── -->
+
+        <!-- L5 Excellence -->
+        <text x="280" y="50" text-anchor="middle" dominant-baseline="middle" font-family="Newsreader,serif" font-size="12" fill="#5A8A80" font-style="italic">Excellence</text>
+
+        <!-- L4 Converting -->
+        <text x="280" y="130" text-anchor="middle" dominant-baseline="middle" font-family="Newsreader,serif" font-size="15" fill="#4A7A6B" font-style="italic">Converting</text>
+
+        <!-- L3 Present -->
+        <text x="280" y="210" text-anchor="middle" dominant-baseline="middle" font-family="Newsreader,serif" font-size="17" fill="#9A3412" font-style="italic">Present</text>
+
+        <!-- L2 Portable -->
+        <text x="280" y="290" text-anchor="middle" dominant-baseline="middle" font-family="Newsreader,serif" font-size="18" fill="#1E3D33" font-style="italic">Portable</text>
+
+        <!-- L1 Operational -->
+        <text x="280" y="370" text-anchor="middle" dominant-baseline="middle" font-family="Newsreader,serif" font-size="18" fill="#1E3D33" font-style="italic">Operational</text>
+
+        <!-- ── Dotted connector lines + badges (right side) ── -->
+
+        <!-- L3 BLOCKING — band center y=210, right edge x≈420 -->
+        <line x1="422" y1="210" x2="568" y2="210" stroke="#FED7AA" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <rect x="572" y="199" width="88" height="23" rx="11" fill="#FED7AA"/>
+        <text x="616" y="210" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="10.5" font-weight="700" fill="#9A3412" letter-spacing="0.06em">BLOCKING</text>
+
+        <!-- L2 CURRENT — band center y=290, right edge x≈476 -->
+        <line x1="478" y1="290" x2="568" y2="290" stroke="#3A8C6E" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <rect x="572" y="279" width="88" height="23" rx="11" fill="#3A8C6E"/>
+        <text x="616" y="290" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="10.5" font-weight="700" fill="white" letter-spacing="0.06em">CURRENT</text>
+
+        <!-- L1 CLEARED — band center y=370, right edge x≈532 -->
+        <line x1="534" y1="370" x2="568" y2="370" stroke="#89C5B2" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <rect x="572" y="359" width="88" height="23" rx="11" fill="#89C5B2"/>
+        <text x="616" y="370" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="10.5" font-weight="700" fill="#1E3D33" letter-spacing="0.05em">CLEARED ✓</text>
+
+      </svg>
+
+      <div class="gating">
+        <div class="gating-text">
+          <span class="gating-number">76%</span> of your products are blocking you from reaching Level 3 — Present
+        </div>
+        <button class="btn btn-dark" onclick="location.href='portal_catalog.html'">View blocking items →</button>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Metric boxes -->
+    <div class="metrics-row">
+      <div class="metric-box">
+        <div class="metric-label">Products</div>
+        <div class="metric-value">1,240</div>
+        <div class="metric-sub">parent records</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Variants</div>
+        <div class="metric-value">3,847</div>
+        <div class="metric-sub">active</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Fields</div>
+        <div class="metric-value">34</div>
+        <div class="metric-sub">discovered</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Signals</div>
+        <div class="metric-value">8</div>
+        <div class="metric-sub">evaluated</div>
+      </div>
+    </div>
+
+    <!-- Blocking signal cards -->
+    <div class="blocking-row">
+      <div class="blocking-card">
+        <div class="blocking-class">Content Integrity</div>
+        <div class="blocking-count">312</div>
+        <div class="blocking-desc">Products with HTML artifacts or unreadable descriptions</div>
+        <div class="blocking-link" onclick="location.href='portal_catalog.html'">View products →</div>
+      </div>
+      <div class="blocking-card">
+        <div class="blocking-class">Structural Coherence</div>
+        <div class="blocking-count">189</div>
+        <div class="blocking-desc">Products with pricing errors or field conflicts</div>
+        <div class="blocking-link" onclick="location.href='portal_catalog.html'">View products →</div>
+      </div>
+      <div class="blocking-card">
+        <div class="blocking-class">Value Interpretability</div>
+        <div class="blocking-count">94</div>
+        <div class="blocking-desc">Fields with encoded or unresolvable values</div>
+        <div class="blocking-link" onclick="location.href='portal_catalog.html'">View products →</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Right panel ── -->
+  <aside class="right">
+
+    <div>
+      <div class="panel-header">
+        <span class="panel-title">Action Items</span>
+        <span class="count-badge">5 open</span>
+      </div>
+
+      <div class="action-item">
+        <div class="ai-top">
+          <div class="ai-title-row">
+            <i data-lucide="image"></i>
+            <span class="ai-title">Review image alt text — Footwear category</span>
+          </div>
+          <span class="pri pri-high">High</span>
+        </div>
+        <div class="ai-due">Due today</div>
+      </div>
+
+      <div class="action-item">
+        <div class="ai-top">
+          <div class="ai-title-row">
+            <i data-lucide="link-2"></i>
+            <span class="ai-title">Map 'season_code' field to defined concept</span>
+          </div>
+          <span class="pri pri-high">High</span>
+        </div>
+        <div class="ai-due overdue">Overdue</div>
+      </div>
+
+      <div class="action-item">
+        <div class="ai-top">
+          <div class="ai-title-row">
+            <i data-lucide="tag"></i>
+            <span class="ai-title">Update pricing on Summer collection variants</span>
+          </div>
+          <span class="pri pri-med">Med</span>
+        </div>
+        <div class="ai-due">Due May 1</div>
+      </div>
+
+      <div class="action-item">
+        <div class="ai-top">
+          <div class="ai-title-row">
+            <i data-lucide="archive"></i>
+            <span class="ai-title">Archive discontinued SKUs from Q1</span>
+          </div>
+          <span class="pri pri-low">Low</span>
+        </div>
+        <div class="ai-due">Due May 7</div>
+      </div>
+
+      <a class="view-all">View all action items →</a>
+    </div>
+
+    <div>
+      <div class="panel-header">
+        <span class="panel-title">Notifications</span>
+      </div>
+
+      <div class="notif">
+        <div class="notif-dot" style="background:var(--accent)"></div>
+        <span class="notif-icon"><i data-lucide="trending-up"></i></span>
+        <div class="notif-body">
+          <div class="notif-text">Maturity level change — Level 1 cleared on last pipeline run</div>
+          <div class="notif-time">2 hours ago</div>
+        </div>
+      </div>
+
+      <div class="notif">
+        <div class="notif-dot" style="background:var(--accent)"></div>
+        <span class="notif-icon"><i data-lucide="share-2"></i></span>
+        <div class="notif-body">
+          <div class="notif-text">Sarah shared "Missing alt text — Footwear" list with you</div>
+          <div class="notif-time">Yesterday</div>
+        </div>
+      </div>
+
+      <div class="notif">
+        <div class="notif-dot" style="background:var(--text-dim)"></div>
+        <span class="notif-icon"><i data-lucide="check-circle-2"></i></span>
+        <div class="notif-body">
+          <div class="notif-text">Pipeline run complete — 1,240 products analyzed, 0 errors</div>
+          <div class="notif-time">Apr 23</div>
+        </div>
+      </div>
+
+      <a class="view-all">View all notifications →</a>
+    </div>
+
+  </aside>
+
+</div>
+
+<script>const PAGE = 'home';</script>
+<script src="shell.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
